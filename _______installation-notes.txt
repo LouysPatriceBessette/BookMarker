@@ -1,0 +1,25 @@
+To create that "fresh install", here were the steps: ======================== IT'S ALREADY DONE!
+
+=======
+    This directory was created using Jacques Lenormand React Boiler Plate : 
+       git clone https://github.com/decodejacques/fullstack-dev.git some-new-folder-name
+
+    Then, install it :
+       npm install
+
+    Then, install React-router-DOM
+       npm install "react-router-dom"
+
+    Then, the install Redux : 
+       npm install "react-redux@6.0.1"
+=======
+
+Now steps to do:
+
+1 - Just extract that zip into your brand new empty folder!
+2 - Test the installation by running nodemon server.js. It should render an "hello world" page on localhost:4000
+3 - Replace the content of src/ and /public folders with your project files.
+4 - Enjoy coding!
+
+
+Last update of this file : 2019-11-05
