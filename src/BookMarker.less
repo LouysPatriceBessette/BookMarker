@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css?family=McLaren&display=swap');
+
+body {
+    background-color: #fce8e8;
+    margin: 0;
+    font-family: 'McLaren', cursive;
+}
+
+.logo {
+    width: 100px;
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    background-color: #b58b8b;
+    border-bottom: 1px dashed #5e5e5e;
+    box-shadow: 0 0 6px white;
+}
+
+.logBtn {
+    border: 0;
+    border-radius: 6px;
+    background-color: #a7b3cf;
+    padding: 0.6em;
+    margin: 0.6em;
+    box-shadow: 0 0 6px white;
+    font-weight: bold;
+}
+
+.logBtn:hover {
+    background-color: #748fcc
+}
+
+nav span {
+    margin: 0 2em 0 0.4em;
+    font-weight: bold;
+}
+
+nav h1.homepage {
+    flex-grow: 2;
+    text-align: left;
+    margin-left: 1.4em;
+    color: #ba2d11;
+    text-shadow: 0 0 6px #fae1e3;
+    margin: 0.3em 0 0.3em 0.8em;
+}
+
+.modal_overlay {
+    position: fixed;
+    top: 3.1em;
+    /* Should be adjusted to the nav height */
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.4);
+    margin: 0 !important;
+}
+
+.modal {
+    max-width: 275px;
+    margin: 10% auto;
+    padding: 0 1em 1em 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border-radius: 15px;
+}
+
+.blurred {
+    filter: blur(5px);
+}
+
+.error {
+    color: red;
+    display: none;
+}
+
+.error.shown {
+    display: inline;
+}
+
+.fctBtn {
+    border: 0;
+    border-radius: 6px;
+    background-color: #a7b3cf;
+    padding: 0.6em;
+    margin: 0.6em;
+    box-shadow: 0 0 6px white;
+    font-weight: bold;
+}
+
+.fctBtn:hover {
+    background-color: #748fcc
+}
+
+.fctGroup {
+    flex-grow: 2;
+    text-align: center;
+}
+
+.user {
+    padding: 0.7em;
+}
+
+/* ============================================================================= Page component */
+.test {
+    background: green;
+    border: 3px solid red;
+}
+
+.page {
+    margin-top: 3.1em;
+    /* Should be adjusted to the nav height */
+    padding: 0.5em;
+    display: flex;
+}
+
+.page h1,
+.page h2,
+.page h3,
+.page h4,
+.page h5,
+.page h6 {
+    color: #826d6f;
+}
+
+.page>div {
+    margin: 1em 0.5em;
+}
+
+li {
+    list-style: none;
+    margin: 0;
+    position: relative;
+}
+
+li a {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+li.link:before {
+    position: absolute;
+    top: -2px;
+    left: -30px;
+    content: url(/bookmark.png);
+}
+
+li.folder-closed:before {
+    position: absolute;
+    top: -2px;
+    left: -40px;
+    content: url(/folder-closed.png);
+}
+
+li.folder-closed ul {
+    display: none;
+}
+
+li.folder-opened:before {
+    position: absolute;
+    top: -2px;
+    left: -40px;
+    content: url(/folder-opened.png);
+}
+
+li.folder-opened ul {
+    display: block;
+}
+
+.legal {
+    font-size: 0.7em;
+    font-style: italic;
+}
+
+[contentEditable] {
+    outline: none;
+}
+
+.liDiv {
+    display: inline-block;
+}
+
+.categoryTree {
+    border-right: 1px solid grey;
+    padding-right: 1em;
+}
+
+.categoryDisplay {
+    padding: 1em 0;
+    flex-grow: 2;
+}
+
+.catContentLength {
+    font-size: 0.6em;
+    color: grey;
+    font-style: italic;
+}

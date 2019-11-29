@@ -7,7 +7,7 @@ let __init_magic_reload = async () => {
         return new Promise((res, rej) => {
             var ws = new WebSocket('ws://localhost:40510');
             ws.onopen = function () {
-                console.log('connected')
+                //console.log('connected')
                 res(ws)
             }
             ws.onerror = function () {
@@ -26,10 +26,10 @@ let __init_magic_reload = async () => {
 
         while (true) {
             try {
-                console.log("attempting")
+                //console.log("attempting")
                 let ret = await createConnection()
                 return ret
-            } catch (err) { }
+            } catch (err) {}
             await delay(100)
         }
     }
@@ -38,9 +38,10 @@ let __init_magic_reload = async () => {
 
         if (!__init_status) {
             __init_status = true
-        }
-        else {
-            try { ws.close() } catch (err) { }
+        } else {
+            try {
+                ws.close()
+            } catch (err) {}
             window.location.reload();
         }
     }

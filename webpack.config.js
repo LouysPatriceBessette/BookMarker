@@ -12,7 +12,7 @@ let pollServer =
           return new Promise((res, rej) => {
               var ws = new WebSocket('ws://localhost:40510');
               ws.onopen = function () {
-                  console.log('connected')
+                  //console.log('connected')
                   res(ws)
               }
               ws.onerror = function () {
@@ -31,7 +31,7 @@ let pollServer =
   
           while (true) {
               try {
-                  console.log("attempting")
+                  //console.log("attempting")
                   let ret = await createConnection()
                   return ret
               } catch (err) { }
@@ -87,32 +87,32 @@ module.exports = {
   },
   module: {
     rules: [{
-      test: /\.(js|jsx)$/,
-      exclude: /node_modules/,
-      use: {
-        loader: "babel-loader"
-      }
-    },
-    {
-      test: /\.html$/,
-      use: [{
-        loader: "html-loader"
-      }]
-    },
-    {
-      test: /\.css$/,
-      use: ["style-loader", "css-loader"]
-    },
-    {
-      test: /\.(jpe?g|png|gif|svg)$/i,
-      use: [{
-        loader: "url-loader",
-        options: {
-          limit: 30000,
-          name: "[name].[ext]"
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader"
         }
-      }]
-    }
+      },
+      {
+        test: /\.html$/,
+        use: [{
+          loader: "html-loader"
+        }]
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [{
+          loader: "url-loader",
+          options: {
+            limit: 30000,
+            name: "[name].[ext]"
+          }
+        }]
+      }
     ]
   },
   plugins: [
