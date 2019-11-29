@@ -1,16 +1,15 @@
+// =============================================================================================================== Base React imports
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+// =============================================================================================================== Other component imports
 import Categories from "../component/Categories.jsx";
 import BookmarkDetails from "../component/BookmarkDetails.jsx";
 
-// Global variables for the functions from the store
-let currency;
-let rsg;
-let log;
-let getRealType;
-let map_O_spread;
+// =============================================================================================================== Global variables for the functions from the store
+let currency, rsg, log, getRealType, map_O_spread;
 
+// =============================================================================================================== Component class
 class U_Page extends Component {
   constructor(props) {
     super(props);
@@ -24,14 +23,18 @@ class U_Page extends Component {
     getRealType = this.props.functions.getRealType;
     map_O_spread = this.props.functions.map_O_spread;
   };
-  // ================================================================================= Component functions
+  // =============================================================================================================== Component functions
 
+  // =============================================================================================================== Component render
   render = () => {
     this.setup();
     log.render("Page");
 
+    // Render logic
+
     // Categories listing
     if (this.props.logged) {
+      // ======================================================================= Return
       return (
         <>
           <div className="categoryTree">
@@ -41,10 +44,11 @@ class U_Page extends Component {
             <BookmarkDetails />
           </div>
         </>
-      );
+      ); // ==================================================================== End return
     } else {
       let pageClass = this.props.overlay ? "blurred" : "";
 
+      // ======================================================================= Return
       return (
         <div className={pageClass}>
           <div>
@@ -100,19 +104,23 @@ class U_Page extends Component {
             <p className="legal">* {rsg(3)}</p>
           </div>
         </div>
-      );
+      ); // ==================================================================== End return
     }
   }; // End render
 } // End class
 
-// ===================================================================== Component connect
+// =============================================================================================================== State to Props
 let stp = state => {
   return {
+    // Functions from the state
     functions: state.functions,
+
+    // Specific component props from the state here
     logged: state.logged,
     overlay: state.overlay
   };
 };
-let Page = connect(stp)(U_Page);
 
+// =============================================================================================================== Component connection to the store
+let Page = connect(stp)(U_Page);
 export default Page;

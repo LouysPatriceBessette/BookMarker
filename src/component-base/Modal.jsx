@@ -1,13 +1,13 @@
+// =============================================================================================================== Base React imports
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-// Global variables for the functions from the store
-let currency;
-let rsg;
-let log;
-let getRealType;
-let map_O_spread;
+// =============================================================================================================== Other component imports
 
+// =============================================================================================================== Global variables for the functions from the store
+let currency, rsg, log, getRealType, map_O_spread;
+
+// =============================================================================================================== Component class
 class U_Modal extends Component {
   constructor(props) {
     super(props);
@@ -21,7 +21,7 @@ class U_Modal extends Component {
     getRealType = this.props.functions.getRealType;
     map_O_spread = this.props.functions.map_O_spread;
   };
-  // ================================================================================= Component functions
+  // =============================================================================================================== Component functions
 
   modalClick = e => {
     if (e.target.className === "modal_overlay") {
@@ -59,10 +59,12 @@ class U_Modal extends Component {
     }
   };
 
+  // =============================================================================================================== Component render
   render = () => {
     this.setup();
     log.render("Modal");
 
+    // Render logic
     let errorClassName = "error";
     if (this.props.sl_error) {
       errorClassName += " shown";
@@ -71,6 +73,7 @@ class U_Modal extends Component {
     switch (true) {
       // If trying to log in
       case this.props.overlay:
+        // ======================================================================= Return
         return (
           <>
             <div className="modal_overlay" onClick={this.modalClick}>
@@ -96,23 +99,28 @@ class U_Modal extends Component {
             </div>
             >
           </>
-        );
+        ); // ==================================================================== End return
 
       default:
-        return <></>;
+        // ======================================================================= Return
+        return <></>; // ==================================================================== End return
     } // End switch
   }; // End render
 } // End class
 
-// ===================================================================== Component connect
+// =============================================================================================================== State to Props
 let stp = state => {
   return {
+    // Functions from the state
     functions: state.functions,
+
+    // Specific component props from the state here
     sl_error: state.sl_error,
     overlay: state.overlay,
     modal: state.modal
   };
 };
-let Modal = connect(stp)(U_Modal);
 
+// =============================================================================================================== Component connection to the store
+let Modal = connect(stp)(U_Modal);
 export default Modal;

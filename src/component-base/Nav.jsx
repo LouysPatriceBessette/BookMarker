@@ -1,13 +1,13 @@
+// =============================================================================================================== Base React imports
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-// Global variables for the functions from the store
-let currency;
-let rsg;
-let log;
-let getRealType;
-let map_O_spread;
+// =============================================================================================================== Other component imports
 
+// =============================================================================================================== Global variables for the functions from the store
+let currency, rsg, log, getRealType, map_O_spread;
+
+// =============================================================================================================== Component class
 class U_Nav extends Component {
   constructor(props) {
     super(props);
@@ -21,7 +21,7 @@ class U_Nav extends Component {
     getRealType = this.props.functions.getRealType;
     map_O_spread = this.props.functions.map_O_spread;
   };
-  // ================================================================================= Component functions
+  // =============================================================================================================== Component functions
 
   signin = () => {
     log.ok("Signing in.\n\n");
@@ -48,10 +48,12 @@ class U_Nav extends Component {
     this.props.dispatch({ type: "logout" });
   };
 
-  // ===================================================================== render component
+  // =============================================================================================================== Component render
   render = () => {
     this.setup();
     log.render("Nav");
+
+    // Render logic
 
     // If user is NOT logged in
     log.var("logged?", this.props.logged);
@@ -59,6 +61,7 @@ class U_Nav extends Component {
       log.error("Nav props.logged is a problem in Nav.jsx");
     }
     if (!this.props.logged) {
+      // ======================================================================= Return
       return (
         <>
           <nav>
@@ -72,8 +75,9 @@ class U_Nav extends Component {
             <img className="logo" src="/book.png" />
           </nav>
         </>
-      );
+      ); // ==================================================================== End return
     } else {
+      // ======================================================================= Return
       return (
         <>
           <nav>
@@ -93,19 +97,23 @@ class U_Nav extends Component {
             <img className="logo" src="/book.png" />
           </nav>
         </>
-      );
+      ); // ==================================================================== End return
     }
   }; // End render
 } // End class
 
-// ===================================================================== Component connect
+// =============================================================================================================== State to Props
 let stp = state => {
   return {
+    // Functions from the state
     functions: state.functions,
+
+    // Specific component props from the state here
     logged: state.logged,
     username: state.username
   };
 };
-let Nav = connect(stp)(U_Nav);
 
+// =============================================================================================================== Component connection to the store
+let Nav = connect(stp)(U_Nav);
 export default Nav;

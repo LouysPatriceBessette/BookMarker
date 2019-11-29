@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 let currency, rsg, log, getRealType, map_O_spread;
 
 // =============================================================================================================== Component class
-class U_BookmarkDetails extends Component {
+class U_COMPONENT_TEMPLATE extends Component {
   constructor(props) {
     super(props);
   }
@@ -26,26 +26,16 @@ class U_BookmarkDetails extends Component {
   // =============================================================================================================== Component render
   render = () => {
     this.setup();
-    log.render("BookmarkDetails");
+    log.render("-- COMPONENT TEMPLATE --");
 
     // Render logic
 
-    if (this.props.activeLink !== -1) {
-      let link = this.props.links[parseInt(this.props.activeLink)];
-
-      // ======================================================================= Return
-      return (
-        <>
-          <p>{link.name}</p>
-          <p>Star rating: {link.rating}</p>
-          <p>{link.href}</p>
-          <p>{link.comment}</p>
-        </>
-      ); // ==================================================================== End return
-    } else {
-      // ======================================================================= Return
-      return <></>; // ==================================================================== End return
-    }
+    // ======================================================================= Return
+    return (
+      <>
+        <div>...</div>
+      </>
+    ); // ==================================================================== End return
   }; // End render
 } // End class
 
@@ -53,14 +43,13 @@ class U_BookmarkDetails extends Component {
 let stp = state => {
   return {
     // Functions from the state
-    functions: state.functions,
+    functions: state.functions
 
     // Specific component props from the state here
-    activeLink: state.activeLink,
-    links: state.bank.links
+    //...
   };
 };
 
 // =============================================================================================================== Component connection to the store
-let BookmarkDetails = connect(stp)(U_BookmarkDetails);
-export default BookmarkDetails;
+let COMPONENT_TEMPLATE = connect(stp)(U_COMPONENT_TEMPLATE);
+export default COMPONENT_TEMPLATE;

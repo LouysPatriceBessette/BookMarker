@@ -1,13 +1,13 @@
+// =============================================================================================================== Base React imports
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-// Global variables for the functions from the store
-let currency;
-let rsg;
-let log;
-let getRealType;
-let map_O_spread;
+// =============================================================================================================== Other component imports
 
+// =============================================================================================================== Global variables for the functions from the store
+let currency, rsg, log, getRealType, map_O_spread;
+
+// =============================================================================================================== Component class
 class U_Categories extends Component {
   constructor(props) {
     super(props);
@@ -21,7 +21,7 @@ class U_Categories extends Component {
     getRealType = this.props.functions.getRealType;
     map_O_spread = this.props.functions.map_O_spread;
   };
-  // ================================================================================= Component functions
+  // =============================================================================================================== Component functions
 
   contentEditableChange = e => {
     // New category title
@@ -113,10 +113,14 @@ class U_Categories extends Component {
     }
   };
 
+  // =============================================================================================================== Component render
   render = () => {
     this.setup();
     log.render("Categories");
 
+    // Render logic
+
+    // ======================================================================= Return
     return (
       <>
         <ul>
@@ -159,18 +163,22 @@ class U_Categories extends Component {
           })}
         </ul>
       </>
-    );
+    ); // ==================================================================== End return
   }; // End render
 } // End class
 
-// ===================================================================== Component connect
+// =============================================================================================================== State to Props
 let stp = state => {
   return {
+    // Functions from the state
     functions: state.functions,
+
+    // Specific component props from the state here
     userId: state.userId,
     bank: state.bank
   };
 };
-let Categories = connect(stp)(U_Categories);
 
+// =============================================================================================================== Component connection to the store
+let Categories = connect(stp)(U_Categories);
 export default Categories;
