@@ -35,6 +35,7 @@ class U_Nav extends Component {
       }
     });
   };
+
   login = () => {
     log.ok("Logging in.\n\n");
     this.props.dispatch({
@@ -45,6 +46,7 @@ class U_Nav extends Component {
       }
     });
   };
+
   logout = () => {
     log.ok("Logging out.\n\n");
     this.props.dispatch({ type: "logout" });
@@ -54,8 +56,6 @@ class U_Nav extends Component {
   render = () => {
     this.setup();
     log.render("Nav");
-
-    // Render logic
 
     // If user is NOT logged in
     log.var("logged?", this.props.logged);

@@ -7,6 +7,9 @@ let MongoClient = require('mongodb').MongoClient;
 let ObjectId = require("mongodb").ObjectID;
 let hash = require('object-hash');
 
+let cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 let reloadMagic = require('./reload-magic.js')
 reloadMagic(app)
 
@@ -88,8 +91,6 @@ app.post('/signup', upload.none(), (req, res) => {
         // The username is available
         if (user === null) {
             console.log("username available");
-            let sessionId = generateSessionId();
-            res.cookie("sid", sessionId);
 
             // Insert a new "bank" for the user and get the id back
             dbo.collection('links').insertOne({
@@ -104,8 +105,6 @@ app.post('/signup', upload.none(), (req, res) => {
                     })
                     return
                 }
-
-                console.log("linkBank._id", linkBank.insertedId)
 
                 // Insert the user in DB
                 dbo.collection('users').insertOne({
@@ -122,11 +121,16 @@ app.post('/signup', upload.none(), (req, res) => {
                         return
                     }
 
+                    // Set the session cookie
+                    let sessionId = generateSessionId();
+                    res.cookie("sid", sessionId);
+                    sessions[sessionId] = user._id
+
                     // ========================= Success response
                     res.json({
                         success: true,
                         user: {
-                            username: name,
+                            username: user.username,
                             categories: defaultBank.categories,
                             links: defaultBank.links,
                             errorMsg: "No error"
@@ -173,6 +177,11 @@ app.post('/login', upload.none(), (req, res) => {
         // User found and password match
         if (user.password === pwd) {
 
+            // Set the session cookie
+            let sessionId = generateSessionId();
+            res.cookie("sid", sessionId);
+            sessions[sessionId] = user._id
+
             // Retreive user's bank
             dbo.collection('links').findOne({
                 _id: ObjectId(user.bankId)
@@ -187,7 +196,6 @@ app.post('/login', upload.none(), (req, res) => {
                 }
 
                 // ========================= Success response
-                console.log("userBank.categories", userBank)
                 res.json({
                     success: true,
                     user: {
@@ -215,31 +223,75 @@ app.post('/login', upload.none(), (req, res) => {
 
 // ========================================================================================== Cookie
 app.post('/cookie', upload.none(), (req, res) => {
-    let user = userData.find(u => {
-        return u.username === req.body.username
-    })
 
-    if (user && user.password === req.body.password) {
-        console.log("User found", user.username)
+    // Get the cookie sid
+    let sid = req.cookies.sid
 
-        // The user's links!
-        // to get from DB
+    // Check in active sessions
+    if (sessions[sid]) {
 
-        let session = Math.floor(Math.random() * 1000000)
-        console.log("session", session)
-        sessions[session] = req.body.username
-        res.cookie('session', session)
-        res.send({
-            success: true,
-            user
+        let userId = sessions[sid]
+
+        dbo.collection('users').findOne({
+            _id: ObjectId(userId)
+        }, (err, user) => {
+            if (err) {
+                console.log("/cookie error", err)
+                res.json({
+                    success: false,
+                    errorMsg: "DBO error on find user"
+                })
+                return
+            }
+
+            // User not found
+            if (user === null) {
+                res.json({
+                    success: false,
+                    errorMsg: "User not found"
+                })
+                return
+            }
+
+            // Retreive user's bank
+            dbo.collection('links').findOne({
+                _id: ObjectId(user.bankId)
+            }, (err, userBank) => {
+                if (err) {
+                    console.log("Error retreiving the user's bank", err)
+                    res.json({
+                        success: false,
+                        errorMsg: "DBO error on find user's link bank"
+                    })
+                    return
+                }
+
+                // ========================= Success response
+                res.json({
+                    success: true,
+                    user: {
+                        username: user.username,
+                        categories: userBank.categories,
+                        links: userBank.links,
+                        errorMsg: "No error"
+                    }
+                })
+                return
+            })
         })
+
+
+
+        // ===========================================
+
     } else {
-        console.log("User NOT found")
         res.send({
             success: false,
-            user: null
+            errorMsg: "Session not found"
         })
     }
+
+
 })
 
 

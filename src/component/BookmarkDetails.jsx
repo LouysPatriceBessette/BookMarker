@@ -30,8 +30,6 @@ class U_BookmarkDetails extends Component {
     this.setup();
     log.render("BookmarkDetails");
 
-    // Render logic
-
     if (this.props.activeLink !== -1) {
       let link = this.props.links[parseInt(this.props.activeLink)];
 

@@ -91,8 +91,6 @@ class U_Categories extends Component {
     this.setup();
     log.render("Categories");
 
-    // Render logic
-
     // ======================================================================= Return
     return (
       <>

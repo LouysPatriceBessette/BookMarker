@@ -31,11 +31,9 @@ let defaultStore = {
         key: key
     },
 
-
     // Application variables NOT LOGGED
     logged: false,
     activeLink: -1
-
 }
 
 

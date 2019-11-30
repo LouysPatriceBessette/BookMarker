@@ -61,7 +61,6 @@ class U_Modal extends Component {
     this.setup();
     log.render("Modal");
 
-    // Render logic
     let errorClassName = "error";
     if (this.props.sl_error) {
       errorClassName += " shown";

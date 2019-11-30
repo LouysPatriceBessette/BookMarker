@@ -32,8 +32,6 @@ class U_Page extends Component {
     this.setup();
     log.render("Page");
 
-    // Render logic
-
     // Categories listing
     if (this.props.logged) {
       // ======================================================================= Return
