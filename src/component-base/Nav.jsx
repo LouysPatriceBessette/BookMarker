@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 // =============================================================================================================== Other component imports
 
 // =============================================================================================================== Global variables for the functions from the store
-let currency, rsg, log, getRealType, map_O_spread;
+let currency, rsg, log, getRealType, map_O_spread, qf, key;
 
 // =============================================================================================================== Component class
 class U_Nav extends Component {
@@ -20,16 +20,18 @@ class U_Nav extends Component {
     log = this.props.functions.log;
     getRealType = this.props.functions.getRealType;
     map_O_spread = this.props.functions.map_O_spread;
+    qf = this.props.functions.qf;
+    key = this.props.functions.key;
   };
   // =============================================================================================================== Component functions
 
-  signin = () => {
-    log.ok("Signing in.\n\n");
+  signup = () => {
+    log.ok("Signing up.\n\n");
     this.props.dispatch({
       type: "modal",
       content: {
-        fetchPath: "signin",
-        title: "Sign in"
+        fetchPath: "signup",
+        title: "Sign up"
       }
     });
   };
@@ -68,7 +70,7 @@ class U_Nav extends Component {
             <button className="logBtn" onClick={this.login}>
               Log in
             </button>
-            <button className="logBtn" onClick={this.signin}>
+            <button className="logBtn" onClick={this.signup}>
               Sign in
             </button>
             <h1 className="homepage">BookMarker.Club</h1>

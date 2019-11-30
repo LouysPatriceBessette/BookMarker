@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 // =============================================================================================================== Other component imports
 
 // =============================================================================================================== Global variables for the functions from the store
-let currency, rsg, log, getRealType, map_O_spread;
+let currency, rsg, log, getRealType, map_O_spread, qf, key;
 
 // =============================================================================================================== Component class
 class U_COMPONENT_TEMPLATE extends Component {
@@ -20,6 +20,8 @@ class U_COMPONENT_TEMPLATE extends Component {
     log = this.props.functions.log;
     getRealType = this.props.functions.getRealType;
     map_O_spread = this.props.functions.map_O_spread;
+    qf = this.props.functions.qf;
+    key = this.props.functions.key;
   };
   // =============================================================================================================== Component functions
 

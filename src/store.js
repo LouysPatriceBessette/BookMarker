@@ -10,6 +10,7 @@ import {
     getRealType,
     map_O_spread
 } from './js-lib/map_O_spread.js'
+import qf from './js-lib/qf.js'
 
 // Component keys
 import key from 'weak-key'
@@ -24,6 +25,7 @@ let defaultStore = {
         getRealType: getRealType,
         map_O_spread: map_O_spread,
         rsg: rsg,
+        qf: qf,
 
         // Component keys
         key: key
@@ -32,26 +34,10 @@ let defaultStore = {
 
     // Application variables NOT LOGGED
     logged: false,
-    activeLink: -1,
+    activeLink: -1
+
 }
 
-// If a user cookie is found... Should be via a distach -- check in DB!
-/*
-let cookieVal = Cookies.get("session")
-log.var("cookie", cookieVal)
-if (cookieVal) {
-    log.var("User session found!", cookieVal)
-    log.var("user", Cookies.get("user"))
-    let user = JSON.parse(Cookies.get("user"))
-    log.var("user", Cookies.get("bankr"))
-    let bank = JSON.parse(Cookies.get("bank"))
-
-    defaultStore["logged"] = true
-    defaultStore["userId"] = user.userId
-    defaultStore["username"] = user.username
-    defaultStore["bank"] = bank
-}
-*/
 
 let reducer = (state, action) => {
 
@@ -66,23 +52,18 @@ let reducer = (state, action) => {
     if (action.type === "logged") {
         newState.logged = true
         newState.username = action.content.user.username
-        newState.accessLevel = action.content.user.accessLevel
         newState.overlay = false
-        newState.bank = action.content.bank
+        newState.categories = action.content.user.categories
+        newState.links = action.content.user.links
     }
     if (action.type === "logout") {
         newState.logged = false
         newState.username = null
-        newState.accessLevel = null
         Cookies.set('session', 0, {
             expires: -1,
             path: ''
         })
         Cookies.set('user', 0, {
-            expires: -1,
-            path: ''
-        })
-        Cookies.set('bank', 0, {
             expires: -1,
             path: ''
         })
@@ -101,7 +82,6 @@ let reducer = (state, action) => {
 
     if (action.type === "folder state") {
         log.var("catState in sote.js", action.catState)
-        newState.bank.categories[action.content.catId].state = action.content.catState
     }
 
     return newState

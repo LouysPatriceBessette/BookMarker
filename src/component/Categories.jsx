@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 // =============================================================================================================== Other component imports
 
 // =============================================================================================================== Global variables for the functions from the store
-let currency, rsg, log, getRealType, map_O_spread;
+let currency, rsg, log, getRealType, map_O_spread, qf, key;
 
 // =============================================================================================================== Component class
 class U_Categories extends Component {
@@ -20,40 +20,13 @@ class U_Categories extends Component {
     log = this.props.functions.log;
     getRealType = this.props.functions.getRealType;
     map_O_spread = this.props.functions.map_O_spread;
+    qf = this.props.functions.qf;
+    key = this.props.functions.key;
   };
   // =============================================================================================================== Component functions
 
   contentEditableChange = e => {
     // New category title
-    let newContent = e.target.innerHTML;
-    log.var("contentEditable change", newContent);
-
-    // Retreive info about where to change the data
-    log.var("user id", this.props.userId);
-    log.var("category", e.target.id);
-    log.var("this.props.bank", this.props.bank);
-
-    // Exact data to change
-    let item = this.props.bank.categories[parseInt(e.target.id.split("_")[1])];
-    let itemName = item.name;
-    log.var("To change", itemName);
-
-    // Changing the props directly.... WRONG!
-    //item.name = newContent
-    //log.var("new bank!",this.props.bank)
-
-    //log.error("HERE!")
-
-    // Creating a deep copy of this.props.bank
-    let newBank = map_O_spread(this.props.bank);
-    newBank.categories[parseInt(e.target.id.split("_")[1])].name = newContent;
-    log.var("this.props.bank", this.props.bank);
-    log.var("new bank!", newBank);
-
-    log.error("HERE!");
-
-    // Update the App store
-    //dispatch( {type: "category_change", content: newBank} )
   };
 
   linkClick = e => {
@@ -124,7 +97,7 @@ class U_Categories extends Component {
     return (
       <>
         <ul>
-          {this.props.bank.categories.map((cat, index) => {
+          {this.props.categories.map((cat, index) => {
             return (
               <li
                 key={key(cat)}
@@ -145,13 +118,10 @@ class U_Categories extends Component {
                 <ul>
                   {cat.content.map(content => {
                     return (
-                      <li
-                        key={key(this.props.bank.links[content])}
-                        className="link"
-                      >
+                      <li key={key(this.props.links[content])} className="link">
                         <div>
                           <a id={"link_" + content} onClick={this.linkClick}>
-                            {this.props.bank.links[content].name}
+                            {this.props.links[content].name}
                           </a>
                         </div>
                       </li>
@@ -174,8 +144,9 @@ let stp = state => {
     functions: state.functions,
 
     // Specific component props from the state here
-    userId: state.userId,
-    bank: state.bank
+    username: state.username,
+    categories: state.categories,
+    links: state.links
   };
 };
 

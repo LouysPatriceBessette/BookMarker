@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 // =============================================================================================================== Other component imports
 
 // =============================================================================================================== Global variables for the functions from the store
-let currency, rsg, log, getRealType, map_O_spread;
+let currency, rsg, log, getRealType, map_O_spread, qf, key;
 
 // =============================================================================================================== Component class
 class U_Modal extends Component {
@@ -20,6 +20,8 @@ class U_Modal extends Component {
     log = this.props.functions.log;
     getRealType = this.props.functions.getRealType;
     map_O_spread = this.props.functions.map_O_spread;
+    qf = this.props.functions.qf;
+    key = this.props.functions.key;
   };
   // =============================================================================================================== Component functions
 
@@ -29,7 +31,7 @@ class U_Modal extends Component {
     }
   };
 
-  fetchCredential = e => {
+  fetchCredential = async e => {
     e.preventDefault();
 
     let usernameVal = document.querySelector("#login_usr").value;
@@ -39,6 +41,20 @@ class U_Modal extends Component {
       Credential.append("username", usernameVal);
       Credential.append("password", passwordVal);
 
+      let response = await qf(
+        "/" + this.props.modal.fetchPath,
+        "post",
+        Credential
+      );
+
+      if (response.success) {
+        this.props.dispatch({ type: "logged", content: response });
+      } else {
+        this.props.dispatch({ type: "sign-log-error" });
+        document.querySelector("[type='password']").value = "";
+      }
+
+      /*
       fetch("/" + this.props.modal.fetchPath, {
         method: "post",
         body: Credential
@@ -56,6 +72,7 @@ class U_Modal extends Component {
             document.querySelector("[type='password']").value = "";
           }
         });
+      */
     }
   };
 
