@@ -2,12 +2,12 @@ let express = require('express')
 let app = express()
 let multer = require('multer');
 let upload = multer()
+
 let MongoClient = require('mongodb').MongoClient;
-let reloadMagic = require('./reload-magic.js')
-
+let ObjectId = require("mongodb").ObjectID;
 let hash = require('object-hash');
-var key = require('weak-key');
 
+let reloadMagic = require('./reload-magic.js')
 reloadMagic(app)
 
 app.use('/', express.static('build')); // Needed for the HTML and JS files
@@ -63,24 +63,29 @@ app.post('/signup', upload.none(), (req, res) => {
     }
 
     // check if the username is already taken.
-
     dbo.collection('users').findOne({
         username: name
     }, (err, user) => {
         if (err) {
             console.log("/signup error", err);
             res.json({
-                success: false
+                success: false,
+                errorMsg: "DBO error on find user"
             });
             return;
         }
+
+        // The username is taken
         if (user !== null) {
             console.log("username already taken");
             res.json({
-                success: false
+                success: false,
+                errorMsg: "Username already taken"
             });
             return;
         }
+
+        // The username is available
         if (user === null) {
             console.log("username available");
             let sessionId = generateSessionId();
@@ -88,7 +93,8 @@ app.post('/signup', upload.none(), (req, res) => {
 
             // Insert a new "bank" for the user and get the id back
             dbo.collection('links').insertOne({
-                defaultBank
+                categories: defaultBank.categories,
+                links: defaultBank.links
             }, (err, linkBank) => {
                 if (err) {
                     console.log("/Bank creation failed.", err)
@@ -99,7 +105,8 @@ app.post('/signup', upload.none(), (req, res) => {
                     return
                 }
 
-                console.log("linkBank._id", linkBank.insertedId, )
+                console.log("linkBank._id", linkBank.insertedId)
+
                 // Insert the user in DB
                 dbo.collection('users').insertOne({
                     username: name,
@@ -110,30 +117,27 @@ app.post('/signup', upload.none(), (req, res) => {
                         console.log("/signup error", err)
                         res.json({
                             success: false,
-                            user: null
+                            errorMsg: "DBO error on insert user"
                         })
                         return
                     }
 
-                    // Response for a new user
+                    // ========================= Success response
                     res.json({
                         success: true,
                         user: {
                             username: name,
                             categories: defaultBank.categories,
-                            links: defaultBank.links
+                            links: defaultBank.links,
+                            errorMsg: "No error"
                         }
                     })
                 }) // END user insert
 
             }) // END links insert
 
-
-
         } // END if user === null
     })
-
-
 })
 
 // ========================================================================================== Login
@@ -151,25 +155,60 @@ app.post('/login', upload.none(), (req, res) => {
         if (err) {
             console.log("/login error", err)
             res.json({
-                success: false
+                success: false,
+                errorMsg: "DBO error on find user"
             })
             return
         }
+
+        // User not found
         if (user === null) {
             res.json({
-                success: false
+                success: false,
+                errorMsg: "User not found"
             })
             return
         }
+
+        // User found and password match
         if (user.password === pwd) {
-            res.json({
-                success: true
+
+            // Retreive user's bank
+            dbo.collection('links').findOne({
+                _id: ObjectId(user.bankId)
+            }, (err, userBank) => {
+                if (err) {
+                    console.log("Error retreiving the user's bank", err)
+                    res.json({
+                        success: false,
+                        errorMsg: "DBO error on find user's link bank"
+                    })
+                    return
+                }
+
+                // ========================= Success response
+                console.log("userBank.categories", userBank)
+                res.json({
+                    success: true,
+                    user: {
+                        username: user.username,
+                        categories: userBank.categories,
+                        links: userBank.links,
+                        errorMsg: "No error"
+                    }
+                })
+                return
             })
-            return
+
+
+
+        } else {
+            // Password does not match
+            res.json({
+                success: false,
+                errorMsg: "Password does not match"
+            })
         }
-        res.json({
-            success: false
-        })
     })
 })
 

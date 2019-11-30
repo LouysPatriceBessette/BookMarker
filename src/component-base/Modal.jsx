@@ -53,26 +53,6 @@ class U_Modal extends Component {
         this.props.dispatch({ type: "sign-log-error" });
         document.querySelector("[type='password']").value = "";
       }
-
-      /*
-      fetch("/" + this.props.modal.fetchPath, {
-        method: "post",
-        body: Credential
-      })
-        .then(res => {
-          return res.text();
-        })
-        .then(text => {
-          log.var("fetch response", text);
-          let o_text = JSON.parse(text);
-          if (o_text.success) {
-            this.props.dispatch({ type: "logged", content: o_text });
-          } else {
-            this.props.dispatch({ type: "sign-log-error" });
-            document.querySelector("[type='password']").value = "";
-          }
-        });
-      */
     }
   };
 
