@@ -49,7 +49,9 @@ class U_App extends Component {
     log.render("App");
 
     // Cookie check
-    this.cookie();
+    if (!this.props.logged) {
+      this.cookie();
+    }
 
     // ======================================================================= Return
     return (
@@ -68,9 +70,10 @@ class U_App extends Component {
 let stp = state => {
   return {
     // Functions from the state
-    functions: state.functions
+    functions: state.functions,
 
     // Specific component props from the state here
+    logged: state.logged
   };
 };
 

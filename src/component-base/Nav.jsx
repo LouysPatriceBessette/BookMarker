@@ -47,9 +47,13 @@ class U_Nav extends Component {
     });
   };
 
-  logout = () => {
+  logout = async () => {
     log.ok("Logging out.\n\n");
-    this.props.dispatch({ type: "logout" });
+    let response = await qf("/logout", "post");
+
+    if (response.success) {
+      this.props.dispatch({ type: "logout" });
+    }
   };
 
   // =============================================================================================================== Component render

@@ -294,7 +294,32 @@ app.post('/cookie', upload.none(), (req, res) => {
 
 })
 
+// ========================================================================================== Logout
+app.post('/logout', upload.none(), (req, res) => {
 
+    // Get the cookie sid
+    let sid = req.cookies.sid
+
+    // Check in active sessions
+    if (sessions[sid]) {
+
+        // Just remove the session id from the active sessions
+        delete sessions[sid]
+
+        res.send({
+            success: true,
+            errorMsg: "Session removed"
+        })
+
+    } else {
+        res.send({
+            success: false,
+            errorMsg: "Session not found"
+        })
+    }
+
+
+})
 
 
 

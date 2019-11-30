@@ -15,6 +15,9 @@ import qf from './js-lib/qf.js'
 // Component keys
 import key from 'weak-key'
 
+// Cookie remove
+import Cookies from "js-cookie";
+
 // =================================================================================
 let defaultStore = {
 
@@ -57,13 +60,8 @@ let reducer = (state, action) => {
     if (action.type === "logout") {
         newState.logged = false
         newState.username = null
-        Cookies.set('session', 0, {
-            expires: -1,
-            path: ''
-        })
-        Cookies.set('user', 0, {
-            expires: -1,
-            path: ''
+        Cookies.set('sid', 0, {
+            expires: -1
         })
     }
     if (action.type === "sign-log-error") {
