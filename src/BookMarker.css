@@ -5,6 +5,9 @@
   font-display: swap;
   src: local('McLaren'), local('McLaren-Regular'), url(https://fonts.gstatic.com/s/mclaren/v7/2EbnL-ZuAXFqZFXIeYEV9w.ttf) format('truetype');
 }
+/* ============================================================================= COLORS */
+/* =============================================================================ELEMENT COLORS */
+/* ============================================================================= CSS */
 body {
   background-color: #fce8e8;
   margin: 0;
@@ -43,6 +46,16 @@ nav {
 .NavLink {
   text-decoration: none;
   color: #748fcc;
+  cursor: pointer;
+}
+nav svg {
+  font-size: 2.5em !important;
+  margin: 0.1em 0.3em;
+  color: white;
+  cursor: pointer;
+}
+nav svg:hover {
+  color: #a7b3cf;
   cursor: pointer;
 }
 nav span {

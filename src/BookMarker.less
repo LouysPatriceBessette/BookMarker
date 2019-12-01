@@ -1,7 +1,49 @@
 @import url('https://fonts.googleapis.com/css?family=McLaren&display=swap');
 
+/* ============================================================================= COLORS */
+@dark_red: #ba2d11;
+
+@dark_pink: #b58b8b;
+@light_pink: #fce8e8;
+@very_dark: #5e5e5e;
+@light_grey: #a7b3cf;
+@light_blue: #748fcc;
+
+/* =============================================================================ELEMENT COLORS */
+@websiteName_color: @dark_red;
+@websiteName_textShadow: #fae1e3;
+
+@header_color: #826d6f;
+
+@body_background: @light_pink;
+@nav_background: @dark_pink;
+@nav_border: @very_dark;
+@nav_boxShadow: white;
+
+@logBtn_boxShadow: white;
+@logBtn_background: @light_grey;
+@logBtn_hover: @light_blue;
+
+@fctBtn_background: @light_grey;
+@fctBtn_hover: @light_blue;
+@fctBtn_boxShadow: white;
+
+@navLink_color: @light_blue;
+
+@nav_svg_color: white;
+@nav_svg_hover: @light_grey;
+
+@modal_background: rgba(0, 0, 0, 0.7);
+@modal_color: white;
+@error_color: red;
+@modal_overlay_background: rgba(0, 0, 0, 0.4);
+
+@categoryTree_border: grey;
+@catContentLength_color: grey;
+
+/* ============================================================================= CSS */
 body {
-    background-color: #fce8e8;
+    background-color: @body_background;
     margin: 0;
     font-family: 'McLaren', cursive;
 }
@@ -16,23 +58,23 @@ nav {
     width: 100%;
     display: flex;
     flex-direction: row-reverse;
-    background-color: #b58b8b;
-    border-bottom: 1px dashed #5e5e5e;
-    box-shadow: 0 0 6px white;
+    background-color: @nav_background;
+    border-bottom: 1px dashed @nav_border;
+    box-shadow: 0 0 6px @nav_boxShadow;
 }
 
 .logBtn {
     border: 0;
     border-radius: 6px;
-    background-color: #a7b3cf;
+    background-color: @logBtn_background;
     padding: 0.6em;
     margin: 0.6em;
-    box-shadow: 0 0 6px white;
+    box-shadow: 0 0 6px @logBtn_boxShadow;
     font-weight: bold;
 }
 
 .logBtn:hover {
-    background-color: #748fcc
+    background-color: @logBtn_hover;
 }
 
 .alignRight {
@@ -43,7 +85,19 @@ nav {
 
 .NavLink {
     text-decoration: none;
-    color: #748fcc;
+    color: @navLink_color;
+    cursor: pointer;
+}
+
+nav svg {
+    font-size: 2.5em !important;
+    margin: 0.1em 0.3em;
+    color: @nav_svg_color;
+    cursor: pointer;
+}
+
+nav svg:hover {
+    color: @nav_svg_hover;
     cursor: pointer;
 }
 
@@ -56,8 +110,8 @@ nav h1.homepage {
     flex-grow: 2;
     text-align: left;
     margin-left: 1.4em;
-    color: #ba2d11;
-    text-shadow: 0 0 6px #fae1e3;
+    color: @websiteName_color;
+    text-shadow: 0 0 6px @websiteName_textShadow;
     margin: 0.3em 0 0.3em 0.8em;
 }
 
@@ -68,7 +122,7 @@ nav h1.homepage {
     left: 0;
     bottom: 0;
     right: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: @modal_overlay_background;
     margin: 0 !important;
 }
 
@@ -80,8 +134,8 @@ nav h1.homepage {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
+    background: @modal_background;
+    color: @modal_color;
     border-radius: 15px;
 }
 
@@ -90,7 +144,7 @@ nav h1.homepage {
 }
 
 .error {
-    color: red;
+    color: @error_color;
     display: none;
 }
 
@@ -101,15 +155,15 @@ nav h1.homepage {
 .fctBtn {
     border: 0;
     border-radius: 6px;
-    background-color: #a7b3cf;
+    background-color: @fctBtn_background;
     padding: 0.6em;
     margin: 0.6em;
-    box-shadow: 0 0 6px white;
+    box-shadow: 0 0 6px @fctBtn_boxShadow;
     font-weight: bold;
 }
 
 .fctBtn:hover {
-    background-color: #748fcc
+    background-color: @fctBtn_hover;
 }
 
 .fctGroup {
@@ -140,7 +194,7 @@ nav h1.homepage {
 .page h4,
 .page h5,
 .page h6 {
-    color: #826d6f;
+    color: @header_color;
 }
 
 .page>div {
@@ -201,7 +255,7 @@ li.folder-opened ul {
 }
 
 .categoryTree {
-    border-right: 1px solid grey;
+    border-right: 1px solid @categoryTree_border;
     padding-right: 1em;
 }
 
@@ -212,6 +266,6 @@ li.folder-opened ul {
 
 .catContentLength {
     font-size: 0.6em;
-    color: grey;
+    color: @catContentLength_color;
     font-style: italic;
 }

@@ -5,6 +5,21 @@ import { connect } from "react-redux";
 // =============================================================================================================== Other component imports
 import Form_login from "./Form_login.jsx";
 
+// Fucking UNINTUITIVE npm instal instructions: https://www.npmjs.com/package/@fortawesome/react-fontawesome#usage
+// icon list: https://fontawesome.com/v4.7.0/icons/
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+
+import {
+  faShoppingCart,
+  faUserCircle,
+  faSearch,
+  faArrowUp
+} from "@fortawesome/free-solid-svg-icons";
+
+library.add(fab, faShoppingCart, faUserCircle, faSearch, faArrowUp);
+
 // =============================================================================================================== Global variables for the functions from the store
 let currency, rsg, log, getRealType, map_O_spread, qf, key;
 
@@ -62,9 +77,7 @@ class U_Nav extends Component {
       return (
         <>
           <nav>
-            <button className="logBtn" onClick={this.login}>
-              Log in
-            </button>
+            <FontAwesomeIcon icon={faUserCircle} onClick={this.login} />
             <h1 className="homepage">BookMarker.Club</h1>
             <img className="logo" src="/book.png" />
           </nav>
