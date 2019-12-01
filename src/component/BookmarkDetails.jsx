@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 // =============================================================================================================== Other component imports
+import Ratings from "react-ratings-declarative";
 
 // =============================================================================================================== Global variables for the functions from the store
 let currency, rsg, log, getRealType, map_O_spread, qf, key;
@@ -25,20 +26,45 @@ class U_BookmarkDetails extends Component {
   };
   // =============================================================================================================== Component functions
 
+  changeRating = newRating => {
+    this.props.dispatch({
+      type: "change rating",
+      activeLink: this.props.activeLink,
+      rating: newRating
+    });
+
+    log.error("Rendu ici!!! Il faut saver ca en DB...");
+  };
   // =============================================================================================================== Component render
   render = () => {
     this.setup();
     log.render("BookmarkDetails");
 
     if (this.props.activeLink !== -1) {
-      let link = this.props.links[parseInt(this.props.activeLink)];
+      let link = this.props.links[this.props.activeLink];
 
       // ======================================================================= Return
       return (
         <>
-          <p>{link.name}</p>
-          <p>Star rating: {link.rating}</p>
-          <p>{link.href}</p>
+          <div>
+            Star rating: {link.rating}
+            <Ratings
+              rating={link.rating}
+              widgetRatedColors="blue"
+              changeRating={this.changeRating}
+            >
+              <Ratings.Widget />
+              <Ratings.Widget />
+              <Ratings.Widget />
+              <Ratings.Widget />
+              <Ratings.Widget />
+            </Ratings>
+          </div>
+          <p>
+            <a target="_blank" href={link.href}>
+              {link.name}
+            </a>
+          </p>
           <p>{link.comment}</p>
         </>
       ); // ==================================================================== End return

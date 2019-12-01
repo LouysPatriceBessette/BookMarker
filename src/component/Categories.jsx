@@ -35,7 +35,7 @@ class U_Categories extends Component {
     log.var("e.target.text", e.target.text);
     log.var("e.target.id", e.target.id);
 
-    let linkId = e.target.id.split("_")[1];
+    let linkId = parseInt(e.target.id.split("_")[1]);
     this.props.dispatch({ type: "link_detail", content: linkId });
   };
 
@@ -43,45 +43,38 @@ class U_Categories extends Component {
     // pseudo element click
     if (e.target.className.split(" ").includes("folder")) {
       // Remove any previous class (opened or closed) that defines the pseudo image
-      let classes = e.target.className.split(" ").filter(c => {
-        return c !== "folder-opened" && c !== "folder-closed";
-      });
+      let class_opened_closed = e.target.className
+        .split(" ")
+        .filter(c => {
+          return c === "folder-opened" || c === "folder-closed";
+        })
+        .join(" ");
 
-      // Change the opened/closed icon
-      // And get the category id form the child div
+      // Get the category id form the child div
       let catId;
       let catState;
       e.currentTarget.childNodes.forEach(n => {
         log.var("node", n.tagName);
-        if (n.tagName === "UL" && n.style.display === "block") {
-          // FAILS ???
-          log.var("n.style.display 1", n.style.display);
-          n.style.display = "none";
-          e.target.className = classes + " folder-closed";
-          catState = "closed";
-        } else {
-          //else if(n.tagName==="UL" && n.style.display==="none"){  // FAILS ???
-          log.var("n.style.display 2", n.style.display);
-          n.style.display = "block";
-          e.target.className = classes + " folder-opened";
-          catState = "opened";
-        }
+
+        // Get the catId
         if (n.tagName === "DIV") {
           catId = n.id.split("_")[1];
         }
-        log.var("n.style.display 3", n.style.display);
       });
 
-      // Change the "current folder opened" in the App state...
-      //
-      // TODO!
-      log.error("HERE! Categories.jsx - line ~84");
+      // Toggle the opened/closed class of the UL
+      if (class_opened_closed == "folder-opened") {
+        catState = "closed";
+      }
 
-      log.var("catId", catId);
-      log.var("catState", catState);
+      if (class_opened_closed == "folder-closed") {
+        catState = "opened";
+      }
+
+      // Use the catId to toggle the opened/closed icon and UL display
       this.props.dispatch({
         type: "folder state",
-        content: { catId, catState }
+        content: { catId, catState: catState }
       });
     }
   };

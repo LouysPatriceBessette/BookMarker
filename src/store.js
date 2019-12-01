@@ -72,12 +72,20 @@ let reducer = (state, action) => {
         newState.sl_error = false
     }
 
+    if (action.type === "folder state") {
+        let catId = action.content.catId
+        let catState = action.content.catState
+
+        // modifies the Store categories
+        newState.categories[catId].state = catState
+    }
+
     if (action.type === "link_detail") {
         newState.activeLink = action.content
     }
 
-    if (action.type === "folder state") {
-        log.var("catState in sote.js", action.catState)
+    if (action.type === "change rating") {
+        newState.links[action.activeLink].rating = action.rating
     }
 
     return newState
