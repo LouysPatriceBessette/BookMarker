@@ -118,6 +118,10 @@ nav h1.homepage {
   flex-grow: 2;
   text-align: center;
 }
+.fctBtn.warning {
+  background-color: #ba2d11;
+  color: white;
+}
 .user {
   padding: 0.7em;
 }
@@ -198,4 +202,7 @@ li.folder-opened ul {
   font-size: 0.6em;
   color: grey;
   font-style: italic;
+}
+.ratingDiv {
+  margin: 0.7em 0 0;
 }

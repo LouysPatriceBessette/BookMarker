@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 // =============================================================================================================== Other component imports
 import Form_login from "./Form_login.jsx";
+import Form_add_folder from "./Form_add_folder.jsx";
 
 // Fucking UNINTUITIVE npm instal instructions: https://www.npmjs.com/package/@fortawesome/react-fontawesome#usage
 // icon list: https://fontawesome.com/v4.7.0/icons/
@@ -84,19 +85,63 @@ class U_Nav extends Component {
         </>
       ); // ==================================================================== End return
     } else {
+      // USED IS LOGGED
+
+      // ===================================== function buttons
+
+      // Add a new folder
+      let add_a_folder = () => {
+        this.props.dispatch({
+          type: "modal",
+          content: {
+            //fetchPath: "------------TBD--------------",
+            title: "Add a folder",
+            component: <Form_add_folder />
+          }
+        });
+      };
+
+      // Add a link to a folder
+      let add_a_link = (
+        <button className="fctBtn" disabled title="Click a folder first">
+          Add a link
+        </button>
+      );
+      if (this.props.activeCat !== -1) {
+        add_a_link = (
+          <button className="fctBtn">
+            Add a link to {this.props.categories[this.props.activeCat].name}
+          </button>
+        );
+      }
+
+      // Save changes
+      let save_changes = (
+        <button className="fctBtn" disabled>
+          No changes
+        </button>
+      );
+      if (this.props.unsavedChanges) {
+        save_changes = (
+          <button className="fctBtn warning">You have unsaved changes</button>
+        );
+      }
+
       // ======================================================================= Return
       return (
         <>
           <nav>
             <div>
+              {save_changes}
               <button className="logBtn" onClick={this.logout}>
                 Log out
               </button>
             </div>
             <div className="fctGroup">
-              <button className="fctBtn">Function #1</button>
-              <button className="fctBtn">Function #2</button>
-              <button className="fctBtn">Function #3</button>
+              <button className="fctBtn" onClick={add_a_folder}>
+                Add a folder
+              </button>
+              {add_a_link}
             </div>
             <div className="user">
               Logged as: <span>{this.props.username}</span>
@@ -117,7 +162,13 @@ let stp = state => {
 
     // Specific component props from the state here
     logged: state.logged,
-    username: state.username
+    username: state.username,
+
+    // For the function buttons
+    categories: state.categories,
+    activeCat: state.activeCat,
+    activeLink: state.activeLink,
+    unsavedChanges: state.unsavedChanges
   };
 };
 

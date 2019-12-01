@@ -36,7 +36,9 @@ let defaultStore = {
 
     // Application variables NOT LOGGED
     logged: false,
-    activeLink: -1
+    activeCat: -1,
+    activeLink: -1,
+    unsavedChanges: false
 }
 
 
@@ -73,19 +75,40 @@ let reducer = (state, action) => {
     }
 
     if (action.type === "folder state") {
-        let catId = action.content.catId
-        let catState = action.content.catState
-
         // modifies the Store categories
-        newState.categories[catId].state = catState
+        newState.categories[action.catId].state = action.catState
+        // Set active category
+        newState.activeCat = action.catId
     }
 
-    if (action.type === "link_detail") {
-        newState.activeLink = action.content
+    if (action.type === "link detail") {
+        // Set active link
+        newState.activeLink = action.linkId
+        // Set active category
+        newState.activeCat = action.catId
     }
 
     if (action.type === "change rating") {
         newState.links[action.activeLink].rating = action.rating
+
+        // Changes!
+        newState.unsavedChanges = true
+    }
+
+    // Adds a folder to the Redux store categories
+    if (action.type === "folder add") {
+        newState.categories.push({
+            name: action.folderName,
+            content: [],
+            state: "closed"
+        })
+
+        // Close modal
+        newState.overlay = false
+        newState.sl_error = false
+
+        // Changes!
+        newState.unsavedChanges = true
     }
 
     return newState

@@ -35,8 +35,14 @@ class U_Categories extends Component {
     log.var("e.target.text", e.target.text);
     log.var("e.target.id", e.target.id);
 
+    // Link ID
     let linkId = parseInt(e.target.id.split("_")[1]);
-    this.props.dispatch({ type: "link_detail", content: linkId });
+
+    // Category ID
+    let catDiv = e.target.closest(".folder").childNodes[0];
+    let catId = parseInt(catDiv.id.split("_")[1]);
+
+    this.props.dispatch({ type: "link detail", linkId: linkId, catId: catId });
   };
 
   pseudoClick = e => {
@@ -58,7 +64,7 @@ class U_Categories extends Component {
 
         // Get the catId
         if (n.tagName === "DIV") {
-          catId = n.id.split("_")[1];
+          catId = parseInt(n.id.split("_")[1]);
         }
       });
 
@@ -74,7 +80,8 @@ class U_Categories extends Component {
       // Use the catId to toggle the opened/closed icon and UL display
       this.props.dispatch({
         type: "folder state",
-        content: { catId, catState: catState }
+        catId: catId,
+        catState: catState
       });
     }
   };

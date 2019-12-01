@@ -3,13 +3,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 // =============================================================================================================== Other component imports
-import Ratings from "react-ratings-declarative";
 
 // =============================================================================================================== Global variables for the functions from the store
 let currency, rsg, log, getRealType, map_O_spread, qf, key;
 
 // =============================================================================================================== Component class
-class U_BookmarkDetails extends Component {
+class U_Form_add_folder extends Component {
   constructor(props) {
     super(props);
   }
@@ -24,58 +23,50 @@ class U_BookmarkDetails extends Component {
     qf = this.props.functions.qf;
     key = this.props.functions.key;
   };
+
   // =============================================================================================================== Component functions
 
-  changeRating = newRating => {
-    this.props.dispatch({
-      type: "change rating",
-      activeLink: this.props.activeLink,
-      rating: newRating
-    });
+  add_cat_to_store = e => {
+    e.preventDefault();
 
-    log.error(
-      "Star rating change is saved in store... When to save in DB is the question."
-    );
+    let folderName = document.querySelector("#cat_name").value;
+    if (folderName !== "") {
+      this.props.dispatch({ type: "folder add", folderName: folderName });
+    }
   };
+
   // =============================================================================================================== Component render
   render = () => {
     this.setup();
-    log.render("BookmarkDetails");
+    log.render("Form_add_folder");
 
-    if (this.props.activeLink !== -1) {
-      let link = this.props.links[this.props.activeLink];
-
-      let star = <Ratings.Widget widgetDimension="20px" widgetSpacing="2px" />;
-
-      // ======================================================================= Return
-      return (
-        <>
-          <div>
-            <a target="_blank" href={link.href}>
-              {link.name}
-            </a>
-          </div>
-          <div className="ratingDiv">
-            <Ratings
-              rating={link.rating}
-              widgetRatedColors="blue"
-              changeRating={this.changeRating}
-            >
-              {star}
-              {star}
-              {star}
-              {star}
-              {star}
-            </Ratings>
-          </div>
-
-          <div>{link.comment}</div>
-        </>
-      ); // ==================================================================== End return
-    } else {
-      // ======================================================================= Return
-      return <></>; // ==================================================================== End return
+    let errorClassName = "error";
+    if (this.props.sl_error) {
+      errorClassName += " shown";
     }
+
+    // ======================================================================= Return
+    return (
+      <>
+        <h1>{this.props.modal.title}</h1>
+        <form>
+          <p>
+            Folder name: <input type="text" id="cat_name" />
+            <input
+              type="hidden"
+              id="cat_index"
+              value={this.props.categories.length}
+            />
+          </p>
+          <p className={errorClassName}>{this.props.modal.title} failed...</p>
+          <p>
+            <button className="logBtn" onClick={this.add_cat_to_store}>
+              Submit
+            </button>
+          </p>
+        </form>
+      </>
+    ); // ==================================================================== End return
   }; // End render
 } // End class
 
@@ -86,11 +77,14 @@ let stp = state => {
     functions: state.functions,
 
     // Specific component props from the state here
-    activeLink: state.activeLink,
-    links: state.links
+    modal: state.modal,
+    sl_error: state.sl_error,
+
+    // Category index
+    categories: state.categories
   };
 };
 
 // =============================================================================================================== Component connection to the store
-let BookmarkDetails = connect(stp)(U_BookmarkDetails);
-export default BookmarkDetails;
+let Form_add_folder = connect(stp)(U_Form_add_folder);
+export default Form_add_folder;
