@@ -35,6 +35,16 @@ nav {
 .logBtn:hover {
   background-color: #748fcc;
 }
+.alignRight {
+  width: 100%;
+  text-align: right;
+  padding: 0 0.5em 0 0;
+}
+.NavLink {
+  text-decoration: none;
+  color: #748fcc;
+  cursor: pointer;
+}
 nav span {
   margin: 0 2em 0 0.4em;
   font-weight: bold;

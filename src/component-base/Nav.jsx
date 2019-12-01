@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 // =============================================================================================================== Other component imports
+import Form_login from "./Form_login.jsx";
 
 // =============================================================================================================== Global variables for the functions from the store
 let currency, rsg, log, getRealType, map_O_spread, qf, key;
@@ -25,24 +26,14 @@ class U_Nav extends Component {
   };
   // =============================================================================================================== Component functions
 
-  signup = () => {
-    log.ok("Signing up.\n\n");
-    this.props.dispatch({
-      type: "modal",
-      content: {
-        fetchPath: "signup",
-        title: "Sign up"
-      }
-    });
-  };
-
   login = () => {
     log.ok("Logging in.\n\n");
     this.props.dispatch({
       type: "modal",
       content: {
         fetchPath: "login",
-        title: "Log in"
+        title: "Log in",
+        component: <Form_login />
       }
     });
   };
@@ -73,9 +64,6 @@ class U_Nav extends Component {
           <nav>
             <button className="logBtn" onClick={this.login}>
               Log in
-            </button>
-            <button className="logBtn" onClick={this.signup}>
-              Sign in
             </button>
             <h1 className="homepage">BookMarker.Club</h1>
             <img className="logo" src="/book.png" />

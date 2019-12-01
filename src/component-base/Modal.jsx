@@ -31,41 +31,12 @@ class U_Modal extends Component {
     }
   };
 
-  fetchCredential = async e => {
-    e.preventDefault();
-
-    let usernameVal = document.querySelector("#login_usr").value;
-    let passwordVal = document.querySelector("#login_pwd").value;
-    if (usernameVal !== "" && passwordVal !== "") {
-      let Credential = new FormData();
-      Credential.append("username", usernameVal);
-      Credential.append("password", passwordVal);
-
-      let response = await qf(
-        "/" + this.props.modal.fetchPath,
-        "post",
-        Credential
-      );
-
-      if (response.success) {
-        this.props.dispatch({ type: "logged", content: response });
-      } else {
-        this.props.dispatch({ type: "sign-log-error" });
-        document.querySelector("[type='password']").value = "";
-      }
-    }
-  };
-
   // =============================================================================================================== Component render
   render = () => {
     this.setup();
     log.render("Modal");
 
-    let errorClassName = "error";
-    if (this.props.sl_error) {
-      errorClassName += " shown";
-    }
-    // If trying to log in
+    // If the modal is opened
     switch (true) {
       // If trying to log in
       case this.props.overlay:
@@ -73,25 +44,7 @@ class U_Modal extends Component {
         return (
           <>
             <div className="modal_overlay" onClick={this.modalClick}>
-              <div className="modal">
-                <h1>{this.props.modal.title}</h1>
-                <form>
-                  <p>
-                    Username: <input type="text" id="login_usr" />
-                  </p>
-                  <p>
-                    password: <input type="password" id="login_pwd" />
-                  </p>
-                  <p className={errorClassName}>
-                    {this.props.modal.title} failed...
-                  </p>
-                  <p>
-                    <button className="logBtn" onClick={this.fetchCredential}>
-                      Submit
-                    </button>
-                  </p>
-                </form>
-              </div>
+              <div className="modal">{this.props.modal.component}</div>
             </div>
             >
           </>
@@ -111,7 +64,6 @@ let stp = state => {
     functions: state.functions,
 
     // Specific component props from the state here
-    sl_error: state.sl_error,
     overlay: state.overlay,
     modal: state.modal
   };
