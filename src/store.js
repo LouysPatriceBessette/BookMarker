@@ -74,6 +74,7 @@ let reducer = (state, action) => {
         newState.sl_error = false
     }
 
+
     if (action.type === "folder state") {
         // modifies the Store categories
         newState.categories[action.catId].state = action.catState
@@ -109,6 +110,20 @@ let reducer = (state, action) => {
 
         // Changes!
         newState.unsavedChanges = true
+    }
+
+    if (action.type === "link add") {
+        // Add the link
+        newState.links.push(action.link)
+        let linkIndex = newState.links.length - 1
+        console.log("linkIndex", linkIndex)
+        // Add the link index in the category
+        newState.categories[action.cat].content.push(linkIndex)
+        // Changes!
+        newState.unsavedChanges = true
+        // Close the modal
+        newState.overlay = false
+        newState.sl_error = false
     }
 
     return newState

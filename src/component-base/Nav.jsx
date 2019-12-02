@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 // =============================================================================================================== Other component imports
 import Form_login from "./Form_login.jsx";
 import Form_add_folder from "./Form_add_folder.jsx";
+import Form_add_link from "./Form_add_link.jsx";
 
 // Fucking UNINTUITIVE npm instal instructions: https://www.npmjs.com/package/@fortawesome/react-fontawesome#usage
 // icon list: https://fontawesome.com/v4.7.0/icons/
@@ -63,6 +64,29 @@ class U_Nav extends Component {
     }
   };
 
+  // Add a new folder
+  add_folder = () => {
+    this.props.dispatch({
+      type: "modal",
+      content: {
+        //fetchPath: "------------TBD--------------",
+        title: "Add a folder",
+        component: <Form_add_folder />
+      }
+    });
+  };
+
+  add_link = () => {
+    this.props.dispatch({
+      type: "modal",
+      content: {
+        //fetchPath: "------------TBD--------------",
+        title: "Add a link",
+        component: <Form_add_link />
+      }
+    });
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     this.setup();
@@ -89,18 +113,6 @@ class U_Nav extends Component {
 
       // ===================================== function buttons
 
-      // Add a new folder
-      let add_a_folder = () => {
-        this.props.dispatch({
-          type: "modal",
-          content: {
-            //fetchPath: "------------TBD--------------",
-            title: "Add a folder",
-            component: <Form_add_folder />
-          }
-        });
-      };
-
       // Add a link to a folder
       let add_a_link = (
         <button className="fctBtn" disabled title="Click a folder first">
@@ -109,7 +121,7 @@ class U_Nav extends Component {
       );
       if (this.props.activeCat !== -1) {
         add_a_link = (
-          <button className="fctBtn">
+          <button className="fctBtn" onClick={this.add_link}>
             Add a link to {this.props.categories[this.props.activeCat].name}
           </button>
         );
@@ -138,7 +150,7 @@ class U_Nav extends Component {
               </button>
             </div>
             <div className="fctGroup">
-              <button className="fctBtn" onClick={add_a_folder}>
+              <button className="fctBtn" onClick={this.add_folder}>
                 Add a folder
               </button>
               {add_a_link}
