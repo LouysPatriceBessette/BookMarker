@@ -16,6 +16,7 @@ reloadMagic(app)
 // REQUEST!
 const request = require('request');
 
+
 app.use('/', express.static('build')); // Needed for the HTML and JS files
 app.use('/', express.static('public')); // Needed for local assets
 
@@ -85,31 +86,41 @@ app.post('/signup', upload.none(), (req, res) => {
         links: [{
                 name: "Stackoverflow",
                 href: "https://stackoverflow.com/",
-                comment: "The best programer ressource!",
+                comment: [{
+                    "insert": "The best programer ressource!"
+                }],
                 rating: 5
             },
             {
                 name: "LinkedIn",
                 href: "https://www.linkedin.com/feed/",
-                comment: "Grow your network",
+                comment: [{
+                    "insert": "Grow your network"
+                }],
                 rating: 4
             },
             {
                 name: "Facebook - Messages",
                 href: "https://www.facebook.com/messages/",
-                comment: "Time eater",
+                comment: [{
+                    "insert": "Time eater"
+                }],
                 rating: 2
             },
             {
                 name: "Trello",
                 href: "https://trello.com/b/ttGHQhyo/concordia-final-project",
-                comment: "Project manager",
+                comment: [{
+                    "insert": "Project manager"
+                }],
                 rating: 5
             },
             {
                 name: "Trance classics - Vinyl mix",
                 href: "https://www.youtube.com/watch?v=mbmQbKNJv3E",
-                comment: "Rave memories from 1999/2000...",
+                comment: [{
+                    "insert": "Rave memories from 1999/2000..."
+                }],
                 rating: 5
             }
         ]

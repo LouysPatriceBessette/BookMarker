@@ -38,6 +38,7 @@
     "mongodb": "^3.3.5",
     "multer": "^1.4.2",
     "object-hash": "^2.0.0",
+    "quill": "^1.3.7",
     "react-ratings-declarative": "^3.4.1",
     "react-redux": "^6.0.1",
     "react-router-dom": "^5.1.2",

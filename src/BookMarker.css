@@ -206,3 +206,9 @@ li.folder-opened ul {
 .ratingDiv {
   margin: 0.7em 0 0;
 }
+#quill_Div {
+  display: none;
+}
+#quill_save {
+  display: none;
+}

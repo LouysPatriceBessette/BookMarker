@@ -18,7 +18,7 @@ import key from 'weak-key'
 // Cookie remove
 import Cookies from "js-cookie";
 
-// =================================================================================
+// ========================================================================================== Default store
 let defaultStore = {
 
     // custom js functions
@@ -47,11 +47,20 @@ let reducer = (state, action) => {
     // State deep copy
     let newState = map_O_spread(state)
 
-    // ================================================================================= Action dispatchers
+    // ========================================================================================== Action dispatchers
+
+    // =========================================================== Modal
     if (action.type === "modal") {
         newState.modal = action.content
         newState.overlay = true
     }
+
+    if (action.type === "modalOverlayClick") {
+        newState.overlay = false
+        newState.sl_error = false
+    }
+
+    // =========================================================== User logged in/ou and error ms
     if (action.type === "logged") {
         newState.logged = true
         newState.username = action.content.user.username
@@ -59,6 +68,7 @@ let reducer = (state, action) => {
         newState.categories = action.content.user.categories
         newState.links = action.content.user.links
     }
+
     if (action.type === "logout") {
         newState.logged = false
         newState.username = null
@@ -69,12 +79,9 @@ let reducer = (state, action) => {
     if (action.type === "sign-log-error") {
         newState.sl_error = true
     }
-    if (action.type === "modalOverlayClick") {
-        newState.overlay = false
-        newState.sl_error = false
-    }
 
 
+    // =========================================================== Link folder state opened / closed
     if (action.type === "folder state") {
         // modifies the Store categories
         newState.categories[action.catId].state = action.catState
@@ -82,6 +89,7 @@ let reducer = (state, action) => {
         newState.activeCat = action.catId
     }
 
+    // =========================================================== Link details
     if (action.type === "link detail") {
         // Set active link
         newState.activeLink = action.linkId
@@ -89,6 +97,7 @@ let reducer = (state, action) => {
         newState.activeCat = action.catId
     }
 
+    // =========================================================== Link rating ( triggers a change to save )
     if (action.type === "change rating") {
         newState.links[action.activeLink].rating = action.rating
 
@@ -96,7 +105,7 @@ let reducer = (state, action) => {
         newState.unsavedChanges = true
     }
 
-    // Adds a folder to the Redux store categories
+    // =========================================================== New folder ( triggers a change to save )
     if (action.type === "folder add") {
         newState.categories.push({
             name: action.folderName,
@@ -112,19 +121,65 @@ let reducer = (state, action) => {
         newState.unsavedChanges = true
     }
 
+    // =========================================================== New link ( triggers a change to save )
     if (action.type === "link add") {
         // Add the link
         newState.links.push(action.link)
         let linkIndex = newState.links.length - 1
         console.log("linkIndex", linkIndex)
+
         // Add the link index in the category
         newState.categories[action.cat].content.push(linkIndex)
+
         // Changes!
         newState.unsavedChanges = true
+
         // Close the modal
         newState.overlay = false
         newState.sl_error = false
     }
+
+    // =========================================================== Link edit Comment
+    if (action.type === "link comment change") {
+
+        // Set a rich comment! ;)
+        newState.links[action.activelink].comment = action.quill_comment
+
+        // Changes!
+        newState.unsavedChanges = true
+    }
+
+    // =========================================================== Link edit Comment / Link name ( triggers a change to save )
+
+    // ...
+    // ...
+    // ...
+    // ...
+    // ...
+
+    // =========================================================== Unsaved details show
+
+    // ...
+    // ...
+    // ...
+    // ...
+    // ...
+
+    // =========================================================== SAVE CHANGES
+
+    // ...
+    // ...
+    // ...
+    // ...
+    // ...
+
+    // =========================================================== SHARE A FOLDER
+
+    // ...
+    // ...
+    // ...
+    // ...
+    // ...
 
     return newState
 }
