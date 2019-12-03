@@ -13,6 +13,9 @@ app.use(cookieParser());
 let reloadMagic = require('./reload-magic.js')
 reloadMagic(app)
 
+// REQUEST!
+const request = require('request');
+
 app.use('/', express.static('build')); // Needed for the HTML and JS files
 app.use('/', express.static('public')); // Needed for local assets
 
@@ -369,8 +372,38 @@ app.post('/logout', upload.none(), (req, res) => {
 
 })
 
+// ========================================================================================== Validate URL
+app.post('/valid-url', upload.none(), (req, res) => {
 
+    console.log("========================================== REQUEST TO /valid-url ")
+    let urlToCheck = req.body.url
 
+    request
+        .get(urlToCheck)
+        .on('error', function (err) {
+            console.log("ERROR on request - ", err)
+            res.send({
+                success: false,
+                errorMsg: "ERROR on request - " + err
+            })
+            return
+        })
+        .on('response', function (response) {
+            console.log("response.statusCode", response.statusCode)
+            if (response.statusCode === 200) {
+                res.send({
+                    success: true,
+                    errorMsg: "URL valid"
+                })
+            } else {
+                res.send({
+                    success: false,
+                    errorMsg: "URL invalid"
+                })
+            }
+        })
+
+})
 
 
 

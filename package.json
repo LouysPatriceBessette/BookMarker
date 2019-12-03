@@ -42,6 +42,7 @@
     "react-redux": "^6.0.1",
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.4",
+    "request": "^2.88.0",
     "shelljs": "^0.8.3",
     "weak-key": "^1.0.1",
     "webpack-inject-plugin": "^1.5.0",

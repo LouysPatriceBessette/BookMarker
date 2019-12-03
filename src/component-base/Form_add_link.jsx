@@ -35,14 +35,13 @@ class U_Form_add_link extends Component {
 
   // =============================================================================================================== Component functions
 
-  continue = e => {
+  continue = async e => {
     e.preventDefault();
 
     // Wht is that form information?
     let input = e.target.closest("form").querySelector("input");
     let info = input.dataset.input;
     let info_value = input.value;
-    console.log("info:", info, info_value);
 
     // If it's the last step...
     if (info === "comment") {
@@ -66,9 +65,22 @@ class U_Form_add_link extends Component {
     }
     // If not the last step, setState
     else {
+      // if the URL, send a request to validate the existance of the website
+      if (info === "href") {
+        let formdata = new FormData();
+        formdata.append("url", info_value);
+        let response = await qf("/valid-url", "POST", formdata);
+        if (response.success) {
+          log.ok("VALID URL!!!");
+        } else {
+          log.error("INVALID URL.");
+          return;
+        }
+      }
+
+      // Save the info in store
       let newState = {};
       newState[info] = info_value;
-      console.log("newState:", newState);
       this.setState(newState);
     }
   };
