@@ -38,7 +38,8 @@ let defaultStore = {
     logged: false,
     activeCat: -1,
     activeLink: -1,
-    unsavedChanges: false
+    unsavedChanges: false,
+    unsavedChanges_detail: []
 }
 
 
@@ -89,7 +90,7 @@ let reducer = (state, action) => {
         newState.activeCat = action.catId
     }
 
-    // =========================================================== Link details
+    // =========================================================== Link details display
     if (action.type === "link detail") {
         // Set active link
         newState.activeLink = action.linkId
@@ -99,14 +100,47 @@ let reducer = (state, action) => {
 
     // =========================================================== Link rating ( triggers a change to save )
     if (action.type === "change rating") {
+
+        // Flag.
+        newState.unsavedChanges = true
+
+        // Store the unsaved change details
+        newState.unsavedChanges_detail.push({
+
+            target: "Link",
+            index: action.activeLink,
+            property: "rating",
+            oldValue: newState.links[action.activeLink].rating,
+            newValue: action.rating,
+            time: new Date().getTime()
+        })
+
+        // Make the change
         newState.links[action.activeLink].rating = action.rating
 
-        // Changes!
-        newState.unsavedChanges = true
+
+
     }
 
     // =========================================================== New folder ( triggers a change to save )
     if (action.type === "folder add") {
+
+
+        // Flag.
+        newState.unsavedChanges = true
+
+        // Store the unsaved change details
+        newState.unsavedChanges_detail.push({
+
+            target: "Folder",
+            index: newState.categories.length,
+            property: "ALL",
+            oldValue: "",
+            newValue: action.folderName,
+            time: new Date().getTime()
+        })
+
+        // Make the change
         newState.categories.push({
             name: action.folderName,
             content: [],
@@ -117,22 +151,32 @@ let reducer = (state, action) => {
         newState.overlay = false
         newState.sl_error = false
 
-        // Changes!
-        newState.unsavedChanges = true
     }
 
     // =========================================================== New link ( triggers a change to save )
     if (action.type === "link add") {
-        // Add the link
-        newState.links.push(action.link)
-        let linkIndex = newState.links.length - 1
+
+        // Flag.
+        newState.unsavedChanges = true
+
+        // Store the unsaved change details
+        newState.unsavedChanges_detail.push({
+
+            target: "Link",
+            index: newState.links.length,
+            property: "ALL",
+            oldValue: "",
+            newValue: action.link.name,
+            time: new Date().getTime()
+        })
+
+        // Make the change
+        let linkIndex = newState.links.length
         console.log("linkIndex", linkIndex)
+        newState.links.push(action.link)
 
         // Add the link index in the category
         newState.categories[action.cat].content.push(linkIndex)
-
-        // Changes!
-        newState.unsavedChanges = true
 
         // Close the modal
         newState.overlay = false
@@ -142,14 +186,25 @@ let reducer = (state, action) => {
     // =========================================================== Link edit Comment
     if (action.type === "link comment change") {
 
-        // Set a rich comment! ;)
-        newState.links[action.activelink].comment = action.quill_comment
-
-        // Changes!
+        // Flag.
         newState.unsavedChanges = true
+
+        // Store the unsaved change details
+        newState.unsavedChanges_detail.push({
+
+            target: "Link",
+            index: action.activelink,
+            property: "comment",
+            oldValue: newState.links[action.activelink].comment,
+            newValue: action.quill_comment,
+            time: new Date().getTime()
+        })
+
+        // Make the change
+        newState.links[action.activelink].comment = action.quill_comment
     }
 
-    // =========================================================== Link edit Comment / Link name ( triggers a change to save )
+    // =========================================================== Link edit name ( triggers a change to save )
 
     // ...
     // ...

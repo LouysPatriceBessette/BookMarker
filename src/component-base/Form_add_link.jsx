@@ -5,6 +5,10 @@ import { connect } from "react-redux";
 // =============================================================================================================== Other component imports
 import Ratings from "react-ratings-declarative";
 
+// ============================== Quill wysiwyg editor
+import Quill from "quill";
+import "../quill.css";
+
 // =============================================================================================================== Global variables for the functions from the store
 let currency, rsg, log, getRealType, map_O_spread, qf, key;
 
@@ -20,6 +24,7 @@ class U_Form_add_link extends Component {
     super(props);
 
     this.state = defaultState;
+    this.quill_editor = {};
   }
 
   // Set function from the store
@@ -35,16 +40,34 @@ class U_Form_add_link extends Component {
 
   // =============================================================================================================== Component functions
 
+  quill_getContent = () => {
+    // returns an object
+    let Quill_result = this.quill_editor.getContents();
+    log.var("Quill content", Quill_result);
+    return Quill_result.ops;
+  };
+
   continue = async e => {
     e.preventDefault();
 
-    // Wht is that form information?
+    // What is that form information?
     let input = e.target.closest("form").querySelector("input");
+
     let info = input.dataset.input;
     let info_value = input.value;
 
+    // If we dont have an input... So it should be the Quill editor.
+    if (!info) {
+      info = "comment";
+      info_value = this.quill_getContent();
+    }
+
+    log.error("in continue...");
+    console.log(info, info_value);
+
     // If it's the last step...
     if (info === "comment") {
+      log.ok("Last step... The comment.");
       // Copy the actual state
       let nowState = map_O_spread(this.state);
 
@@ -92,6 +115,28 @@ class U_Form_add_link extends Component {
     });
   };
 
+  componentDidUpdate = () => {
+    // Quill container
+    let QuillContainer = document.querySelector("#editor");
+
+    if (QuillContainer) {
+      // Check if NOT already instantiated
+      if (Quill.find(QuillContainer) !== this.quill_editor) {
+        // Instantiate Quill
+        this.quill_editor = new Quill(QuillContainer, {
+          modules: {
+            toolbar: [
+              [{ header: [1, 2, false] }],
+              ["bold", "italic", "underline"]
+            ]
+          },
+          theme: "snow"
+        });
+        log.ok("Quill initialised...");
+      }
+    }
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     this.setup();
@@ -132,6 +177,8 @@ class U_Form_add_link extends Component {
             />
           </div>
         );
+
+        // Strange bug fix
         setTimeout(() => {
           document.querySelector("[name='name']").value = "";
         }, 50);
@@ -155,12 +202,15 @@ class U_Form_add_link extends Component {
             </div>
             <div>
               Link comment:
-              <input
+              {/* <input
                 type="text"
                 data-input="comment"
                 name="comment"
                 placeholder="A comment?"
-              />
+              /> */}
+              <div id="quill_Div" className="Quill_in_modal">
+                <div id="editor"></div>
+              </div>
             </div>
           </>
         );

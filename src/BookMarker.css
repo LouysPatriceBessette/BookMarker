@@ -212,3 +212,7 @@ li.folder-opened ul {
 #quill_save {
   display: none;
 }
+.Quill_in_modal {
+  min-width: 100%;
+  display: block !important;
+}

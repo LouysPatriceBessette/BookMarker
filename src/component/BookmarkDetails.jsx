@@ -18,9 +18,6 @@ class U_BookmarkDetails extends Component {
     super(props);
 
     this.quill_editor = {};
-    // this.state = {
-    //   quillContent: []
-    // };
   }
 
   // Set function from the store
