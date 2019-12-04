@@ -5,9 +5,10 @@ import { connect } from "react-redux";
 // =============================================================================================================== Other component imports
 import Categories from "../component/Categories.jsx";
 import BookmarkDetails from "../component/BookmarkDetails.jsx";
+import Unsaved from "../component/Unsaved.jsx";
 
 // =============================================================================================================== Global variables for the functions from the store
-let currency, rsg, log, getRealType, map_O_spread, qf, key;
+let currency, rsg, log, getRealType, map_O_spread, qf, date_time, key;
 
 // =============================================================================================================== Component class
 class U_Page extends Component {
@@ -23,6 +24,7 @@ class U_Page extends Component {
     getRealType = this.props.functions.getRealType;
     map_O_spread = this.props.functions.map_O_spread;
     qf = this.props.functions.qf;
+    date_time = this.props.functions.date_time;
     key = this.props.functions.key;
   };
   // =============================================================================================================== Component functions
@@ -34,17 +36,31 @@ class U_Page extends Component {
 
     // Categories listing
     if (this.props.logged) {
-      // ======================================================================= Return
-      return (
-        <>
-          <div className="categoryTree">
-            <Categories />
-          </div>
-          <div className="categoryDisplay">
-            <BookmarkDetails />
-          </div>
-        </>
-      ); // ==================================================================== End return
+      if (this.props.unsavedShown) {
+        // ======================================================================= Return
+        return (
+          <>
+            <div className="categoryTree">
+              <Categories />
+            </div>
+            <div className="categoryDisplay">
+              <Unsaved />
+            </div>
+          </>
+        ); // ==================================================================== End return
+      } else {
+        // ======================================================================= Return
+        return (
+          <>
+            <div className="categoryTree">
+              <Categories />
+            </div>
+            <div className="categoryDisplay">
+              <BookmarkDetails />
+            </div>
+          </>
+        ); // ==================================================================== End return
+      }
     } else {
       let pageClass = this.props.overlay ? "blurred" : "";
 
@@ -117,7 +133,10 @@ let stp = state => {
 
     // Specific component props from the state here
     logged: state.logged,
-    overlay: state.overlay
+    overlay: state.overlay,
+
+    // to display unsaved changes list
+    unsavedShown: state.unsavedShown
   };
 };
 

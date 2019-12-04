@@ -23,7 +23,7 @@ import {
 library.add(fab, faShoppingCart, faUserCircle, faSearch, faArrowUp);
 
 // =============================================================================================================== Global variables for the functions from the store
-let currency, rsg, log, getRealType, map_O_spread, qf, key;
+let currency, rsg, log, getRealType, map_O_spread, qf, date_time, key;
 
 // =============================================================================================================== Component class
 class U_Nav extends Component {
@@ -39,6 +39,7 @@ class U_Nav extends Component {
     getRealType = this.props.functions.getRealType;
     map_O_spread = this.props.functions.map_O_spread;
     qf = this.props.functions.qf;
+    date_time = this.props.functions.date_time;
     key = this.props.functions.key;
   };
   // =============================================================================================================== Component functions
@@ -85,6 +86,16 @@ class U_Nav extends Component {
         component: <Form_add_link />
       }
     });
+  };
+
+  unsavedChanges_display = () => {
+    log.ok("Display the unsaved changes list.");
+
+    // Changes are in the store
+    // this.props.unsavedChanges_detail ==> array of objects
+
+    // Got to display things for every objects in the PAGE
+    this.props.dispatch({ type: "display unsaved changes" });
   };
 
   // =============================================================================================================== Component render
@@ -135,7 +146,12 @@ class U_Nav extends Component {
       );
       if (this.props.unsavedChanges) {
         save_changes = (
-          <button className="fctBtn warning">You have unsaved changes</button>
+          <button
+            className="fctBtn warning"
+            onClick={this.unsavedChanges_display}
+          >
+            You have unsaved changes
+          </button>
         );
       }
 

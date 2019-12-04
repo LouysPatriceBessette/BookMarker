@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 let currency, rsg, log, getRealType, map_O_spread, qf, date_time, key;
 
 // =============================================================================================================== Component class
-class U_COMPONENT_TEMPLATE extends Component {
+class U_Unsaved extends Component {
   constructor(props) {
     super(props);
   }
@@ -29,14 +29,55 @@ class U_COMPONENT_TEMPLATE extends Component {
   // =============================================================================================================== Component render
   render = () => {
     this.setup();
-    log.render("-- COMPONENT TEMPLATE --");
+    log.render("Unsaved");
 
     // Render logic
+
+    // array of objects
+    let all_unsaved = this.props.unsavedChanges_detail.reverse();
+
+    // lify the object
+    let list = all_unsaved.map(change => {
+      // change is an object
+      // properties:
+      // - target ==> "Link" or "Folder"
+      // - index ==> The index of the category or link
+      // - property = The changed property. If it is "All", it means a new folder or a new link
+      // - oldValue
+      // - newValue
+      // - time ==> the Unix time of the change
+
+      let ChangedElement = "";
+      if (change.property === "ALL") {
+        ChangedElement = "New " + change.target;
+      }
+      if (change.property !== "ALL" && change.target === "Link") {
+        ChangedElement = this.props.links[change.index].name;
+      }
+
+      // Value to display
+      let valueDisplay = change.newValue;
+      if (change.property === "comment") {
+        valueDisplay = "Comment changed";
+      }
+      if (change.property === "rating") {
+        valueDisplay =
+          "Rating changed from " + change.oldValue + " to " + change.newValue;
+      }
+
+      return (
+        <li>
+          {date_time(change.time).iso} | {ChangedElement} :{" "}
+          <b>{valueDisplay}</b>
+        </li>
+      );
+    });
 
     // ======================================================================= Return
     return (
       <>
-        <div>...</div>
+        <h1>Unsaved changes list</h1>
+        <ol>{list}</ol>
       </>
     ); // ==================================================================== End return
   }; // End render
@@ -46,13 +87,15 @@ class U_COMPONENT_TEMPLATE extends Component {
 let stp = state => {
   return {
     // Functions from the state
-    functions: state.functions
+    functions: state.functions,
 
     // Specific component props from the state here
-    //...
+    unsavedShown: state.unsavedShown,
+    unsavedChanges_detail: state.unsavedChanges_detail,
+    links: state.links
   };
 };
 
 // =============================================================================================================== Component connection to the store
-let COMPONENT_TEMPLATE = connect(stp)(U_COMPONENT_TEMPLATE);
-export default COMPONENT_TEMPLATE;
+let Unsaved = connect(stp)(U_Unsaved);
+export default Unsaved;

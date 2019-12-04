@@ -10,7 +10,7 @@ import Quill from "quill";
 import "../quill.css";
 
 // =============================================================================================================== Global variables for the functions from the store
-let currency, rsg, log, getRealType, map_O_spread, qf, key;
+let currency, rsg, log, getRealType, map_O_spread, qf, date_time, key;
 
 // =============================================================================================================== Component class
 class U_BookmarkDetails extends Component {
@@ -28,6 +28,7 @@ class U_BookmarkDetails extends Component {
     getRealType = this.props.functions.getRealType;
     map_O_spread = this.props.functions.map_O_spread;
     qf = this.props.functions.qf;
+    date_time = this.props.functions.date_time;
     key = this.props.functions.key;
   };
   // =============================================================================================================== Component functions

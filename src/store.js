@@ -11,6 +11,7 @@ import {
     map_O_spread
 } from './js-lib/map_O_spread.js'
 import qf from './js-lib/qf.js'
+import date_time from "./js-lib/date_time_format.js"
 
 // Component keys
 import key from 'weak-key'
@@ -29,6 +30,7 @@ let defaultStore = {
         map_O_spread: map_O_spread,
         rsg: rsg,
         qf: qf,
+        date_time: date_time,
 
         // Component keys
         key: key
@@ -39,7 +41,8 @@ let defaultStore = {
     activeCat: -1,
     activeLink: -1,
     unsavedChanges: false,
-    unsavedChanges_detail: []
+    unsavedChanges_detail: [],
+    unsavedShown: false
 }
 
 
@@ -96,6 +99,9 @@ let reducer = (state, action) => {
         newState.activeLink = action.linkId
         // Set active category
         newState.activeCat = action.catId
+
+        // Turn the unsaved details window off (if displayed)
+        newState.unsavedShown = false
     }
 
     // =========================================================== Link rating ( triggers a change to save )
@@ -213,12 +219,11 @@ let reducer = (state, action) => {
     // ...
 
     // =========================================================== Unsaved details show
+    if (action.type === "display unsaved changes") {
+        newState.unsavedShown = true
+    }
 
-    // ...
-    // ...
-    // ...
-    // ...
-    // ...
+
 
     // =========================================================== SAVE CHANGES
 
