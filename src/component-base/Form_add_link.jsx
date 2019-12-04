@@ -9,8 +9,17 @@ import Ratings from "react-ratings-declarative";
 import Quill from "quill";
 import "../quill.css";
 
-// =============================================================================================================== Global variables for the functions from the store
-let currency, rsg, log, getRealType, map_O_spread, qf, date_time, key;
+// =============================================================================================================== Global functions
+import {
+  log,
+  getRealType,
+  map_O_spread,
+  date_time,
+  currency,
+  rsg,
+  qf,
+  key
+} from "../js-lib/_js-setup.js";
 
 let defaultState = {
   name: "",
@@ -26,18 +35,6 @@ class U_Form_add_link extends Component {
     this.state = defaultState;
     this.quill_editor = {};
   }
-
-  // Set function from the store
-  setup = () => {
-    currency = this.props.functions.currency;
-    rsg = this.props.functions.rsg;
-    log = this.props.functions.log;
-    getRealType = this.props.functions.getRealType;
-    map_O_spread = this.props.functions.map_O_spread;
-    qf = this.props.functions.qf;
-    date_time = this.props.functions.date_time;
-    key = this.props.functions.key;
-  };
 
   // =============================================================================================================== Component functions
 
@@ -140,7 +137,6 @@ class U_Form_add_link extends Component {
 
   // =============================================================================================================== Component render
   render = () => {
-    this.setup();
     log.render("Form_add_folder");
 
     let errorClassName = "error";
@@ -241,9 +237,6 @@ class U_Form_add_link extends Component {
 // =============================================================================================================== State to Props
 let stp = state => {
   return {
-    // Functions from the state
-    functions: state.functions,
-
     // Specific component props from the state here
     modal: state.modal,
     sl_error: state.sl_error,

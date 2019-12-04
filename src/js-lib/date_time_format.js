@@ -41,7 +41,8 @@ let date_time = unixTime => {
         iso: iso,
         date: dateOnly,
         time: timeOnly,
-        filename: filenamePrefix
+        filename: filenamePrefix,
+        unix: unixTime
     }
 }
 export default date_time

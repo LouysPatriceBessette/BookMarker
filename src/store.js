@@ -2,39 +2,20 @@ import {
     createStore
 } from "redux"
 
-// custom js functions
-import currency from './js-lib/currency_format.js'
-import rsg from './js-lib/random_string_gen.js'
-import log from './js-lib/custom_log.js'
+// =============================================================================================================== Global functions
 import {
+    log,
     getRealType,
-    map_O_spread
-} from './js-lib/map_O_spread.js'
-import qf from './js-lib/qf.js'
-import date_time from "./js-lib/date_time_format.js"
+    map_O_spread,
+    date_time,
+    currency,
+    rsg,
+    qf,
+    key
+} from "./js-lib/_js-setup.js"
 
-// Component keys
-import key from 'weak-key'
-
-// Cookie remove
-import Cookies from "js-cookie";
-
-// ========================================================================================== Default store
+// =============================================================================================================== Default store
 let defaultStore = {
-
-    // custom js functions
-    functions: {
-        currency: currency,
-        log: log,
-        getRealType: getRealType,
-        map_O_spread: map_O_spread,
-        rsg: rsg,
-        qf: qf,
-        date_time: date_time,
-
-        // Component keys
-        key: key
-    },
 
     // Application variables NOT LOGGED
     logged: false,
@@ -45,13 +26,12 @@ let defaultStore = {
     unsavedShown: false
 }
 
-
 let reducer = (state, action) => {
 
     // State deep copy
     let newState = map_O_spread(state)
 
-    // ========================================================================================== Action dispatchers
+    // =========================================================================================================== Action dispatchers
 
     // =========================================================== Modal
     if (action.type === "modal") {
@@ -244,7 +224,7 @@ let reducer = (state, action) => {
     return newState
 }
 
-// ================================================================================= STORE CREATION
+// =============================================================================================================== STORE CREATION
 const store = createStore(
     reducer,
     defaultStore,

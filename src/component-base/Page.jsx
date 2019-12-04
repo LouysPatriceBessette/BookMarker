@@ -7,8 +7,17 @@ import Categories from "../component/Categories.jsx";
 import BookmarkDetails from "../component/BookmarkDetails.jsx";
 import Unsaved from "../component/Unsaved.jsx";
 
-// =============================================================================================================== Global variables for the functions from the store
-let currency, rsg, log, getRealType, map_O_spread, qf, date_time, key;
+// =============================================================================================================== Global functions
+import {
+  log,
+  getRealType,
+  map_O_spread,
+  date_time,
+  currency,
+  rsg,
+  qf,
+  key
+} from "../js-lib/_js-setup.js";
 
 // =============================================================================================================== Component class
 class U_Page extends Component {
@@ -16,22 +25,10 @@ class U_Page extends Component {
     super(props);
   }
 
-  // Set function from the store
-  setup = () => {
-    currency = this.props.functions.currency;
-    rsg = this.props.functions.rsg;
-    log = this.props.functions.log;
-    getRealType = this.props.functions.getRealType;
-    map_O_spread = this.props.functions.map_O_spread;
-    qf = this.props.functions.qf;
-    date_time = this.props.functions.date_time;
-    key = this.props.functions.key;
-  };
   // =============================================================================================================== Component functions
 
   // =============================================================================================================== Component render
   render = () => {
-    this.setup();
     log.render("Page");
 
     // Categories listing
@@ -128,9 +125,6 @@ class U_Page extends Component {
 // =============================================================================================================== State to Props
 let stp = state => {
   return {
-    // Functions from the state
-    functions: state.functions,
-
     // Specific component props from the state here
     logged: state.logged,
     overlay: state.overlay,
