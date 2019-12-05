@@ -59,28 +59,32 @@ app.post('/signup', upload.none(), (req, res) => {
                 content: [
                     3
                 ],
-                state: "closed"
+                state: "closed",
+                order: 3
             },
             {
                 name: "Social",
                 content: [
                     1, 2
                 ],
-                state: "closed"
+                state: "closed",
+                order: 1
             },
             {
                 name: "Coding",
                 content: [
                     0
                 ],
-                state: "closed"
+                state: "closed",
+                order: 2
             },
             {
                 name: "Coding music",
                 content: [
                     4
                 ],
-                state: "opened"
+                state: "opened",
+                order: 0
             }
         ],
         links: [{

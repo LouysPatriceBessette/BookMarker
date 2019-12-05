@@ -22,54 +22,47 @@ import {
 
 // =============================================================================================================== Other component imports
 
+// Sortable
+import uniqueId from "lodash/uniqueId";
+import Sortable from "react-sortablejs";
+
 // =============================================================================================================== Component class
 class U_Categories extends Component {
   constructor(props) {
     super(props);
 
-    this.keyupTimeout = undefined;
-    this.keyupDelay = 5000; // 5 sec
     this.state = {
-      category_rename: ""
+      category_rename: "",
+      category_order: map_O_spread(
+        this.props.categories.map(c => {
+          return c.order;
+        })
+      )
     };
   }
 
   // =============================================================================================================== Component functions
 
-  contentEditableChange = e => {
+  contentEditableBlur = e => {
+    // Remove contentEditable
+    e.target.contentEditable = "false";
+
     // New category title
     let cat_id = parseInt(e.target.id.split("_")[1]);
-    let thisContentEditable = e.target;
 
-    clearTimeout(this.keyupTimeout);
-    this.keyupTimeout = setTimeout(() => {
-      // User finished typing...
-      // Update the store
-      // dispatch...
+    let newName = e.target.innerText;
 
-      let newName = thisContentEditable.innerText;
-      console.log("Saving new category name", newName);
-
+    // Make sure there is a change
+    if (newName !== this.props.categories[cat_id].name) {
+      log.var("Saving new category name", cat_id, newName);
       this.props.dispatch({
         type: "category name change",
         activeCat: cat_id,
         newName: newName
       });
-    }, this.keyupDelay);
-  };
-
-  contentEditableBlur = e => {
-    // New category title
-    let cat_id = parseInt(e.target.id.split("_")[1]);
-
-    let newName = e.target.innerText;
-    console.log("Saving new category name", cat_id, newName);
-
-    this.props.dispatch({
-      type: "category name change",
-      activeCat: cat_id,
-      newName: newName
-    });
+    } else {
+      log.ok("No new name to save");
+    }
   };
 
   linkClick = e => {
@@ -89,43 +82,58 @@ class U_Categories extends Component {
   };
 
   pseudoClick = e => {
-    // pseudo element click
-    if (e.target.className.split(" ").includes("folder")) {
-      // Remove any previous class (opened or closed) that defines the pseudo image
-      let class_opened_closed = e.target.className
-        .split(" ")
-        .filter(c => {
-          return c === "folder-opened" || c === "folder-closed";
-        })
-        .join(" ");
+    // Check if it is a pseudo-element click or a name focus
+    //log.var("tag name", e.target.tagName); // LI for the folder image click -- DIV for the categori name.
+    if (e.target.tagName === "LI") {
+      if (e.target.className.split(" ").includes("folder")) {
+        // Remove any previous class (opened or closed) that defines the pseudo image
+        let class_opened_closed = e.target.className
+          .split(" ")
+          .filter(c => {
+            return c === "folder-opened" || c === "folder-closed";
+          })
+          .join(" ");
 
-      // Get the category id form the child div
-      let catId;
-      let catState;
-      e.currentTarget.childNodes.forEach(n => {
-        log.var("node", n.tagName);
+        // Get the category id form the child div
+        let catId;
+        let catState;
+        e.currentTarget.childNodes.forEach(n => {
+          //log.var("node", n.tagName);
 
-        // Get the catId
-        if (n.tagName === "DIV" && n.id) {
-          catId = parseInt(n.id.split("_")[1]);
+          // Get the catId
+          if (n.tagName === "DIV" && n.id) {
+            catId = parseInt(n.id.split("_")[1]);
+            log.var("catId", catId);
+          }
+        });
+
+        // Toggle the opened/closed class of the UL
+        if (class_opened_closed == "folder-opened") {
+          catState = "closed";
         }
-      });
 
-      // Toggle the opened/closed class of the UL
-      if (class_opened_closed == "folder-opened") {
-        catState = "closed";
+        if (class_opened_closed == "folder-closed") {
+          catState = "opened";
+        }
+        log.var("catState", catState);
+
+        // Use the catId to toggle the opened/closed icon and UL display
+        this.props.dispatch({
+          type: "folder state",
+          catId: catId,
+          catState: catState
+        });
       }
-
-      if (class_opened_closed == "folder-closed") {
-        catState = "opened";
-      }
-
-      // Use the catId to toggle the opened/closed icon and UL display
-      this.props.dispatch({
-        type: "folder state",
-        catId: catId,
-        catState: catState
-      });
+    }
+    // If the click event was on the DIV
+    // Make it content editable
+    else if (
+      e.target.tagName === "DIV" &&
+      e.target.classList.contains("catName")
+    ) {
+      log.ok("We're on the Category name");
+      e.target.contentEditable = "true";
+      e.target.focus();
     }
   };
 
@@ -133,44 +141,77 @@ class U_Categories extends Component {
   render = () => {
     log.render("Categories");
 
+    // Variable used to reorder the categories
+    let categories_length = this.props.categories.length;
+    let category_processed = 0;
+
+    let ordered_categories = [];
+    let original_indexes = [];
+
+    // WHILE loop to produce an array of categories ordered byt the category "order" property
+    while (categories_length !== category_processed) {
+      // Check all categories
+      this.props.categories.forEach((c, original_index) => {
+        if (c.order === category_processed) {
+          log.var("Processing...", c.order);
+          ordered_categories.push(c);
+          original_indexes.push(original_index);
+          category_processed++;
+        }
+      });
+    }
+
+    // lify the ordered category array
+    let categories_lified = ordered_categories.map((cat, render_index) => {
+      //
+      // That is ONE category mapping
+      //
+      return (
+        <li
+          key={key(cat)}
+          className={"folder folder-" + cat.state}
+          onClick={this.pseudoClick}
+          data-order={cat.order}
+        >
+          <div
+            id={"cat_" + original_indexes[render_index]}
+            //contentEditable="true"
+            onBlur={this.contentEditableBlur}
+            suppressContentEditableWarning={true}
+            className="catName"
+          >
+            {cat.name}{" "}
+          </div>
+          <div className="catContentLength">({cat.content.length})</div>
+          <ul>
+            {cat.content.map(content => {
+              return (
+                <li key={key(this.props.links[content])} className="link">
+                  <div>
+                    <a id={"link_" + content} onClick={this.linkClick}>
+                      {this.props.links[content].name}
+                    </a>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </li>
+      );
+    });
+
     // ======================================================================= Return
     return (
       <>
-        <ul>
-          {this.props.categories.map((cat, index) => {
-            return (
-              <li
-                key={key(cat)}
-                className={"folder folder-" + cat.state}
-                onClick={this.pseudoClick}
-              >
-                <div
-                  id={"cat_" + index}
-                  contentEditable="true"
-                  onBlur={this.contentEditableBlur}
-                  suppressContentEditableWarning={true}
-                  className="catName"
-                >
-                  {cat.name}{" "}
-                </div>
-                <div className="catContentLength">({cat.content.length})</div>
-                <ul>
-                  {cat.content.map(content => {
-                    return (
-                      <li key={key(this.props.links[content])} className="link">
-                        <div>
-                          <a id={"link_" + content} onClick={this.linkClick}>
-                            {this.props.links[content].name}
-                          </a>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </li>
-            );
-          })}
-        </ul>
+        <Sortable
+          tag="ul" // Defaults to "div"
+          onChange={(order, sortable, evt) => {
+            this.setState({ category_order_returned_from_sortable: order });
+            console.log(order);
+          }}
+        >
+          {categories_lified}
+        </Sortable>
       </>
     ); // ==================================================================== End return
   }; // End render

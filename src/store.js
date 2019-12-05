@@ -130,6 +130,10 @@ let reducer = (state, action) => {
             property: "ALL",
             oldValue: "",
             newValue: action.folderName,
+            // Maybe that should be on top instead of last...
+            //   That mean changing ALL order property for ALL links !! Doh!
+            newOrder: newState.categories.length,
+            // ...
             time: new Date().getTime()
         })
 
@@ -137,7 +141,8 @@ let reducer = (state, action) => {
         newState.categories.push({
             name: action.folderName,
             content: [],
-            state: "closed"
+            state: "closed",
+            order: newState.categories.length
         })
 
         // Close modal
