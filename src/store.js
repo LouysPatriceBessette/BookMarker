@@ -50,13 +50,14 @@ let reducer = (state, action) => {
         newState.sl_error = false
     }
 
-    // =========================================================== User logged in/ou and error ms
+    // =========================================================== User logged in/out and error msg
     if (action.type === "logged") {
         newState.logged = true
         newState.username = action.content.user.username
         newState.overlay = false
         newState.categories = action.content.user.categories
         newState.links = action.content.user.links
+        newState.bank_id = action.content.user.userBank_id
     }
 
     if (action.type === "logout") {
@@ -198,11 +199,25 @@ let reducer = (state, action) => {
 
     // =========================================================== Link edit name ( triggers a change to save )
 
-    // ...
-    // ...
-    // ...
-    // ...
-    // ...
+    if (action.type === "link name change") {
+
+        // Flag.
+        newState.unsavedChanges = true
+
+        // Store the unsaved change details
+        newState.unsavedChanges_detail.push({
+
+            target: "Link",
+            index: action.activelink,
+            property: "name",
+            oldValue: newState.links[action.activelink].name,
+            newValue: action.newName,
+            time: new Date().getTime()
+        })
+
+        // Make the change
+        newState.links[action.activelink].name = action.newName
+    }
 
     // =========================================================== Unsaved details show
     if (action.type === "display unsaved changes") {
@@ -211,13 +226,13 @@ let reducer = (state, action) => {
 
 
 
-    // =========================================================== SAVE CHANGES
+    // =========================================================== CHANGES SAVED!
 
-    // ...
-    // ...
-    // ...
-    // ...
-    // ...
+    if (action.type === "changes saved") {
+        newState.unsavedShown = false
+        newState.unsavedChanges_detail = []
+        newState.unsavedChanges = false
+    }
 
     // =========================================================== SHARE A FOLDER
 

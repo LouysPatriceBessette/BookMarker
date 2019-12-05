@@ -30,6 +30,29 @@ class U_Unsaved extends Component {
 
   // =============================================================================================================== Component functions
 
+  // Save all changes
+  save = async () => {
+    // We have all we need in store...
+    // - categories
+    // - links
+    // - UnsavedChange_details
+    // - bank_id
+    let data = new FormData();
+    data.append("bank_id", this.props.bank_id);
+    data.append("categories", JSON.stringify(this.props.categories));
+    data.append("links", JSON.stringify(this.props.links));
+
+    data.append("history", JSON.stringify(this.props.unsavedChanges_detail));
+
+    let response = await qf("/save", "POST", data);
+    if (response.success) {
+      log.ok("Data saved");
+      this.props.dispatch({ type: "changes saved" });
+    } else {
+      log.error("Data failed to save");
+    }
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     log.render("Unsaved");
@@ -50,26 +73,38 @@ class U_Unsaved extends Component {
 
       let ChangedElement = "";
       if (change.property === "ALL") {
-        ChangedElement = "New " + change.target;
+        ChangedElement = <>New {change.target}</>;
       }
       if (change.property !== "ALL" && change.target === "Link") {
-        ChangedElement = this.props.links[change.index].name;
+        //ChangedElement = this.props.links[change.index].name;
+        ChangedElement = (
+          <>
+            <b>{change.property}</b> was changed on <b>{change.target}</b>
+          </>
+        );
       }
 
       // Value to display
-      let valueDisplay = change.newValue;
-      if (change.property === "comment") {
-        valueDisplay = "Comment changed";
+      let valueDisplay = (
+        <>
+          {" "}
+          : from <b>{change.oldValue}</b> to <b>{change.newValue}</b>
+        </>
+      );
+      if (change.property === "ALL") {
+        valueDisplay = (
+          <>
+            : <b>{change.newValue}</b>
+          </>
+        );
       }
-      if (change.property === "rating") {
-        valueDisplay =
-          "Rating changed from " + change.oldValue + " to " + change.newValue;
+      if (change.property === "comment") {
+        valueDisplay = <></>;
       }
 
       return (
         <li>
-          {date_time(change.time).iso} | {ChangedElement} :{" "}
-          <b>{valueDisplay}</b>
+          {date_time(change.time).iso} | {ChangedElement} {valueDisplay}
         </li>
       );
     });
@@ -79,6 +114,9 @@ class U_Unsaved extends Component {
       <>
         <h1>Unsaved changes list</h1>
         <ol>{list}</ol>
+        <button className="fctBtn" onClick={this.save}>
+          Save now
+        </button>
       </>
     ); // ==================================================================== End return
   }; // End render
@@ -90,6 +128,8 @@ let stp = state => {
     // Specific component props from the state here
     unsavedShown: state.unsavedShown,
     unsavedChanges_detail: state.unsavedChanges_detail,
+    bank_id: state.bank_id,
+    categories: state.categories,
     links: state.links
   };
 };

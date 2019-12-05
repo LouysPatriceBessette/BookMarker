@@ -123,7 +123,8 @@ app.post('/signup', upload.none(), (req, res) => {
                 }],
                 rating: 5
             }
-        ]
+        ],
+        history: []
 
     }
 
@@ -157,7 +158,8 @@ app.post('/signup', upload.none(), (req, res) => {
             // Insert a new "bank" for the user and get the id back
             dbo.collection('links').insertOne({
                 categories: defaultBank.categories,
-                links: defaultBank.links
+                links: defaultBank.links,
+                history: defaultBank.history
             }, (err, linkBank) => {
                 if (err) {
                     console.log("/Bank creation failed.", err)
@@ -192,12 +194,14 @@ app.post('/signup', upload.none(), (req, res) => {
                     res.json({
                         success: true,
                         user: {
-                            username: user.username,
+                            username: name,
+                            userBank_id: linkBank.insertedId,
                             categories: defaultBank.categories,
                             links: defaultBank.links,
                             errorMsg: "No error"
                         }
                     })
+
                 }) // END user insert
 
             }) // END links insert
@@ -262,6 +266,7 @@ app.post('/login', upload.none(), (req, res) => {
                     success: true,
                     user: {
                         username: user.username,
+                        userBank_id: userBank._id,
                         categories: userBank.categories,
                         links: userBank.links,
                         errorMsg: "No error"
@@ -334,6 +339,7 @@ app.post('/cookie', upload.none(), (req, res) => {
                     success: true,
                     user: {
                         username: user.username,
+                        userBank_id: userBank._id,
                         categories: userBank.categories,
                         links: userBank.links,
                         errorMsg: "No error"
@@ -391,34 +397,129 @@ app.post('/valid-url', upload.none(), (req, res) => {
     console.log("========================================== REQUEST TO /valid-url ")
     let urlToCheck = req.body.url
 
-    request
-        .get(urlToCheck)
-        .on('error', function (err) {
-            console.log("ERROR on request - ", err)
-            res.send({
-                success: false,
-                errorMsg: "ERROR on request - " + err
-            })
-            return
-        })
-        .on('response', function (response) {
-            console.log("response.statusCode", response.statusCode)
-            if (response.statusCode === 200) {
-                res.send({
-                    success: true,
-                    errorMsg: "URL valid"
-                })
-            } else {
+    // Get the cookie sid
+    let sid = req.cookies.sid
+
+    // Check in active sessions
+    if (sessions[sid]) {
+        request
+            .get(urlToCheck)
+            .on('error', function (err) {
+                console.log("ERROR on request - ", err)
                 res.send({
                     success: false,
-                    errorMsg: "URL invalid"
+                    errorMsg: "ERROR on request - " + err
                 })
-            }
+                return
+            })
+            .on('response', function (response) {
+                console.log("response.statusCode", response.statusCode)
+                if (response.statusCode === 200) {
+                    res.send({
+                        success: true,
+                        errorMsg: "URL valid"
+                    })
+                } else {
+                    res.send({
+                        success: false,
+                        errorMsg: "URL invalid"
+                    })
+                }
+            })
+    } else {
+        res.send({
+            success: false,
+            errorMsg: "Session not found"
         })
-
+    }
 })
 
+// ========================================================================================== SAVE user's changes
+app.post('/save', upload.none(), (req, res) => {
 
+    console.log("========================================== REQUEST TO /save ")
+
+    console.log(req.body)
+
+    // Get the cookie sid
+    let sid = req.cookies.sid
+
+    // Check in active sessions
+    if (sessions[sid]) {
+
+        // Retreive user's bank
+        dbo.collection('links').findOne({
+            _id: ObjectId(req.body.bank_id)
+        }, (err, userBank) => {
+            if (err) {
+                console.log("Error retreiving the user's bank", err)
+                res.json({
+                    success: false,
+                    errorMsg: "DBO error on find user's link bank"
+                })
+                return
+            }
+
+            // Prepare the data... History has to be concatenated.
+            console.log("=============================== Preparing data")
+            console.log("previous_history", userBank.history)
+
+            let updated_history = userBank.history.concat(JSON.parse(req.body.history))
+            console.log("updated_history", updated_history)
+
+            // SAVE!
+            dbo.collection("links").updateOne({
+                    _id: ObjectId(req.body.bank_id)
+                }, {
+                    $set: {
+                        categories: JSON.parse(req.body.categories),
+                        links: JSON.parse(req.body.links),
+                        history: updated_history
+                    }
+                }, (err, userBank) => {
+                    if (err) {
+                        console.log("Error retreiving the user's bank", err)
+                        res.json({
+                            success: false,
+                            errorMsg: "DBO error on find user's link bank"
+                        })
+                        return
+                    }
+
+                    // All is supposed to be good at this point
+                    res.send({
+                        success: true,
+                        errorMsg: "Data saving is done"
+                    })
+
+                }
+
+            )
+
+            // ========================= Success response
+            // res.json({
+            //     success: true,
+            //     user: {
+            //         username: user.username,
+            //         userBank_id: userBank._id,
+            //         categories: userBank.categories,
+            //         links: userBank.links,
+            //         errorMsg: "No error"
+            //     }
+            // })
+            // return
+        })
+
+
+    } else {
+        res.send({
+            success: false,
+            errorMsg: "Session not found"
+        })
+    }
+
+
+})
 
 // ==================================================================================================== Don't touch below...
 

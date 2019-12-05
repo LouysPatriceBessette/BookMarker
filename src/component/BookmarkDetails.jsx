@@ -28,9 +28,58 @@ class U_BookmarkDetails extends Component {
     super(props);
 
     this.quill_editor = {};
+
+    this.state = {
+      link_rename: ""
+    };
   }
 
   // =============================================================================================================== Component functions
+
+  link_rename = e => {
+    let link = this.props.links[this.props.activeLink];
+    log.var("Actual link name", link.name);
+
+    // ================================= 2 cases
+    // ===== 1
+    if (e.target.innerText === "Rename") {
+      // Change button text
+      e.target.innerText = "Save";
+
+      // Hide real_link
+      document.querySelector("#real_link").style.display = "none";
+
+      // Set the input value correcly
+      this.setState({ link_rename: link.name });
+
+      // Show the input
+      document.querySelector("#real_link_rename").type = "text";
+    }
+    // ===== 2
+    else {
+      // Change button text
+      e.target.innerText = "Rename";
+
+      // Fix the link name in links
+      this.props.dispatch({
+        type: "link name change",
+        newName: this.state.link_rename,
+        activelink: this.props.activeLink
+      });
+
+      // Show real_link
+      document.querySelector("#real_link").style.display = "inline";
+
+      // Hide the input
+      document.querySelector("#real_link_rename").type = "hidden";
+    }
+  };
+
+  link_rename_change = e => {
+    // set to state...
+    this.setState({ link_rename: e.target.value });
+    console.log(e.target.value);
+  };
 
   changeRating = newRating => {
     this.props.dispatch({
@@ -266,9 +315,18 @@ class U_BookmarkDetails extends Component {
       return (
         <>
           <div>
-            <a target="_blank" href={link.href}>
+            <a target="_blank" href={link.href} id="real_link">
               {link.name}
             </a>
+            <input
+              type="hidden"
+              id="real_link_rename"
+              value={this.state.link_rename}
+              onChange={this.link_rename_change}
+            />
+            <button className="fctBtn" onClick={this.link_rename}>
+              Rename
+            </button>
           </div>
           <div className="ratingDiv">
             <Ratings
