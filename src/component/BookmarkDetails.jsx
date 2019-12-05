@@ -1,25 +1,26 @@
-// =============================================================================================================== Base React imports
-import React, { Component } from "react";
-import { connect } from "react-redux";
-
-// =============================================================================================================== Other component imports
-import Ratings from "react-ratings-declarative";
-
-// ============================== Quill wysiwyg editor
-import Quill from "quill";
-import "../quill.css";
-
-// =============================================================================================================== Global functions
+// =============================================================================================================== BATCH IMPORT
 import {
+  React,
+  Component,
+  connect,
+  createStore,
+  key,
+  Cookies,
+  Ratings,
+  Quill,
+  FontAwesomeIcon,
+  library,
+  fab,
   log,
   getRealType,
   map_O_spread,
+  qf,
   date_time,
   currency,
-  rsg,
-  qf,
-  key
-} from "../js-lib/_js-setup.js";
+  rsg
+} from "../_BATCH-IMPORT.js";
+
+// =============================================================================================================== Other component imports
 
 // =============================================================================================================== Component class
 class U_BookmarkDetails extends Component {

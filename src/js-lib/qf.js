@@ -14,6 +14,7 @@ let qf = async (endpoint = null, method = "GET", body = null) => {
     )
 
     console.log("---------------------- ASYNC RESPONSE FROM " + endpoint + " ----------------------")
+    console.log(response)
     return response
 }
 export default qf

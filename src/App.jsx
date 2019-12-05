@@ -1,26 +1,29 @@
-// =============================================================================================================== Base React imports
-import React, { Component } from "react";
-import { connect } from "react-redux";
+// =============================================================================================================== BATCH IMPORT
+import {
+  React,
+  Component,
+  connect,
+  createStore,
+  key,
+  Cookies,
+  Ratings,
+  Quill,
+  FontAwesomeIcon,
+  library,
+  fab,
+  log,
+  getRealType,
+  map_O_spread,
+  qf,
+  date_time,
+  currency,
+  rsg
+} from "./_BATCH-IMPORT.js";
 
 // =============================================================================================================== Other component imports
 import Nav from "./component-base/Nav.jsx";
 import Page from "./component-base/Page.jsx";
 import Modal from "./component-base/Modal.jsx";
-
-// Cookie check
-import Cookies from "js-cookie";
-
-// =============================================================================================================== Global functions
-import {
-  log,
-  getRealType,
-  map_O_spread,
-  date_time,
-  currency,
-  rsg,
-  qf,
-  key
-} from "./js-lib/_js-setup.js";
 
 // =============================================================================================================== Component class
 

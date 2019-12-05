@@ -3,6 +3,9 @@ import React from "react";
 import { Provider } from "react-redux";
 import store from "./store.js";
 import App from "./App.jsx";
+
+// ================================ CSS
+import "./quill.css";
 import "./BookMarker.css";
 
 import reloadMagic from "./reload-magic-client.js"; // automatic reload

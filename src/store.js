@@ -1,18 +1,24 @@
+// =============================================================================================================== BATCH IMPORT
 import {
-    createStore
-} from "redux"
-
-// =============================================================================================================== Global functions
-import {
+    React,
+    Component,
+    connect,
+    createStore,
+    key,
+    Cookies,
+    Ratings,
+    Quill,
+    FontAwesomeIcon,
+    library,
+    fab,
     log,
     getRealType,
     map_O_spread,
+    qf,
     date_time,
     currency,
-    rsg,
-    qf,
-    key
-} from "./js-lib/_js-setup.js"
+    rsg
+} from "./_BATCH-IMPORT.js"
 
 // =============================================================================================================== Default store
 let defaultStore = {

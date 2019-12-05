@@ -1,18 +1,31 @@
-// =============================================================================================================== Base React imports
-import React, { Component } from "react";
-import { connect } from "react-redux";
+// =============================================================================================================== BATCH IMPORT
+import {
+  React,
+  Component,
+  connect,
+  createStore,
+  key,
+  Cookies,
+  Ratings,
+  Quill,
+  FontAwesomeIcon,
+  library,
+  fab,
+  log,
+  getRealType,
+  map_O_spread,
+  qf,
+  date_time,
+  currency,
+  rsg
+} from "../_BATCH-IMPORT.js";
 
 // =============================================================================================================== Other component imports
 import Form_login from "./Form_login.jsx";
 import Form_add_folder from "./Form_add_folder.jsx";
 import Form_add_link from "./Form_add_link.jsx";
 
-// Fucking UNINTUITIVE npm instal instructions: https://www.npmjs.com/package/@fortawesome/react-fontawesome#usage
-// icon list: https://fontawesome.com/v4.7.0/icons/
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { fab } from "@fortawesome/free-brands-svg-icons";
-
+// FontAwesome
 import {
   faShoppingCart,
   faUserCircle,
@@ -21,18 +34,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(fab, faShoppingCart, faUserCircle, faSearch, faArrowUp);
-
-// =============================================================================================================== Global functions
-import {
-  log,
-  getRealType,
-  map_O_spread,
-  date_time,
-  currency,
-  rsg,
-  qf,
-  key
-} from "../js-lib/_js-setup.js";
 
 // =============================================================================================================== Component class
 class U_Nav extends Component {

@@ -186,7 +186,7 @@ app.post('/signup', upload.none(), (req, res) => {
                     // Set the session cookie
                     let sessionId = generateSessionId();
                     res.cookie("sid", sessionId);
-                    sessions[sessionId] = user._id
+                    sessions[sessionId] = user.insertedId
 
                     // ========================= Success response
                     res.json({
@@ -285,6 +285,7 @@ app.post('/login', upload.none(), (req, res) => {
 
 // ========================================================================================== Cookie
 app.post('/cookie', upload.none(), (req, res) => {
+    console.log("======================================================= /cookie")
 
     // Get the cookie sid
     let sid = req.cookies.sid
@@ -358,6 +359,7 @@ app.post('/cookie', upload.none(), (req, res) => {
 
 // ========================================================================================== Logout
 app.post('/logout', upload.none(), (req, res) => {
+    console.log("======================================================= /logout")
 
     // Get the cookie sid
     let sid = req.cookies.sid
