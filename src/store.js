@@ -219,6 +219,28 @@ let reducer = (state, action) => {
         newState.links[action.activelink].name = action.newName
     }
 
+    // =========================================================== Category edit name ( triggers a change to save )
+
+    if (action.type === "category name change") {
+
+        // Flag.
+        newState.unsavedChanges = true
+
+        // Store the unsaved change details
+        newState.unsavedChanges_detail.push({
+
+            target: "Folder",
+            index: action.activeCat,
+            property: "name",
+            oldValue: newState.categories[action.activeCat].name,
+            newValue: action.newName,
+            time: new Date().getTime()
+        })
+
+        // Make the change
+        newState.categories[action.activeCat].name = action.newName
+    }
+
     // =========================================================== Unsaved details show
     if (action.type === "display unsaved changes") {
         newState.unsavedShown = true

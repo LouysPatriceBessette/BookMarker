@@ -75,7 +75,7 @@ class U_Unsaved extends Component {
       if (change.property === "ALL") {
         ChangedElement = <>New {change.target}</>;
       }
-      if (change.property !== "ALL" && change.target === "Link") {
+      if (change.property !== "ALL") {
         //ChangedElement = this.props.links[change.index].name;
         ChangedElement = (
           <>

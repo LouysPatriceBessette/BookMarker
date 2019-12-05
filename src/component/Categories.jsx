@@ -26,12 +26,50 @@ import {
 class U_Categories extends Component {
   constructor(props) {
     super(props);
+
+    this.keyupTimeout = undefined;
+    this.keyupDelay = 5000; // 5 sec
+    this.state = {
+      category_rename: ""
+    };
   }
 
   // =============================================================================================================== Component functions
 
   contentEditableChange = e => {
     // New category title
+    let cat_id = parseInt(e.target.id.split("_")[1]);
+    let thisContentEditable = e.target;
+
+    clearTimeout(this.keyupTimeout);
+    this.keyupTimeout = setTimeout(() => {
+      // User finished typing...
+      // Update the store
+      // dispatch...
+
+      let newName = thisContentEditable.innerText;
+      console.log("Saving new category name", newName);
+
+      this.props.dispatch({
+        type: "category name change",
+        activeCat: cat_id,
+        newName: newName
+      });
+    }, this.keyupDelay);
+  };
+
+  contentEditableBlur = e => {
+    // New category title
+    let cat_id = parseInt(e.target.id.split("_")[1]);
+
+    let newName = e.target.innerText;
+    console.log("Saving new category name", cat_id, newName);
+
+    this.props.dispatch({
+      type: "category name change",
+      activeCat: cat_id,
+      newName: newName
+    });
   };
 
   linkClick = e => {
@@ -109,14 +147,13 @@ class U_Categories extends Component {
                 <div
                   id={"cat_" + index}
                   contentEditable="true"
-                  onInput={this.contentEditableChange}
+                  onBlur={this.contentEditableBlur}
                   suppressContentEditableWarning={true}
+                  className="catName"
                 >
                   {cat.name}{" "}
-                  <span className="catContentLength">
-                    ({cat.content.length})
-                  </span>
                 </div>
+                <div className="catContentLength">({cat.content.length})</div>
                 <ul>
                   {cat.content.map(content => {
                     return (

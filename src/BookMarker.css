@@ -198,10 +198,15 @@ li.folder-opened ul {
   padding: 1em 0;
   flex-grow: 2;
 }
+.catName {
+  display: inline-block;
+}
 .catContentLength {
+  display: inline-block;
   font-size: 0.6em;
   color: grey;
   font-style: italic;
+  margin: 0 0 0 0.6em;
 }
 .ratingDiv {
   margin: 0.7em 0 0;
