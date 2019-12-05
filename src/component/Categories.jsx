@@ -106,7 +106,7 @@ class U_Categories extends Component {
         log.var("node", n.tagName);
 
         // Get the catId
-        if (n.tagName === "DIV") {
+        if (n.tagName === "DIV" && n.id) {
           catId = parseInt(n.id.split("_")[1]);
         }
       });
