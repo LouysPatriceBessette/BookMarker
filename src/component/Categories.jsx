@@ -33,11 +33,9 @@ class U_Categories extends Component {
 
     this.state = {
       category_rename: "",
-      category_order: map_O_spread(
-        this.props.categories.map(c => {
-          return c.order;
-        })
-      )
+      category_order: this.props.categories.map(c => {
+        return c.order;
+      })
     };
   }
 
@@ -152,7 +150,22 @@ class U_Categories extends Component {
     while (categories_length !== category_processed) {
       // Check all categories
       this.props.categories.forEach((c, original_index) => {
-        if (c.order === category_processed) {
+        //
+        // condition for having it in the order defined in the category property : (c.order === category_processed)
+        //
+        //
+        // condition for having it in the order of the categories (NOT WANT WE WANT)  : (c.order === this.state.category_order[category_processed])
+        //
+
+        // THE FIX: I have to find that categorie order as defined in the component state
+
+        let actual_position = this.state.category_order.indexOf(original_index);
+
+        // That should be the ACTUAL position after a drag n' drop
+        console.log("actual_position", actual_position, c.name); // That is pefect!!! Exactly that!!
+
+        // Need to read the state.category_order... FIXED! I replace c.order with actual_position
+        if (actual_position === category_processed) {
           log.var("Processing...", c.order);
           ordered_categories.push(c);
           original_indexes.push(original_index);
@@ -172,6 +185,7 @@ class U_Categories extends Component {
           className={"folder folder-" + cat.state}
           onClick={this.pseudoClick}
           data-order={cat.order}
+          data-id={original_indexes[render_index]} // Needed by Sortable - This is the catId
         >
           <div
             id={"cat_" + original_indexes[render_index]}
@@ -206,8 +220,14 @@ class U_Categories extends Component {
         <Sortable
           tag="ul" // Defaults to "div"
           onChange={(order, sortable, evt) => {
-            this.setState({ category_order_returned_from_sortable: order });
-            console.log(order);
+            // order is an array of STRINGS here... Olding the catIds in the new order
+            // So better have it back to an array of numbers.
+            let newOrder = order.map(o => {
+              return parseInt(o);
+            });
+
+            this.setState({ category_order: newOrder }); //_returned_from_sortable
+            log.var("newOrder", newOrder);
           }}
         >
           {categories_lified}
