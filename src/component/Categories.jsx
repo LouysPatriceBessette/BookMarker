@@ -220,14 +220,22 @@ class U_Categories extends Component {
         <Sortable
           tag="ul" // Defaults to "div"
           onChange={(order, sortable, evt) => {
-            // order is an array of STRINGS here... Olding the catIds in the new order
+            // order is an array of STRINGS here... Holding the catIds in the new order
             // So better have it back to an array of numbers.
             let newOrder = order.map(o => {
               return parseInt(o);
             });
 
-            this.setState({ category_order: newOrder }); //_returned_from_sortable
+            let previousOrder = this.state.category_order;
+            this.setState({ category_order: newOrder }); // Returned_from_sortable, but procecessed into numbers
+            log.var("previousOrder", previousOrder);
             log.var("newOrder", newOrder);
+
+            this.props.dispatch({
+              type: "category order change",
+              previousOrder: previousOrder,
+              newOrder: newOrder
+            });
           }}
         >
           {categories_lified}

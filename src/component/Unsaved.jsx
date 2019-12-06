@@ -98,12 +98,12 @@ class U_Unsaved extends Component {
           </>
         );
       }
-      if (change.property === "comment") {
+      if (change.property === "comment" || change.property === "order") {
         valueDisplay = <></>;
       }
 
       return (
-        <li>
+        <li key={key({ time: change.time })}>
           {date_time(change.time).iso} | {ChangedElement} {valueDisplay}
         </li>
       );

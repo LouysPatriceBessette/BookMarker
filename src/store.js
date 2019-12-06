@@ -246,6 +246,32 @@ let reducer = (state, action) => {
         newState.categories[action.activeCat].name = action.newName
     }
 
+    // =========================================================== Category re-order ( triggers a change to save )
+
+    if (action.type === "category order change") {
+
+        // Flag.
+        newState.unsavedChanges = true
+
+        // Store the unsaved change details
+        newState.unsavedChanges_detail.push({
+
+            target: "Folder",
+            //index: action.activeCat,
+            property: "order",
+            oldValue: action.previousOrder,
+            newValue: action.newOrder,
+            time: new Date().getTime()
+        })
+
+        // Make the change
+        let newCategories = map_O_spread(newState.categories)
+        newState.categories.forEach((c, i) => {
+            newCategories[i].order = action.newOrder[i]
+        })
+        newState.categories = newCategories
+    }
+
     // =========================================================== Unsaved details show
     if (action.type === "display unsaved changes") {
         newState.unsavedShown = true
