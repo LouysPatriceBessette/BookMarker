@@ -8,9 +8,8 @@ import {
   Cookies,
   Ratings,
   Quill,
+  Sortable,
   FontAwesomeIcon,
-  library,
-  fab,
   log,
   getRealType,
   map_O_spread,
@@ -21,10 +20,9 @@ import {
 } from "../_BATCH-IMPORT.js";
 
 // =============================================================================================================== Other component imports
-import Categories from "../component/Categories.jsx";
-import BookmarkDetails from "../component/BookmarkDetails.jsx";
-import Unsaved from "../component/Unsaved.jsx";
 
+import Unsaved from "../component/Unsaved.jsx";
+import Tabbed_Categories from "../component/Tabbed_categories.jsx";
 // =============================================================================================================== Component class
 class U_Page extends Component {
   constructor(props) {
@@ -43,9 +41,9 @@ class U_Page extends Component {
         // ======================================================================= Return
         return (
           <>
-            <div className="categoryTree">
+            {/* <div className="categoryTree">
               <Categories />
-            </div>
+            </div> */}
             <div className="categoryDisplay">
               <Unsaved />
             </div>
@@ -55,11 +53,8 @@ class U_Page extends Component {
         // ======================================================================= Return
         return (
           <>
-            <div className="categoryTree">
-              <Categories />
-            </div>
-            <div className="categoryDisplay">
-              <BookmarkDetails />
+            <div className="tabs_container">
+              <Tabbed_Categories />
             </div>
           </>
         ); // ==================================================================== End return

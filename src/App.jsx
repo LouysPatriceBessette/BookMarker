@@ -8,9 +8,8 @@ import {
   Cookies,
   Ratings,
   Quill,
+  Sortable,
   FontAwesomeIcon,
-  library,
-  fab,
   log,
   getRealType,
   map_O_spread,
@@ -24,6 +23,22 @@ import {
 import Nav from "./component-base/Nav.jsx";
 import Page from "./component-base/Page.jsx";
 import Modal from "./component-base/Modal.jsx";
+
+// ====================================================================================== FontAwesome
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+
+// FontAwesome
+import {
+  faUserCircle,
+  faSearch,
+  faEdit /* Pas sur de l'aimer... */,
+  faCloud,
+  faFolder,
+  faLink
+} from "@fortawesome/free-solid-svg-icons";
+
+library.add(fab, faUserCircle, faSearch, faEdit, faCloud, faFolder, faLink);
 
 // =============================================================================================================== Component class
 

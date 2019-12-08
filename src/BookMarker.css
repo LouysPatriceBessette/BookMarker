@@ -7,25 +7,99 @@
 }
 /* ============================================================================= COLORS */
 /* =============================================================================ELEMENT COLORS */
-/* ============================================================================= CSS */
+/* DEFAULT NAV ICON COLORS */
+/* LOGIN*/
+/* SAVE*/
+/* FOLDER */
+/* LINK */
+/* DEFAULT LINK CARD ICON COLOR */
+/* MODAL */
+/* ============================================================================= GLOBAL */
+* {
+  box-sizing: border-box;
+}
 body {
-  background-color: #fce8e8;
+  background-color: #f2fdfc;
   margin: 0;
   font-family: 'McLaren', cursive;
 }
-.logo {
-  width: 100px;
+[contentEditable] {
+  outline: none;
 }
+/* ============================================================================= NAV Component */
 nav {
   position: fixed;
   top: 0;
   width: 100%;
   display: flex;
   flex-direction: row-reverse;
-  background-color: #b58b8b;
+  background-color: #d9e3e2;
   border-bottom: 1px dashed #5e5e5e;
   box-shadow: 0 0 6px white;
 }
+.logo {
+  width: 100px;
+}
+nav .bookmarker {
+  flex-grow: 2;
+  text-align: left;
+  margin-left: 1.4em;
+  color: #ba2d11;
+  text-shadow: 0 0 6px #fae1e3;
+  margin: 0.3em 0 0.3em 0.8em;
+}
+nav h1 {
+  margin: 0;
+}
+.navIcon {
+  font-size: 2.5em !important;
+  margin: 0.1em 0.3em;
+  color: white;
+  cursor: pointer;
+}
+/* LOGIN */
+.navIcon.login:hover {
+  color: #a7b3cf;
+  cursor: pointer;
+}
+.navIcon.login.logged {
+  color: #0a9507;
+}
+.navIcon.login.logged:hover {
+  color: #46c743;
+}
+/* SAVE */
+.navIcon.save.disabled {
+  color: #a7b3cf;
+  cursor: default;
+}
+.navIcon.save.disabled:hover {
+  color: #a7b3cf;
+  cursor: default;
+}
+.navIcon.save {
+  color: red;
+}
+.navIcon.save:hover {
+  color: orange;
+}
+/* FOLDER */
+.navIcon.folderAdd {
+  color: #ddc70e;
+}
+.navIcon.folderAdd:hover {
+  color: #e3d23e;
+}
+/* LINK */
+.navIcon.linkAdd {
+  font-size: 1.5em !important;
+  margin: 0.45em 0.3em 0;
+  color: #2563e1;
+}
+.navIcon.linkAdd:hover {
+  color: #5082e7;
+}
+/* ============================================================================= FORMS */
 .logBtn {
   border: 0;
   border-radius: 6px;
@@ -48,28 +122,90 @@ nav {
   color: #748fcc;
   cursor: pointer;
 }
-nav svg {
-  font-size: 2.5em !important;
-  margin: 0.1em 0.3em;
-  color: white;
-  cursor: pointer;
+/* ============================================================================= Tabbed_Categories Component */
+.tabs_container {
+  width: 100%;
 }
-nav svg:hover {
+.RRT__panel {
+  display: flex;
+  width: 100%;
+  border: 0;
+  border-top: 1px dashed lightgrey;
+}
+.RRT__tab {
+  background: #d9e3e2;
+  border-radius: 10px 10px 0 0;
+  margin: 0 0.1em;
+  border: 0;
+  color: white;
+  text-shadow: 0 0 2px grey;
+}
+.RRT__tab--selected,
+.RRT__tab--selected:focus {
+  background: #f5fb9f;
+  transform: none;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: grey;
+  text-shadow: none;
+}
+.RRT__tab:hover,
+.RRT__tab--selected:hover {
+  background: #eefc2c;
+  color: grey;
+  text-shadow: none;
+}
+/* ============================================================================= Tabbed_Links Component */
+.link_card {
+  border: 1px solid black;
+  border-radius: 6px;
+  padding: 8px;
+  margin: 4px;
+  min-width: 330px;
+}
+.link_name {
+  font-weight: bold;
+  font-size: 1.4em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 1.5em);
+}
+.link_img {
+  width: 100%;
+  text-align: center;
+}
+.link_img img {
+  height: 200px;
+  width: 200px;
+  margin: 0 auto;
+}
+.link_title {
+  position: relative;
+}
+.linkCardIcon {
+  font-size: 1.1em !important;
+  position: absolute;
+  right: 0.15em;
+  bottom: 0.4em;
   color: #a7b3cf;
   cursor: pointer;
 }
-nav span {
-  margin: 0 2em 0 0.4em;
-  font-weight: bold;
+.ratingDiv {
+  position: relative;
+  margin: 0.7em 0 0;
 }
-nav h1.homepage {
-  flex-grow: 2;
-  text-align: left;
-  margin-left: 1.4em;
-  color: #ba2d11;
-  text-shadow: 0 0 6px #fae1e3;
-  margin: 0.3em 0 0.3em 0.8em;
+#quill_Div {
+  display: none;
 }
+#quill_save {
+  display: none;
+}
+.Quill_in_modal {
+  min-width: 100%;
+  display: block !important;
+}
+/* ============================================================================= Modal Component */
 .modal_overlay {
   position: fixed;
   top: 3.1em;
@@ -102,6 +238,7 @@ nav h1.homepage {
 .error.shown {
   display: inline;
 }
+/* ============================================================================= Unsaved Component */
 .fctBtn {
   border: 0;
   border-radius: 6px;
@@ -114,22 +251,7 @@ nav h1.homepage {
 .fctBtn:hover {
   background-color: #748fcc;
 }
-.fctGroup {
-  flex-grow: 2;
-  text-align: center;
-}
-.fctBtn.warning {
-  background-color: #ba2d11;
-  color: white;
-}
-.user {
-  padding: 0.7em;
-}
 /* ============================================================================= Page component */
-.test {
-  background: green;
-  border: 3px solid red;
-}
 .page {
   margin-top: 3.1em;
   /* Should be adjusted to the nav height */
@@ -152,72 +274,11 @@ li {
   margin: 0;
   position: relative;
 }
-li a {
-  text-decoration: none;
-  cursor: pointer;
-}
-li.link:before {
-  position: absolute;
-  top: -2px;
-  left: -30px;
-  content: url(/bookmark.png);
-}
-li.folder-closed:before {
-  position: absolute;
-  top: -2px;
-  left: -40px;
-  content: url(/folder-closed.png);
-}
-li.folder-closed ul {
-  display: none;
-}
-li.folder-opened:before {
-  position: absolute;
-  top: -2px;
-  left: -40px;
-  content: url(/folder-opened.png);
-}
-li.folder-opened ul {
-  display: block;
-}
 .legal {
   font-size: 0.7em;
   font-style: italic;
 }
-[contentEditable] {
-  outline: none;
-}
-.liDiv {
-  display: inline-block;
-}
-.categoryTree {
-  border-right: 1px solid grey;
-  padding-right: 1em;
-}
 .categoryDisplay {
   padding: 1em 0;
   flex-grow: 2;
-}
-.catName {
-  display: inline-block;
-}
-.catContentLength {
-  display: inline-block;
-  font-size: 0.6em;
-  color: grey;
-  font-style: italic;
-  margin: 0 0 0 0.6em;
-}
-.ratingDiv {
-  margin: 0.7em 0 0;
-}
-#quill_Div {
-  display: none;
-}
-#quill_save {
-  display: none;
-}
-.Quill_in_modal {
-  min-width: 100%;
-  display: block !important;
 }

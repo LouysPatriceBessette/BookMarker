@@ -27,17 +27,14 @@ import Ratings from "react-ratings-declarative";
 // Quill wysiwyg editor
 import Quill from "quill";
 
+// Responsive tabs
+import Sortable from "react-sortablejs";
+
 // Fucking UNINTUITIVE npm instal instructions: https://www.npmjs.com/package/@fortawesome/react-fontawesome#usage
 // icon list: https://fontawesome.com/v4.7.0/icons/
 import {
     FontAwesomeIcon
 } from "@fortawesome/react-fontawesome";
-import {
-    library
-} from "@fortawesome/fontawesome-svg-core";
-import {
-    fab
-} from "@fortawesome/free-brands-svg-icons";
 
 
 // ================================================= CUSTOM JS
@@ -75,9 +72,8 @@ export {
     Cookies,
     Ratings,
     Quill,
+    Sortable,
     FontAwesomeIcon,
-    library,
-    fab,
     log,
     getRealType,
     map_O_spread,

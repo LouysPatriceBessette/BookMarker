@@ -8,9 +8,8 @@ import {
   Cookies,
   Ratings,
   Quill,
+  Sortable,
   FontAwesomeIcon,
-  library,
-  fab,
   log,
   getRealType,
   map_O_spread,
@@ -23,7 +22,7 @@ import {
 // =============================================================================================================== Other component imports
 
 // =============================================================================================================== Component class
-class U_BookmarkDetails extends Component {
+class U_Tabbed_Links extends Component {
   constructor(props) {
     super(props);
 
@@ -47,13 +46,17 @@ class U_BookmarkDetails extends Component {
       e.target.innerText = "Save";
 
       // Hide real_link
-      document.querySelector("#real_link").style.display = "none";
+      document.querySelector(
+        "#real_link_" + this.props.activeLink
+      ).style.display = "none";
 
       // Set the input value correcly
       this.setState({ link_rename: link.name });
 
       // Show the input
-      document.querySelector("#real_link_rename").type = "text";
+      document.querySelector(
+        "#real_link_rename_" + this.props.activeLink
+      ).type = "text";
     }
     // ===== 2
     else {
@@ -68,10 +71,14 @@ class U_BookmarkDetails extends Component {
       });
 
       // Show real_link
-      document.querySelector("#real_link").style.display = "inline";
+      document.querySelector(
+        "#real_link_" + this.props.activeLink
+      ).style.display = "inline";
 
       // Hide the input
-      document.querySelector("#real_link_rename").type = "hidden";
+      document.querySelector(
+        "#real_link_rename_" + this.props.activeLink
+      ).type = "hidden";
     }
   };
 
@@ -271,63 +278,73 @@ class U_BookmarkDetails extends Component {
   };
 
   componentDidUpdate = () => {
-    // If having an active link
-    if (this.props.activeLink !== -1) {
-      // Quill container
-      let QuillContainer = document.querySelector("#editor");
+    // Quill container
+    let QuillContainer = document.querySelector("#editor");
 
-      // Check if NOT already instantiated
-      if (Quill.find(QuillContainer) !== this.quill_editor) {
-        // Instantiate Quill
-        this.quill_editor = new Quill(QuillContainer, {
-          modules: {
-            toolbar: [
-              [{ header: [1, 2, false] }],
-              ["bold", "italic", "underline"]
-            ]
-          },
-          theme: "snow"
-        });
-        log.ok("Quill initialised...");
-      }
-
-      // Set content
-      // https://quilljs.com/docs/api/#setcontents
-      this.quill_editor.setContents(
-        this.props.links[this.props.activeLink].comment
-      );
+    // Check if NOT already instantiated
+    if (Quill.find(QuillContainer) !== this.quill_editor) {
+      // Instantiate Quill
+      this.quill_editor = new Quill(QuillContainer, {
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, false] }],
+            ["bold", "italic", "underline"]
+          ]
+        },
+        theme: "snow"
+      });
+      log.ok("Quill initialised...");
     }
+
+    // Set content
+    // https://quilljs.com/docs/api/#setcontents
+    this.quill_editor.setContents(
+      this.props.links[this.props.activeLink].comment
+    );
   };
 
   // =============================================================================================================== Component render
   render = () => {
-    log.render("BookmarkDetails");
+    log.render("Tabbed_links");
 
-    if (this.props.activeLink !== -1) {
-      let link = this.props.links[this.props.activeLink];
-      let star = <Ratings.Widget widgetDimension="20px" widgetSpacing="2px" />;
+    let link = this.props.links[this.props.activeLink];
+    let star = <Ratings.Widget widgetDimension="20px" widgetSpacing="2px" />;
 
-      // ========================================
-      // Quill editor formatting
-      let linkComment = this.quill_format_object_to_html(link.comment);
+    // ========================================
+    // Quill editor formatting
+    let linkComment = this.quill_format_object_to_html(link.comment);
 
-      // ======================================================================= Return
-      return (
-        <>
-          <div>
-            <a target="_blank" href={link.href} id="real_link">
+    // ======================================================================= Return
+    return (
+      <>
+        <div className="link_card">
+          <div className="link_title">
+            <div
+              id={"real_link_" + this.props.activeLink}
+              className="link_name"
+              title={link.name}
+            >
               {link.name}
-            </a>
+            </div>
             <input
               type="hidden"
-              id="real_link_rename"
+              id={"real_link_rename_" + this.props.activeLink}
               value={this.state.link_rename}
               onChange={this.link_rename_change}
             />
-            <button className="fctBtn" onClick={this.link_rename}>
-              Rename
-            </button>
+            <FontAwesomeIcon
+              icon="edit"
+              className="linkCardIcon editName"
+              title="Edit name"
+              onClick={this.link_rename}
+            />
           </div>
+          <div className="link_img">
+            <a target="_blank" href={link.href}>
+              <img src="/image_missing.png" />
+            </a>
+          </div>
+
           <div className="ratingDiv">
             <Ratings
               rating={link.rating}
@@ -340,6 +357,13 @@ class U_BookmarkDetails extends Component {
               {star}
               {star}
             </Ratings>
+
+            <FontAwesomeIcon
+              icon="edit"
+              className="linkCardIcon editComment"
+              title="Edit comment"
+              onClick={this.quill_toggle} //quill_getContent}
+            />
           </div>
 
           <div id="Link_comment_Div">{linkComment}</div>
@@ -347,30 +371,9 @@ class U_BookmarkDetails extends Component {
           <div id="quill_Div">
             <div id="editor"></div>
           </div>
-
-          <button
-            id="quill_save"
-            className="fctBtn"
-            onClick={this.quill_getContent}
-          >
-            Save
-          </button>
-
-          <button
-            id="quill_open"
-            className="fctBtn"
-            onClick={this.quill_toggle}
-          >
-            Edit your comment
-          </button>
-
-          <div id="test"></div>
-        </>
-      ); // ==================================================================== End return
-    } else {
-      // ======================================================================= Return
-      return <></>; // ==================================================================== End return
-    }
+        </div>
+      </>
+    ); // ==================================================================== End return
   }; // End render
 } // End class
 
@@ -378,11 +381,11 @@ class U_BookmarkDetails extends Component {
 let stp = state => {
   return {
     // Specific component props from the state here
-    activeLink: state.activeLink,
+    //activeLink: state.activeLink,
     links: state.links
   };
 };
 
 // =============================================================================================================== Component connection to the store
-let BookmarkDetails = connect(stp)(U_BookmarkDetails);
-export default BookmarkDetails;
+let Tabbed_Links = connect(stp)(U_Tabbed_Links);
+export default Tabbed_Links;

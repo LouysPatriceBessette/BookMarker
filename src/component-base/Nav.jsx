@@ -8,9 +8,8 @@ import {
   Cookies,
   Ratings,
   Quill,
+  Sortable,
   FontAwesomeIcon,
-  library,
-  fab,
   log,
   getRealType,
   map_O_spread,
@@ -24,16 +23,6 @@ import {
 import Form_login from "./Form_login.jsx";
 import Form_add_folder from "./Form_add_folder.jsx";
 import Form_add_link from "./Form_add_link.jsx";
-
-// FontAwesome
-import {
-  faShoppingCart,
-  faUserCircle,
-  faSearch,
-  faArrowUp
-} from "@fortawesome/free-solid-svg-icons";
-
-library.add(fab, faShoppingCart, faUserCircle, faSearch, faArrowUp);
 
 // =============================================================================================================== Component class
 class U_Nav extends Component {
@@ -69,7 +58,6 @@ class U_Nav extends Component {
     this.props.dispatch({
       type: "modal",
       content: {
-        //fetchPath: "------------TBD--------------",
         title: "Add a folder",
         component: <Form_add_folder />
       }
@@ -80,7 +68,6 @@ class U_Nav extends Component {
     this.props.dispatch({
       type: "modal",
       content: {
-        //fetchPath: "------------TBD--------------",
         title: "Add a link",
         component: <Form_add_link />
       }
@@ -89,11 +76,6 @@ class U_Nav extends Component {
 
   unsavedChanges_display = () => {
     log.ok("Display the unsaved changes list.");
-
-    // Changes are in the store
-    // this.props.unsavedChanges_detail ==> array of objects
-
-    // Got to display things for every objects in the PAGE
     this.props.dispatch({ type: "display unsaved changes" });
   };
 
@@ -111,68 +93,66 @@ class U_Nav extends Component {
       return (
         <>
           <nav>
-            <FontAwesomeIcon icon={faUserCircle} onClick={this.login} />
-            <h1 className="homepage">BookMarker.Club</h1>
-            <img className="logo" src="/book.png" />
+            <FontAwesomeIcon
+              icon="user-circle"
+              className="navIcon login"
+              title="Login"
+              onClick={this.login}
+            />
+            <div className="bookmarker">
+              <h1>BookMarker.Club</h1>
+            </div>
+            <div>
+              <img className="logo" src="/book.png" />
+            </div>
           </nav>
         </>
       ); // ==================================================================== End return
     } else {
       // USED IS LOGGED
 
-      // ===================================== function buttons
-
-      // Add a link to a folder
-      let add_a_link = (
-        <button className="fctBtn" disabled title="Click a folder first">
-          Add a link
-        </button>
-      );
+      let activeFolderName = "...";
       if (this.props.activeCat !== -1) {
-        add_a_link = (
-          <button className="fctBtn" onClick={this.add_link}>
-            Add a link to {this.props.categories[this.props.activeCat].name}
-          </button>
-        );
+        activeFolderName = this.props.categories[this.props.activeCat].name;
       }
-
-      // Save changes
-      let save_changes = (
-        <button className="fctBtn" disabled>
-          No changes
-        </button>
-      );
-      if (this.props.unsavedChanges) {
-        save_changes = (
-          <button
-            className="fctBtn warning"
-            onClick={this.unsavedChanges_display}
-          >
-            You have unsaved changes
-          </button>
-        );
-      }
-
       // ======================================================================= Return
       return (
         <>
           <nav>
+            <div title={this.props.username}>
+              <FontAwesomeIcon
+                icon="user-circle"
+                className="navIcon login logged"
+                onClick={this.logout}
+              />
+            </div>
+            <div title="All saved">
+              <FontAwesomeIcon
+                icon="cloud"
+                className="navIcon save disabled"
+                onClick={this.unsavedChanges_display}
+              />
+            </div>
+            <div title="Add a tab">
+              <FontAwesomeIcon
+                icon="folder"
+                className="navIcon folderAdd"
+                onClick={this.add_folder}
+              />
+            </div>
+            <div title={"Add a link to " + activeFolderName}>
+              <FontAwesomeIcon
+                icon="link"
+                className="navIcon linkAdd"
+                onClick={this.add_link}
+              />
+            </div>
+            <div className="bookmarker">
+              <h1>BookMarker.Club</h1>
+            </div>
             <div>
-              {save_changes}
-              <button className="logBtn" onClick={this.logout}>
-                Log out
-              </button>
+              <img className="logo" src="/book.png" />
             </div>
-            <div className="fctGroup">
-              <button className="fctBtn" onClick={this.add_folder}>
-                Add a folder
-              </button>
-              {add_a_link}
-            </div>
-            <div className="user">
-              Logged as: <span>{this.props.username}</span>
-            </div>
-            <img className="logo" src="/book.png" />
           </nav>
         </>
       ); // ==================================================================== End return

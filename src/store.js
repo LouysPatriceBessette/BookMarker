@@ -8,9 +8,8 @@ import {
     Cookies,
     Ratings,
     Quill,
+    Sortable,
     FontAwesomeIcon,
-    library,
-    fab,
     log,
     getRealType,
     map_O_spread,
@@ -30,7 +29,6 @@ let defaultStore = {
     unsavedChanges: false,
     unsavedChanges_detail: [],
     unsavedShown: false,
-    sortable_order: []
 }
 
 let reducer = (state, action) => {
@@ -116,9 +114,13 @@ let reducer = (state, action) => {
 
     }
 
+    if ((action.type === "tab change")) {
+        newState.activeCat = action.activeCat
+    }
     // =========================================================== New folder ( triggers a change to save )
     if (action.type === "folder add") {
 
+        let catID = newState.categories.length
         // Flag.
         newState.unsavedChanges = true
 
@@ -126,19 +128,14 @@ let reducer = (state, action) => {
         newState.unsavedChanges_detail.push({
 
             target: "Folder",
-            index: newState.categories.length,
+            index: catID,
             property: "ALL",
             oldValue: "",
             newValue: action.folderName,
-            newOrder: 0, // on TOP of all categories render order!
-            // ...
             time: new Date().getTime()
         })
 
-        // Make the change
-
-        // Place this category ID in front of the render order.
-        newState.sortable_order = [newState.categories.length].concat(newState.sortable_order)
+        // ================================================ Make the change
 
         // ADD 1 to ALL category order property
         newState.categories = newState.categories.map(cat => {
@@ -154,11 +151,12 @@ let reducer = (state, action) => {
             order: 0, // on TOP of all categories render order!
         })
 
+        // Set the tab active
+        newState.activeCat = catID
 
         // Close modal
         newState.overlay = false
         newState.sl_error = false
-
     }
 
     // =========================================================== New link ( triggers a change to save )
@@ -258,11 +256,6 @@ let reducer = (state, action) => {
 
     // =========================================================== Category re-order ( triggers a change to save )
 
-    // on page load, save the actual category render order in the store
-    if (action.type === "category order setup") {
-        newState.sortable_order = action.order
-    }
-
     if (action.type === "category order change") {
 
         // Flag.
@@ -286,8 +279,6 @@ let reducer = (state, action) => {
         })
         newState.categories = newCategories
 
-        // save the actual category render order
-        newState.sortable_order = action.newOrder
     }
 
     // =========================================================== Unsaved details show
