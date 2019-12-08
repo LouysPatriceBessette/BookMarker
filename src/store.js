@@ -29,7 +29,8 @@ let defaultStore = {
     activeLink: -1,
     unsavedChanges: false,
     unsavedChanges_detail: [],
-    unsavedShown: false
+    unsavedShown: false,
+    sortable_order: []
 }
 
 let reducer = (state, action) => {
@@ -67,10 +68,10 @@ let reducer = (state, action) => {
             expires: -1
         })
     }
+
     if (action.type === "sign-log-error") {
         newState.sl_error = true
     }
-
 
     // =========================================================== Link folder state opened / closed
     if (action.type === "folder state") {
@@ -118,7 +119,6 @@ let reducer = (state, action) => {
     // =========================================================== New folder ( triggers a change to save )
     if (action.type === "folder add") {
 
-
         // Flag.
         newState.unsavedChanges = true
 
@@ -130,20 +130,30 @@ let reducer = (state, action) => {
             property: "ALL",
             oldValue: "",
             newValue: action.folderName,
-            // Maybe that should be on top instead of last...
-            //   That mean changing ALL order property for ALL links !! Doh!
-            newOrder: newState.categories.length,
+            newOrder: 0, // on TOP of all categories render order!
             // ...
             time: new Date().getTime()
         })
 
         // Make the change
+
+        // Place this category ID in front of the render order.
+        newState.sortable_order = [newState.categories.length].concat(newState.sortable_order)
+
+        // ADD 1 to ALL category order property
+        newState.categories = newState.categories.map(cat => {
+            cat.order = cat.order + 1
+            return cat
+        })
+
+        // push the new category at the end.
         newState.categories.push({
             name: action.folderName,
             content: [],
             state: "closed",
-            order: newState.categories.length
+            order: 0, // on TOP of all categories render order!
         })
+
 
         // Close modal
         newState.overlay = false
@@ -248,6 +258,11 @@ let reducer = (state, action) => {
 
     // =========================================================== Category re-order ( triggers a change to save )
 
+    // on page load, save the actual category render order in the store
+    if (action.type === "category order setup") {
+        newState.sortable_order = action.order
+    }
+
     if (action.type === "category order change") {
 
         // Flag.
@@ -270,14 +285,15 @@ let reducer = (state, action) => {
             newCategories[i].order = action.newOrder[i]
         })
         newState.categories = newCategories
+
+        // save the actual category render order
+        newState.sortable_order = action.newOrder
     }
 
     // =========================================================== Unsaved details show
     if (action.type === "display unsaved changes") {
         newState.unsavedShown = true
     }
-
-
 
     // =========================================================== CHANGES SAVED!
 
@@ -290,11 +306,8 @@ let reducer = (state, action) => {
     // =========================================================== SHARE A FOLDER
 
     // ...
-    // ...
-    // ...
-    // ...
-    // ...
 
+    // ========================================================================================= RETURN STATE
     return newState
 }
 

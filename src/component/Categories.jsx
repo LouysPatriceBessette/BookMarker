@@ -31,11 +31,10 @@ class U_Categories extends Component {
   constructor(props) {
     super(props);
 
+    this.render_order = [];
+
     this.state = {
-      category_rename: "",
-      category_order: this.props.categories.map(c => {
-        return c.order;
-      })
+      category_rename: ""
     };
   }
 
@@ -135,10 +134,14 @@ class U_Categories extends Component {
     }
   };
 
-  // =============================================================================================================== Component render
-  render = () => {
-    log.render("Categories");
+  // produces the array of only the order each category should be in.
+  get_order = () => {
+    return this.props.categories.map(c => {
+      return c.order;
+    });
+  };
 
+  reorder = () => {
     // Variable used to reorder the categories
     let categories_length = this.props.categories.length;
     let category_processed = 0;
@@ -146,39 +149,56 @@ class U_Categories extends Component {
     let ordered_categories = [];
     let original_indexes = [];
 
-    // WHILE loop to produce an array of categories ordered byt the category "order" property
+    // WHILE loop to re=ordered by the category "order" property
     while (categories_length !== category_processed) {
       // Check all categories
       this.props.categories.forEach((c, original_index) => {
+        // Check the position it should be rendered at in another array.
+        // That array is the component this.render_order.
         //
-        // condition for having it in the order defined in the category property : (c.order === category_processed)
-        //
-        //
-        // condition for having it in the order of the categories (NOT WANT WE WANT)  : (c.order === this.state.category_order[category_processed])
-        //
-
-        // THE FIX: I have to find that categorie order as defined in the component state
-
-        let actual_position = this.state.category_order.indexOf(original_index);
-
-        // That should be the ACTUAL position after a drag n' drop
-        console.log("actual_position", actual_position, c.name); // That is pefect!!! Exactly that!!
+        let actual_position = this.render_order.indexOf(original_index);
 
         // Need to read the state.category_order... FIXED! I replace c.order with actual_position
         if (actual_position === category_processed) {
-          log.var("Processing...", c.order);
+          // Produce the two output arrays
+          // One for the categories re-ordered
           ordered_categories.push(c);
+          // One for their category ID (which is the "original order of the categories array in DB")
           original_indexes.push(original_index);
+
+          // Increment the processed category counter
           category_processed++;
         }
       });
     }
 
-    // lify the ordered category array
+    return { o_cat: ordered_categories, o_id: original_indexes };
+  };
+
+  // =============================================================================================================== Component render
+  render = () => {
+    log.render("Categories");
+
+    this.render_order = this.props.sortable_order;
+    // on first render (page load), the render order stored in the store is empty
+    // So we dispatch an action to set it right away.
+    // The function to produce that order is here, in the component.
+    // on subsenquent component rendering, the store value will be the most recent.
+    if (this.props.sortable_order.length === 0) {
+      this.render_order = this.get_order();
+      this.props.dispatch({
+        type: "category order setup",
+        order: this.render_order
+      });
+    }
+
+    // Re-order the category elements based on their order property
+    let o_data = this.reorder();
+    let ordered_categories = o_data.o_cat;
+    let original_indexes = o_data.o_id;
+
+    // lify the ordered categories
     let categories_lified = ordered_categories.map((cat, render_index) => {
-      //
-      // That is ONE category mapping
-      //
       return (
         <li
           key={key(cat)}
@@ -189,7 +209,6 @@ class U_Categories extends Component {
         >
           <div
             id={"cat_" + original_indexes[render_index]}
-            //contentEditable="true"
             onBlur={this.contentEditableBlur}
             suppressContentEditableWarning={true}
             className="catName"
@@ -226,10 +245,7 @@ class U_Categories extends Component {
               return parseInt(o);
             });
 
-            let previousOrder = this.state.category_order;
-            this.setState({ category_order: newOrder }); // Returned_from_sortable, but procecessed into numbers
-            log.var("previousOrder", previousOrder);
-            log.var("newOrder", newOrder);
+            let previousOrder = this.props.sortable_order;
 
             this.props.dispatch({
               type: "category order change",
@@ -251,6 +267,7 @@ let stp = state => {
     // Specific component props from the state here
     username: state.username,
     categories: state.categories,
+    sortable_order: state.sortable_order,
     links: state.links
   };
 };
