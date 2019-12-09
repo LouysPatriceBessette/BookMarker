@@ -1,9 +1,16 @@
 @font-face {
-  font-family: 'McLaren';
+  font-family: 'Pacifico';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: local('McLaren'), local('McLaren-Regular'), url(https://fonts.gstatic.com/s/mclaren/v7/2EbnL-ZuAXFqZFXIeYEV9w.ttf) format('truetype');
+  src: local('Pacifico Regular'), local('Pacifico-Regular'), url(https://fonts.gstatic.com/s/pacifico/v16/FwZY7-Qmy14u9lezJ-6H6Mw.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Catamaran';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Catamaran Regular'), local('Catamaran-Regular'), url(https://fonts.gstatic.com/s/catamaran/v6/o-0IIpQoyXQa2RxT7-5r5TRF.ttf) format('truetype');
 }
 /* ============================================================================= COLORS */
 /* =============================================================================ELEMENT COLORS */
@@ -21,10 +28,17 @@
 body {
   background-color: #f2fdfc;
   margin: 0;
-  font-family: 'McLaren', cursive;
+  font-family: "catamaran";
 }
 [contentEditable] {
   outline: none;
+}
+button,
+input,
+select,
+textarea {
+  font-family: "catamaran" !important;
+  font-size: 1em !important;
 }
 /* ============================================================================= NAV Component */
 nav {
@@ -39,23 +53,46 @@ nav {
 }
 .logo {
   width: 100px;
+  transform: translate(12px, 6px);
 }
 nav .bookmarker {
-  flex-grow: 2;
   text-align: left;
   margin-left: 1.4em;
-  color: #ba2d11;
-  text-shadow: 0 0 6px #fae1e3;
+  color: #020a6d;
   margin: 0.3em 0 0.3em 0.8em;
 }
 nav h1 {
-  margin: 0;
+  margin: 0.1em 0 0 0.2em;
+  font-size: 2.3em;
+  line-height: 1em;
+  text-shadow: 0 0 6px #094804;
+  font-family: 'Pacifico', cursive;
+}
+.searchDiv {
+  flex-grow: 2;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.searchInput {
+  padding: 0.2em 0.6em;
+  margin: 0.3em 0;
+  border: 0;
+  border-radius: 15px;
+  width: 60%;
+  font-size: 1.4em;
 }
 .navIcon {
   font-size: 2.5em !important;
   margin: 0.1em 0.3em;
   color: white;
   cursor: pointer;
+}
+/* SEARCH */
+.navIcon.search {
+  font-size: 1.8em !important;
+  margin: 0.35em 0.3em 0;
 }
 /* LOGIN */
 .navIcon.login:hover {
@@ -93,11 +130,20 @@ nav h1 {
 /* LINK */
 .navIcon.linkAdd {
   font-size: 1.5em !important;
-  margin: 0.45em 0.3em 0;
+  margin: 0.55em 0.3em 0;
   color: #2563e1;
 }
 .navIcon.linkAdd:hover {
   color: #5082e7;
+}
+.order_selects {
+  position: absolute;
+  bottom: -2em;
+  right: 0.5em;
+}
+.order_selects select {
+  border: 0;
+  outline: 0;
 }
 /* ============================================================================= FORMS */
 .logBtn {
@@ -125,6 +171,7 @@ nav h1 {
 /* ============================================================================= Tabbed_Categories Component */
 .tabs_container {
   width: 100%;
+  margin: 2em 0 0 0 !important;
 }
 .RRT__panel {
   display: flex;
@@ -137,8 +184,9 @@ nav h1 {
   border-radius: 10px 10px 0 0;
   margin: 0 0.1em;
   border: 0;
-  color: white;
-  text-shadow: 0 0 2px grey;
+  color: grey;
+  text-shadow: 0 0 4px grey;
+  user-select: none;
 }
 .RRT__tab--selected,
 .RRT__tab--selected:focus {
@@ -148,12 +196,14 @@ nav h1 {
   font-size: 1.1em;
   color: grey;
   text-shadow: none;
+  line-height: 1.45em;
 }
 .RRT__tab:hover,
 .RRT__tab--selected:hover {
   background: #eefc2c;
   color: grey;
   text-shadow: none;
+  font-weight: bold;
 }
 /* ============================================================================= Tabbed_Links Component */
 .link_card {

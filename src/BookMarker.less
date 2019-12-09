@@ -1,11 +1,19 @@
-@import url('https://fonts.googleapis.com/css?family=McLaren&display=swap');
+//@import url('https://fonts.googleapis.com/css?family=McLaren&display=swap');  // tOO CLOSE TO COMIC
+@import url('https://fonts.googleapis.com/css?family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Catamaran&display=swap');
 
 /* ============================================================================= COLORS */
 
 @main_background: #f2fdfc;
 @main_complementary: #d9e3e2;
 
-@category_inactive_tab: @main_complementary;
+@websiteName_color: #020a6d;
+@websiteName_textShadow: #094804;
+
+@category_inactive_tab_background: @main_complementary;
+@category_inactive_tab_color: grey;
+@category_inactive_tab_textShadow: 0 0 4px grey;
+
 @category_active_tab: #f5fb9f;
 @category_active_tab_hover: #eefc2c;
 
@@ -18,8 +26,7 @@
 @light_blue: #748fcc;
 
 /* =============================================================================ELEMENT COLORS */
-@websiteName_color: @dark_red;
-@websiteName_textShadow: #fae1e3;
+
 
 @header_color: #826d6f;
 
@@ -77,11 +84,19 @@
 body {
     background-color: @body_background;
     margin: 0;
-    font-family: 'McLaren', cursive;
+    font-family: "catamaran";
 }
 
 [contentEditable] {
     outline: none;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: "catamaran" !important;
+    font-size: 1em !important;
 }
 
 /* ============================================================================= NAV Component */
@@ -99,26 +114,53 @@ nav {
 
 .logo {
     width: 100px;
+    transform: translate(12px, 6px)
 }
 
 nav .bookmarker {
-    flex-grow: 2;
     text-align: left;
     margin-left: 1.4em;
     color: @websiteName_color;
-    text-shadow: 0 0 6px @websiteName_textShadow;
     margin: 0.3em 0 0.3em 0.8em;
 }
 
 nav h1 {
-    margin: 0;
+    margin: 0.1em 0 0 0.2em;
+    font-size: 2.3em;
+    line-height: 1em;
+    text-shadow: 0 0 6px @websiteName_textShadow;
+    font-family: 'Pacifico', cursive;
 }
+
+.searchDiv {
+    flex-grow: 2;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.searchInput {
+    padding: 0.2em 0.6em;
+    margin: 0.3em 0;
+    border: 0;
+    border-radius: 15px;
+    width: 60%;
+    font-size: 1.4em;
+}
+
 
 .navIcon {
     font-size: 2.5em !important;
     margin: 0.1em 0.3em;
     color: @navIcon_color;
     cursor: pointer;
+}
+
+/* SEARCH */
+.navIcon.search {
+    font-size: 1.8em !important;
+    margin: 0.35em 0.3em 0;
 }
 
 /* LOGIN */
@@ -166,13 +208,25 @@ nav h1 {
 /* LINK */
 .navIcon.linkAdd {
     font-size: 1.5em !important;
-    margin: 0.45em 0.3em 0;
+    margin: 0.55em 0.3em 0;
     color: @navIcon_link_color //#2563e1;
 }
 
 .navIcon.linkAdd:hover {
     color: @navIcon_link_hover //#5082e7;
 }
+
+.order_selects {
+    position: absolute;
+    bottom: -2em;
+    right: 0.5em;
+}
+
+.order_selects select {
+    border: 0;
+    outline: 0;
+}
+
 
 /* ============================================================================= FORMS */
 
@@ -206,7 +260,7 @@ nav h1 {
 
 .tabs_container {
     width: 100%;
-    // border: 1px solid red;
+    margin: 2em 0 0 0 !important;
 }
 
 .RRT__panel {
@@ -217,12 +271,13 @@ nav h1 {
 }
 
 .RRT__tab {
-    background: @category_inactive_tab;
+    background: @category_inactive_tab_background;
     border-radius: 10px 10px 0 0;
     margin: 0 0.1em;
     border: 0;
-    color: white;
-    text-shadow: 0 0 2px grey;
+    color: @category_inactive_tab_color;
+    text-shadow: @category_inactive_tab_textShadow;
+    user-select: none;
 }
 
 .RRT__tab--selected,
@@ -233,6 +288,7 @@ nav h1 {
     font-size: 1.1em;
     color: grey;
     text-shadow: none;
+    line-height: 1.45em;
 }
 
 .RRT__tab:hover,
@@ -240,6 +296,7 @@ nav h1 {
     background: @category_active_tab_hover;
     color: grey;
     text-shadow: none;
+    font-weight: bold;
 }
 
 

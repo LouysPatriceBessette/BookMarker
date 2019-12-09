@@ -119,6 +119,20 @@ class U_Nav extends Component {
       return (
         <>
           <nav>
+            <div className="order_selects">
+              Results are{" "}
+              <select>
+                <option>alphabetical</option>
+
+                <option selected>chronological</option>
+                <option>rating</option>
+              </select>
+              and
+              <select>
+                <option>ascending</option>
+                <option selected>descending</option>
+              </select>
+            </div>
             <div title={this.props.username}>
               <FontAwesomeIcon
                 icon="user-circle"
@@ -147,8 +161,20 @@ class U_Nav extends Component {
                 onClick={this.add_link}
               />
             </div>
+            <div className="searchDiv">
+              <input
+                type="text"
+                className="searchInput"
+                placeholder="Search your bookmarks..."
+              />
+              <FontAwesomeIcon
+                icon="search"
+                className="navIcon search"
+                //onClick={this.search}
+              />
+            </div>
             <div className="bookmarker">
-              <h1>BookMarker.Club</h1>
+              <h1>Bookmarker.Club</h1>
             </div>
             <div>
               <img className="logo" src="/book.png" />
