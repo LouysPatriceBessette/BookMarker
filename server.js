@@ -104,7 +104,7 @@ let start_server = dbo => {
 
                     if (action.user_id) {
                         console.log("LINE# 106 - Attempting a session SET")
-                        await dbo.collection('sessions').insertOne({
+                        return dbo.collection('sessions').insertOne({
                             sid: action.sid,
                             user_id: action.user_id,
                             date: action.date
@@ -137,7 +137,7 @@ let start_server = dbo => {
 
                     if (action.sid) {
                         console.log("LINE# 139 - Attempting a session GET")
-                        await dbo.collection('sessions').findOne({
+                        return dbo.collection('sessions').findOne({
                             sid: action.sid,
                         }, (err, db_result) => {
                             if (err) {
@@ -168,7 +168,7 @@ let start_server = dbo => {
 
                     if (action.sid) {
                         console.log("LINE# 170 - Attempting a session DEL")
-                        await dbo.collection('sessions').deleteOne({
+                        return dbo.collection('sessions').deleteOne({
                             sid: action.sid
                         }, (err, db_result) => {
                             if (err) {
@@ -244,7 +244,7 @@ let start_server = dbo => {
 
                     if (action.username && action.password && action.bank_id) {
                         console.log("LINE# 246 - Attempting a user SET")
-                        await dbo.collection('users').insertOne({
+                        return dbo.collection('users').insertOne({
                             name: action.username,
                             password: action.password,
                             bank_id: action.bank_id
@@ -279,7 +279,7 @@ let start_server = dbo => {
                     if (action.username) {
                         console.log("LINE# 280 - Attempting a user GET")
 
-                        await dbo.collection('users').findOne({
+                        return dbo.collection('users').findOne({
                             name: action.username
                         }, (err, db_result) => {
                             if (err) {
@@ -317,9 +317,9 @@ let start_server = dbo => {
 
                     // user_id
                     else if (action.user_id) {
-                        console.log("LINE# 320 - Attempting a user GET\nuser_id:", action.user_id)
+                        console.log("LINE# 320 - Attempting a user GET")
 
-                        await dbo.collection('users').findOne({
+                        return dbo.collection('users').findOne({
                             _id: ObjectId(action.user_id)
                         }, (err, db_result) => {
                             if (err) {
@@ -406,7 +406,7 @@ let start_server = dbo => {
 
                     if (action.categories && action.links && action.history) {
                         console.log("LINE# 408 - Attempting a link SET")
-                        await dbo.collection('links').insertOne({
+                        return dbo.collection('links').insertOne({
                             categories: action.categories,
                             links: action.links,
                             history: action.history
@@ -439,7 +439,7 @@ let start_server = dbo => {
 
                     if (action.bank_id) {
                         console.log("LINE# 441 - Attempting a link GET")
-                        await dbo.collection('links').findOne({
+                        return dbo.collection('links').findOne({
                             _id: ObjectId(action.bank_id)
                         }, (err, db_result) => {
                             if (err) {
@@ -478,7 +478,7 @@ let start_server = dbo => {
                     if (action.bank_id && action.categories && action.links && action.history) {
                         console.log("LINE# 479 - Attempting a link UPD")
 
-                        await dbo.collection("links").updateOne({
+                        return dbo.collection("links").updateOne({
                             _id: ObjectId(action.bank_id)
                         }, {
                             $set: {
@@ -639,7 +639,7 @@ let start_server = dbo => {
         }
 
         // check if the username is already taken.
-        await db_user({
+        return db_user({
             do: "get",
             username: usr,
             password: pwd,
@@ -727,7 +727,7 @@ let start_server = dbo => {
             return null;
         }
 
-        await db_user({
+        return db_user({
             do: "get",
             username: req.body.username,
             password: pwd,
@@ -816,7 +816,7 @@ let start_server = dbo => {
         }
 
         // Check the session
-        await db_session({
+        return db_session({
             do: "get",
             sid: sid,
             res: res,
@@ -867,7 +867,7 @@ let start_server = dbo => {
         }
 
         // Check if the session exists
-        await db_session({
+        return db_session({
             do: "get",
             sid: req.cookies.sid,
             res: res,
@@ -923,7 +923,7 @@ let start_server = dbo => {
         }
 
         // Check if the session exists
-        await db_session({
+        return db_session({
             do: "get",
             sid: req.cookies.sid,
             res: res,
@@ -945,9 +945,10 @@ let start_server = dbo => {
                     success: true,
                     errorMsg: "Data saving is done."
                 })
+                return
             }
 
-            console.log("LINE# 950 - Data saving failed.")
+            console.log("LINE# 951 - Data saving failed.")
             res.json({
                 success: false,
                 errorMsg: "Data saving failed."
@@ -956,7 +957,7 @@ let start_server = dbo => {
 
         let process_data = async process_data_response => {
             if (process_data_response !== null) {
-                console.log("LINE# 959 - Links found.")
+                console.log("LINE# 960 - Links found.")
 
                 // Update the history
                 let updated_history = process_data_response.history.concat(JSON.parse(req.body.history))
@@ -971,7 +972,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 974 - Links not found.")
+            console.log("LINE# 975 - Links not found.")
             res.json({
                 success: false,
                 errorMsg: "Links not found."
@@ -980,7 +981,7 @@ let start_server = dbo => {
 
         let get_data = async session_response => {
             if (session_response !== null) {
-                console.log("LINE# 983 - Session found.")
+                console.log("LINE# 984 - Session found.")
 
                 return db_link({
                     do: "get",
@@ -989,7 +990,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 992 - Session not found.")
+            console.log("LINE# 993 - Session not found.")
             res.json({
                 success: false,
                 errorMsg: "Session not found."
@@ -997,7 +998,7 @@ let start_server = dbo => {
         }
 
         // Check the session
-        await db_session({
+        return db_session({
             do: "get",
             sid: req.cookies.sid,
             callback: get_data
@@ -1008,13 +1009,13 @@ let start_server = dbo => {
 
     // ============================================================================== React router (not used yet)
     // app.all('/route/*', (req, res, next) => {
-    //     console.log("LINE# 1011 - app.all()")
+    //     console.log("LINE# 1012 - app.all()")
     //     res.sendFile(__dirname + '/build/index.html');
     // })
 
     // ============================================================================== Server listen to requests...
     app.listen(4000, '0.0.0.0', () => {
-        console.log("LINE# 1017 - Server running on port 4000")
+        console.log("LINE# 1018 - Server running on port 4000")
     })
 
 } // ========================================================================================================================================================== END start_server(dbo)

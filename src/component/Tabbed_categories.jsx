@@ -114,12 +114,9 @@ class U_Tabbed_Categories extends Component {
     let getTabs = () => {
       return ordered_categories.map((cat, index) => ({
         title:
-          original_indexes[index] +
-          " - " +
-          cat.name +
-          " (" +
-          cat.content.length +
-          ")",
+          // original_indexes[index] +
+          // " - " +
+          cat.name + " (" + cat.content.length + ")",
 
         getContent: () => {
           return cat.content.map(cc => {
