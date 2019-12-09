@@ -188,11 +188,14 @@ nav h1 {
   margin: 2em 0 0 0 !important;
 }
 .RRT__panel {
-  display: flex;
-  flex-wrap: wrap;
   width: 100%;
   border: 0;
   border-top: 1px dashed lightgrey;
+}
+.RRT__panel > div {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
 }
 .RRT__tab {
   background: #d9e3e2;
@@ -222,12 +225,13 @@ nav h1 {
 }
 /* ============================================================================= Tabbed_Links Component */
 .link_card {
-  border: 1px solid black;
+  border: 1px solid #020a6d;
   border-radius: 6px;
   padding: 8px;
   margin: 4px;
   width: 300px;
   height: 400px;
+  position: relative;
 }
 .link_name {
   font-weight: bold;
@@ -261,6 +265,10 @@ nav h1 {
   position: relative;
   margin: 0.7em 0 0;
 }
+.Link_comment_Div {
+  overflow-y: scroll;
+  height: 100px;
+}
 .quill_Div {
   display: none;
 }
@@ -269,12 +277,41 @@ nav h1 {
   display: block !important;
 }
 .link_card h1 {
-  /* SHOULD BE MOR PRECISE... AND UNIQUE ID ISSUE ON THE PARENT */
   margin: 0;
 }
-.Link_comment_Div {
-  overflow-y: scroll;
-  height: 100px;
+/* ==================================== Drag icon */
+/* ====== Took from https://gist.github.com/JakeSidSmith/9d986e8eb05dc4ac1197877705654504 */
+/* ====== CodePen: https://jsfiddle.net/7Ldmmrjd/1/ */
+span.dragIcon {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  background: #f2fdfc;
+}
+span.dragIcon,
+span.dragIcon::before,
+span.dragIcon::after {
+  background-image: radial-gradient(#020a6d 40%, transparent 40%);
+  background-size: 4px 4px;
+  background-position: 0 100%;
+  background-repeat: repeat-x;
+}
+span.dragIcon::before,
+span.dragIcon::after {
+  content: '';
+  display: block;
+  height: 33%;
+}
+span.dragIcon::before {
+  width: 33%;
+  margin-left: 66%;
+}
+span.dragIcon::after {
+  width: 66%;
+  margin-left: 33%;
 }
 /* ============================================================================= Modal Component */
 .modal_overlay {

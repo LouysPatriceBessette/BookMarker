@@ -25,7 +25,6 @@ let defaultStore = {
     // Application variables NOT LOGGED
     logged: false,
     activeCat: -1,
-    activeLink: -1,
     unsavedChanges: false,
     unsavedChanges_detail: [],
     unsavedShown: false,
@@ -71,25 +70,6 @@ let reducer = (state, action) => {
         newState.sl_error = true
     }
 
-    // =========================================================== Link folder state opened / closed
-    if (action.type === "folder state") {
-        // modifies the Store categories
-        newState.categories[action.catId].state = action.catState
-        // Set active category
-        newState.activeCat = action.catId
-    }
-
-    // =========================================================== Link details display
-    if (action.type === "link detail") {
-        // Set active link
-        newState.activeLink = action.linkId
-        // Set active category
-        newState.activeCat = action.catId
-
-        // Turn the unsaved details window off (if displayed)
-        newState.unsavedShown = false
-    }
-
     // =========================================================== Link rating ( triggers a change to save )
     if (action.type === "change rating") {
 
@@ -117,6 +97,7 @@ let reducer = (state, action) => {
     if ((action.type === "tab change")) {
         newState.activeCat = action.activeCat
     }
+
     // =========================================================== New folder ( triggers a change to save )
     if (action.type === "folder add") {
 
@@ -278,6 +259,29 @@ let reducer = (state, action) => {
             newCategories[i].order = action.newOrder[i]
         })
         newState.categories = newCategories
+
+    }
+
+    // =========================================================== Links order change ( triggers a change to save )
+    if (action.type === "links order change") {
+
+        // Flag.
+        newState.unsavedChanges = true
+
+        // Store the unsaved change details
+        newState.unsavedChanges_detail.push({
+
+            target: "Links",
+            property: "order",
+            category_affected: action.category_id,
+            categoryName: action.categoryName,
+            oldValue: action.previousOrder,
+            newValue: action.newOrder,
+            time: new Date().getTime()
+        })
+
+        // Make the change for the affected category
+        newState.categories[action.category_id].content = action.newOrder
 
     }
 

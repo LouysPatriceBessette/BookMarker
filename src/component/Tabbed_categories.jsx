@@ -32,6 +32,7 @@ class U_Tabbed_Categories extends Component {
     super(props);
 
     this.render_order = [];
+    this.links_sortable_order = [];
 
     this.state = {
       category_rename: ""
@@ -110,6 +111,11 @@ class U_Tabbed_Categories extends Component {
     let ordered_categories = o_data.o_cat;
     let original_indexes = o_data.o_id;
 
+    // ========================================================== Links order (Sortable)
+    this.links_sortable_order = ordered_categories.map(O_Cat => {
+      return O_Cat.content;
+    });
+
     // ========================================================== TABS
     let getTabs = () => {
       return ordered_categories.map((cat, index) => ({
@@ -119,14 +125,44 @@ class U_Tabbed_Categories extends Component {
           cat.name + " (" + cat.content.length + ")",
 
         getContent: () => {
-          return cat.content.map(cc => {
-            return (
-              <div className="link_cards_container">
-                <Tabbed_Links activeLink={cc} />
-              </div>
-            );
-          });
-        },
+          // Have to find its content in the component links_sortable_order instead of in the category.content.
+          // Because the order will change.
+
+          return (
+            <Sortable
+              //tag="ul" // Defaults to "div"
+              onChange={(order, sortable, evt) => {
+                // order is an array of STRINGS here... Holding the catIds in the new order
+                // So better have it back to an array of numbers.
+                let newOrder = order.map(o => {
+                  return parseInt(o);
+                });
+
+                let previousOrder = this.links_sortable_order;
+
+                log.ok("previousOrder", previousOrder);
+                log.ok("newOrder", newOrder);
+
+                this.props.dispatch({
+                  type: "links order change",
+                  category_id: original_indexes[index],
+                  categoryName: cat.name,
+                  previousOrder: previousOrder,
+                  newOrder: newOrder
+                });
+              }}
+            >
+              {this.links_sortable_order[index].map(cc => {
+                return (
+                  <>
+                    <Tabbed_Links activeLink={cc} />
+                  </>
+                );
+              })}
+            </Sortable>
+          );
+        }, // END getContent
+
         /* Optional parameters */
         key: original_indexes[index],
         tabClassName: "tab",
@@ -146,7 +182,6 @@ class U_Tabbed_Categories extends Component {
 let stp = state => {
   return {
     categories: state.categories,
-    sortable_order: state.sortable_order,
     links: state.links,
     activeCat: state.activeCat
   };

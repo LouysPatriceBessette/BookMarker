@@ -309,7 +309,12 @@ class U_Tabbed_Links extends Component {
     // ======================================================================= Return
     return (
       <>
-        <div className="link_card">
+        <div
+          className="link_card"
+          key={key({ linkID: this.props.activeLink })}
+          data-id={this.props.activeLink}
+        >
+          <span className="dragIcon" title="Drag me!"></span>
           <div className="link_title">
             <div
               id={"real_link_" + this.props.activeLink}

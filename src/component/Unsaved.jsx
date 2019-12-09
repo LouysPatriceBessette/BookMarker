@@ -105,6 +105,16 @@ class U_Unsaved extends Component {
         valueDisplay = <></>;
       }
 
+      if (change.property === "order" && change.target === "Links") {
+        valueDisplay = (
+          <>
+            for category <b>{change.categoryName}</b>
+          </>
+        );
+      }
+
+      // category_affected
+
       return (
         <li key={key({ time: change.time })}>
           {date_time(change.time).iso} | {ChangedElement} {valueDisplay}
