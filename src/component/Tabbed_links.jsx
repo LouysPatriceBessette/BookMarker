@@ -279,7 +279,9 @@ class U_Tabbed_Links extends Component {
 
   componentDidUpdate = () => {
     // Quill container
-    let QuillContainer = document.querySelector("#editor");
+    let QuillContainer = document.querySelector(
+      "#editor_" + this.props.activeLink
+    );
 
     // Check if NOT already instantiated
     if (Quill.find(QuillContainer) !== this.quill_editor) {
@@ -369,7 +371,7 @@ class U_Tabbed_Links extends Component {
           <div id="Link_comment_Div">{linkComment}</div>
 
           <div id="quill_Div">
-            <div id="editor"></div>
+            <div id={"editor_" + this.props.activeLink}></div>
           </div>
         </div>
       </>

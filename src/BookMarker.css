@@ -116,6 +116,7 @@ nav h1 {
 }
 .navIcon.save {
   color: red;
+  transition: color 2s;
 }
 .navIcon.save:hover {
   color: orange;
@@ -175,6 +176,7 @@ nav h1 {
 }
 .RRT__panel {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
   border: 0;
   border-top: 1px dashed lightgrey;
@@ -211,7 +213,8 @@ nav h1 {
   border-radius: 6px;
   padding: 8px;
   margin: 4px;
-  min-width: 330px;
+  width: 300px;
+  height: 400px;
 }
 .link_name {
   font-weight: bold;
@@ -254,6 +257,10 @@ nav h1 {
 .Quill_in_modal {
   min-width: 100%;
   display: block !important;
+}
+.link_card h1 {
+  /* SHOULD BE MOR PRECISE... AND UNIQUE ID ISSUE ON THE PARENT */
+  margin: 0;
 }
 /* ============================================================================= Modal Component */
 .modal_overlay {

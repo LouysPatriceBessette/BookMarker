@@ -99,8 +99,9 @@ class U_Nav extends Component {
               title="Login"
               onClick={this.login}
             />
+            <div className="searchDiv"></div>
             <div className="bookmarker">
-              <h1>BookMarker.Club</h1>
+              <h1>Bookmarker.Club</h1>
             </div>
             <div>
               <img className="logo" src="/book.png" />
@@ -108,13 +109,36 @@ class U_Nav extends Component {
           </nav>
         </>
       ); // ==================================================================== End return
-    } else {
-      // USED IS LOGGED
 
+      // USED IS LOGGED
+    } else {
+      // For 200ms...
       let activeFolderName = "...";
       if (this.props.activeCat !== -1) {
         activeFolderName = this.props.categories[this.props.activeCat].name;
       }
+
+      // The unsaved icon
+      let cloud = () => {
+        if (this.props.unsavedChanges) {
+          return (
+            <div id="cloud" title="You have changes to save!">
+              <FontAwesomeIcon
+                icon="cloud"
+                className="navIcon save"
+                onClick={this.unsavedChanges_display}
+              />
+            </div>
+          );
+        } else {
+          return (
+            <div id="cloud" title="All saved">
+              <FontAwesomeIcon icon="cloud" className="navIcon save disabled" />
+            </div>
+          );
+        }
+      };
+
       // ======================================================================= Return
       return (
         <>
@@ -140,13 +164,9 @@ class U_Nav extends Component {
                 onClick={this.logout}
               />
             </div>
-            <div title="All saved">
-              <FontAwesomeIcon
-                icon="cloud"
-                className="navIcon save disabled"
-                onClick={this.unsavedChanges_display}
-              />
-            </div>
+
+            {cloud()}
+
             <div title="Add a tab">
               <FontAwesomeIcon
                 icon="folder"

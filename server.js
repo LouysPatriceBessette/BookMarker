@@ -630,9 +630,9 @@ let start_server = dbo => {
             console.log("LINE# 630 - username available.");
             return db_link({
                 do: "set",
-                categories: defaultBank.categories,
-                links: defaultBank.links,
-                history: defaultBank.history,
+                categories: emptyBank.categories,
+                links: emptyBank.links,
+                history: emptyBank.history,
                 res: res,
                 callback: set_new_user
             })
@@ -1098,6 +1098,26 @@ let defaultBank = {
     ],
     history: []
 
+}
+
+let emptyBank = {
+    categories: [{
+        name: "Welcome new user!",
+        content: [
+            0
+        ],
+        state: "closed",
+        order: 0
+    }],
+    links: [{
+        name: "This is a demo link",
+        href: "https://stackoverflow.com/",
+        comment: [{
+            "insert": "The best programer ressource!"
+        }],
+        rating: 5
+    }],
+    history: []
 }
 
 // ============================================================================================================================================================ EOF
