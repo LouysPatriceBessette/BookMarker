@@ -281,9 +281,13 @@ let reducer = (state, action) => {
 
     }
 
-    // =========================================================== Unsaved details show
+    // =========================================================== Unsaved details show / hide
     if (action.type === "display unsaved changes") {
         newState.unsavedShown = true
+    }
+
+    if (action.type === "quit unsaved changes") {
+        newState.unsavedShown = false
     }
 
     // =========================================================== CHANGES SAVED!

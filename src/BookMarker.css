@@ -40,6 +40,19 @@ textarea {
   font-family: "catamaran" !important;
   font-size: 1em !important;
 }
+/* ======================================= Scroll bars */
+*::-webkit-scrollbar {
+  width: 0.4em;
+}
+*::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+  border-radius: 10px;
+}
 /* ============================================================================= NAV Component */
 nav {
   position: fixed;
@@ -248,10 +261,7 @@ nav h1 {
   position: relative;
   margin: 0.7em 0 0;
 }
-#quill_Div {
-  display: none;
-}
-#quill_save {
+.quill_Div {
   display: none;
 }
 .Quill_in_modal {
@@ -261,6 +271,10 @@ nav h1 {
 .link_card h1 {
   /* SHOULD BE MOR PRECISE... AND UNIQUE ID ISSUE ON THE PARENT */
   margin: 0;
+}
+.Link_comment_Div {
+  overflow-y: scroll;
+  height: 100px;
 }
 /* ============================================================================= Modal Component */
 .modal_overlay {

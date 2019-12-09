@@ -52,6 +52,10 @@ class U_Unsaved extends Component {
     }
   };
 
+  quit = () => {
+    this.props.dispatch({ type: "quit unsaved changes" });
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     log.render("Unsaved");
@@ -115,6 +119,9 @@ class U_Unsaved extends Component {
         <ol>{list}</ol>
         <button className="fctBtn" onClick={this.save}>
           Save now
+        </button>
+        <button className="fctBtn" onClick={this.quit}>
+          I have some more changes to do...
         </button>
       </>
     ); // ==================================================================== End return

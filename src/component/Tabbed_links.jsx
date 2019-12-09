@@ -28,6 +28,8 @@ class U_Tabbed_Links extends Component {
 
     this.quill_editor = {};
 
+    this.quill_opened = false;
+
     this.state = {
       link_rename: ""
     };
@@ -39,53 +41,42 @@ class U_Tabbed_Links extends Component {
     let link = this.props.links[this.props.activeLink];
     log.var("Actual link name", link.name);
 
-    // ================================= 2 cases
-    // ===== 1
-    if (e.target.innerText === "Rename") {
-      // Change button text
-      e.target.innerText = "Save";
+    // Hide real_link
+    document.querySelector(
+      "#real_link_" + this.props.activeLink
+    ).style.display = "none";
 
-      // Hide real_link
-      document.querySelector(
-        "#real_link_" + this.props.activeLink
-      ).style.display = "none";
+    // Set the input value correcly
+    this.setState({ link_rename: link.name });
 
-      // Set the input value correcly
-      this.setState({ link_rename: link.name });
-
-      // Show the input
-      document.querySelector(
-        "#real_link_rename_" + this.props.activeLink
-      ).type = "text";
-    }
-    // ===== 2
-    else {
-      // Change button text
-      e.target.innerText = "Rename";
-
-      // Fix the link name in links
-      this.props.dispatch({
-        type: "link name change",
-        newName: this.state.link_rename,
-        activelink: this.props.activeLink
-      });
-
-      // Show real_link
-      document.querySelector(
-        "#real_link_" + this.props.activeLink
-      ).style.display = "inline";
-
-      // Hide the input
-      document.querySelector(
-        "#real_link_rename_" + this.props.activeLink
-      ).type = "hidden";
-    }
+    // Show the input
+    document.querySelector("#real_link_rename_" + this.props.activeLink).type =
+      "text";
   };
 
   link_rename_change = e => {
     // set to state...
     this.setState({ link_rename: e.target.value });
     console.log(e.target.value);
+  };
+
+  link_rename_blur = e => {
+    log.var("New link name", e.target.value);
+    // Fix the link name in links
+    this.props.dispatch({
+      type: "link name change",
+      newName: this.state.link_rename,
+      activelink: this.props.activeLink
+    });
+
+    // Show real_link
+    document.querySelector(
+      "#real_link_" + this.props.activeLink
+    ).style.display = "inline";
+
+    // Hide the input
+    document.querySelector("#real_link_rename_" + this.props.activeLink).type =
+      "hidden";
   };
 
   changeRating = newRating => {
@@ -101,40 +92,39 @@ class U_Tabbed_Links extends Component {
   };
 
   quill_toggle = () => {
-    let Quill_editor = document.querySelector("#quill_Div");
-    let Link_comment = document.querySelector("#Link_comment_Div");
-    let Quill_saveBtn = document.querySelector("#quill_save");
+    // Starting point is the unique id of the Quill DIV instance
+    let editor = document.querySelector("#editor_" + this.props.activeLink);
+
+    // Its wrapping DIV (to be display toggled)
+    let Quill_wrapper = editor.closest(".quill_Div");
+
+    // The link card
+    let card_div = editor.closest(".link_card");
+
+    // The "normal" comment display DIV (to be display toggled)
+    let Link_comment = card_div.querySelector(".Link_comment_Div");
 
     // if the display properties are not yet set...
-    Quill_editor.style.display =
-      Quill_editor.style.display === "" ? "none" : Quill_editor.style.display;
+    Quill_wrapper.style.display =
+      Quill_wrapper.style.display === "" ? "none" : Quill_wrapper.style.display;
 
     Link_comment.style.display =
       Link_comment.style.display === "" ? "block" : Link_comment.style.display;
 
-    Quill_saveBtn.style.display =
-      Quill_saveBtn.style.display === "" ? "none" : Quill_saveBtn.style.display;
-    // ========
-
-    // Change the button text
-    let toggleBtn = document.querySelector("#quill_open");
-    toggleBtn.innerText =
-      toggleBtn.innerText === "Edit your comment"
-        ? "Close the editor"
-        : "Edit your comment";
-
     // Toggle the divs
-    log.var("Quill display", Quill_editor.style.display);
-    Quill_editor.style.display =
-      Quill_editor.style.display === "none" ? "block" : "none";
+    log.var("Quill display", Quill_wrapper.style.display);
+    Quill_wrapper.style.display =
+      Quill_wrapper.style.display === "none" ? "block" : "none";
 
     log.var("Comment display", Link_comment.style.display);
     Link_comment.style.display =
       Link_comment.style.display === "none" ? "block" : "none";
 
-    // Save button
-    Quill_saveBtn.style.display =
-      Quill_saveBtn.style.display === "none" ? "inline-block" : "none";
+    // Toggle the opened / close state
+    this.quill_opened = !this.quill_opened;
+
+    // Have the link_card DIV grow with the content when the editor is opened
+    card_div.style.height = this.quill_opened ? "auto" : "400px";
   };
 
   quill_getContent = () => {
@@ -277,7 +267,7 @@ class U_Tabbed_Links extends Component {
     });
   };
 
-  componentDidUpdate = () => {
+  componentDidMount = () => {
     // Quill container
     let QuillContainer = document.querySelector(
       "#editor_" + this.props.activeLink
@@ -333,6 +323,7 @@ class U_Tabbed_Links extends Component {
               id={"real_link_rename_" + this.props.activeLink}
               value={this.state.link_rename}
               onChange={this.link_rename_change}
+              onBlur={this.link_rename_blur}
             />
             <FontAwesomeIcon
               icon="edit"
@@ -368,10 +359,13 @@ class U_Tabbed_Links extends Component {
             />
           </div>
 
-          <div id="Link_comment_Div">{linkComment}</div>
+          <div className="Link_comment_Div">{linkComment}</div>
 
-          <div id="quill_Div">
+          <div className="quill_Div">
             <div id={"editor_" + this.props.activeLink}></div>
+            <button className="fctBtn" onClick={this.quill_getContent}>
+              Save
+            </button>
           </div>
         </div>
       </>
