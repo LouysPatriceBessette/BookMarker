@@ -59,8 +59,7 @@ let reducer = (state, action) => {
     }
 
     if (action.type === "logout") {
-        newState.logged = false
-        newState.username = null
+        newState = defaultStore
         Cookies.set('sid', 0, {
             expires: -1
         })
