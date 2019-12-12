@@ -360,6 +360,15 @@ nav h1 {
     position: relative;
 }
 
+/* Input for link name change */
+[id^='real_link_rename_'] {
+    width: 90%;
+    padding: 0 0.2em;
+    font-size: 1.5em !important;
+    font-weight: bold;
+    outline: 0;
+}
+
 .linkCardIcon {
     font-size: 1.1em !important;
     //margin: 0.8em 0.3em 0 2em;
@@ -415,6 +424,24 @@ span.dragIcon::after {
     background-size: 4px 4px;
     background-position: 0 100%;
     background-repeat: repeat-x;
+}
+
+/* When dragging */
+.sortable-ghost {
+    transition: background-image 0.2s, borderr 0.2s, box-shadow 0.2s;
+}
+
+.sortable-ghost span.dragIcon,
+.sortable-ghost span.dragIcon::before,
+.sortable-ghost span.dragIcon::after {
+
+    background-image: radial-gradient(@websiteName_color 40%, transparent 40%);
+}
+
+/* When dragging */
+.sortable-ghost {
+    border: 1px solid @websiteName_color;
+    box-shadow: 4px 4px 6px @websiteName_color;
 }
 
 span.dragIcon::before,

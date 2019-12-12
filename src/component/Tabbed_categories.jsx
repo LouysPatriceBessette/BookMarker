@@ -82,15 +82,26 @@ class U_Tabbed_Categories extends Component {
     return { o_cat: ordered_categories, o_id: original_indexes };
   };
 
-  tabChange = () => {
+  getActiveCat = () => {
     // Get the LANDING tab ID (activeCat)
     setTimeout(() => {
       let activeCat = parseInt(
         document.querySelector(".RRT__tab--selected").id.split("-")[1]
       );
-      console.log("TAB CHANGE", activeCat);
-      this.props.dispatch({ type: "tab change", activeCat: activeCat });
-    }, 200);
+      log.var("activeCat", activeCat);
+      this.props.dispatch({ type: "tab change", activeCat: activeCat }); // Needed for the "Add a link to..." icon in Nav.jsx
+    }, 1);
+  };
+
+  // Usefull when returning from unsaved changes without saving.
+  passActiveCat_toTabs = () => {
+    if (this.props.activeCat !== -1) {
+      return this.props.activeCat;
+    } else {
+      log.var("get_order()[0]", this.get_order()[0]);
+      let CatToPass = this.get_order()[0];
+      return CatToPass;
+    }
   };
 
   // =============================================================================================================== Component render
@@ -99,12 +110,13 @@ class U_Tabbed_Categories extends Component {
 
     // On initial page load, set activeCat in store.
     if (this.props.activeCat === -1) {
-      this.tabChange();
+      this.getActiveCat();
     }
 
     // ========================================================== CATEGORY ORDERING
     // Get the order from the categories
     this.render_order = this.get_order();
+    //log.var("this.render_order", this.render_order);
 
     // Re-order the category elements based on their order property
     let o_data = this.reorder();
@@ -130,32 +142,43 @@ class U_Tabbed_Categories extends Component {
 
           return (
             <Sortable
+              key={key({ thisTab: cat })}
               //tag="ul" // Defaults to "div"
+
               onChange={(order, sortable, evt) => {
-                // order is an array of STRINGS here... Holding the catIds in the new order
-                // So better have it back to an array of numbers.
-                let newOrder = order.map(o => {
-                  return parseInt(o);
-                });
+                //
+                // BUG fix...
+                // The setTimeout is to dispatch AFTER Sortable is finished dragging.
+                //
+                setTimeout(() => {
+                  // order is an array of STRINGS here... Holding the catIds in the new order
+                  // So better have it back to an array of numbers.
+                  let thisCatnewOrder = order.map(o => {
+                    return parseInt(o);
+                  });
 
-                let previousOrder = this.links_sortable_order;
+                  let previousOrder = this.links_sortable_order;
+                  let newOrder = map_O_spread(previousOrder);
+                  newOrder[index] = thisCatnewOrder;
 
-                log.ok("previousOrder", previousOrder);
-                log.ok("newOrder", newOrder);
+                  // log.var("previousOrder", previousOrder); // Il est ici mon fuck de drag n' drop [ [1,2,3,4], [0] ]
+                  // log.var("thisCatnewOrder", thisCatnewOrder); // [1,2,4,3]
+                  // log.var("newOrder", newOrder); // [ [1,2,4,3], [0] ]
 
-                this.props.dispatch({
-                  type: "links order change",
-                  category_id: original_indexes[index],
-                  categoryName: cat.name,
-                  previousOrder: previousOrder,
-                  newOrder: newOrder
-                });
+                  this.props.dispatch({
+                    type: "links order change",
+                    category_id: original_indexes[index],
+                    categoryName: cat.name,
+                    previousOrder: previousOrder,
+                    newOrder: thisCatnewOrder
+                  });
+                }, 1);
               }}
             >
               {this.links_sortable_order[index].map(cc => {
                 return (
                   <>
-                    <Tabbed_Links activeLink={cc} />
+                    <Tabbed_Links key={key({ thisCard: cc })} activeLink={cc} />
                   </>
                 );
               })}
@@ -172,7 +195,11 @@ class U_Tabbed_Categories extends Component {
     // ======================================================================= Return
     return (
       <>
-        <Tabs items={getTabs()} onChange={this.tabChange} />
+        <Tabs
+          items={getTabs()}
+          onChange={this.getActiveCat}
+          selectedTabKey={this.passActiveCat_toTabs()}
+        />
       </>
     ); // ==================================================================== End return
   }; // End render

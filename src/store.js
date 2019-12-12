@@ -281,7 +281,6 @@ let reducer = (state, action) => {
 
         // Make the change for the affected category
         newState.categories[action.category_id].content = action.newOrder
-
     }
 
     // =========================================================== Unsaved details show / hide

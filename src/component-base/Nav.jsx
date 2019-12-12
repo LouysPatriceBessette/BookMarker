@@ -148,13 +148,13 @@ class U_Nav extends Component {
               <select>
                 <option>alphabetical</option>
 
-                <option selected>chronological</option>
+                <option defaultValue>chronological</option>
                 <option>rating</option>
               </select>
               and
               <select>
                 <option>ascending</option>
-                <option selected>descending</option>
+                <option defaultValue>descending</option>
               </select>
             </div>
             <div title={this.props.username}>

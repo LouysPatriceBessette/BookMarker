@@ -26,72 +26,109 @@ class U_Tabbed_Links extends Component {
   constructor(props) {
     super(props);
 
-    this.quill_editor = {};
-
+    this.quill_editor = undefined;
     this.quill_opened = false;
 
     this.state = {
-      link_rename: ""
+      link_rename: this.props.links[this.props.activeLink].name,
+      renameFieldDisplayed: false
     };
   }
 
   // =============================================================================================================== Component functions
 
-  link_rename = e => {
+  link_rename_show = e => {
     let link = this.props.links[this.props.activeLink];
     log.var("Actual link name", link.name);
 
-    // Hide real_link
-    document.querySelector(
-      "#real_link_" + this.props.activeLink
-    ).style.display = "none";
+    // Set the input value on input show ant toggle the flag
+    if (this.state.renameFieldDisplayed) {
+      this.setState({
+        link_rename: link.name,
+        renameFieldDisplayed: !this.state.renameFieldDisplayed
+      });
+    }
 
-    // Set the input value correcly
-    this.setState({ link_rename: link.name });
+    // Just toggle the flag
+    else {
+      this.setState({ renameFieldDisplayed: !this.state.renameFieldDisplayed });
+    }
+  };
 
-    // Show the input
-    document.querySelector("#real_link_rename_" + this.props.activeLink).type =
-      "text";
+  link_rename_keyup = e => {
+    log.var("e.key", e.key);
+    // on [ENTER]
+    if (e.key === "Enter") {
+      e.target.blur();
+    }
   };
 
   link_rename_change = e => {
+    log.var("e.target.value", e.target.value);
+
     // set to state...
     this.setState({ link_rename: e.target.value });
-    console.log(e.target.value);
   };
 
   link_rename_blur = e => {
     log.var("New link name", e.target.value);
-    // Fix the link name in links
-    this.props.dispatch({
-      type: "link name change",
-      newName: this.state.link_rename,
-      activelink: this.props.activeLink
-    });
 
-    // Show real_link
-    document.querySelector(
-      "#real_link_" + this.props.activeLink
-    ).style.display = "inline";
+    let previousName = this.props.links[this.props.activeLink].name;
 
-    // Hide the input
-    document.querySelector("#real_link_rename_" + this.props.activeLink).type =
-      "hidden";
+    if (previousName !== this.state.link_rename) {
+      // Fix the link name in links
+      this.props.dispatch({
+        type: "link name change",
+        newName: this.state.link_rename,
+        activelink: this.props.activeLink
+      });
+    }
+
+    // Set state
+    this.setState({ renameFieldDisplayed: !this.state.renameFieldDisplayed });
   };
 
   changeRating = newRating => {
+    // Save the rating in store
     this.props.dispatch({
       type: "change rating",
       activeLink: this.props.activeLink,
       rating: newRating
     });
+  };
 
-    log.error(
-      "Star rating change is saved in store... When to save in DB is the question."
+  init_quill = () => {
+    // Quill container
+    let QuillContainer = document.querySelector(
+      "#editor_" + this.props.activeLink
+    );
+
+    // Check if NOT already instantiated
+    if (Quill.find(QuillContainer) !== this.quill_editor) {
+      // Instantiate Quill
+      this.quill_editor = new Quill(QuillContainer, {
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, false] }],
+            ["bold", "italic", "underline"]
+          ]
+        },
+        theme: "snow"
+      });
+      log.ok("Quill initialised...");
+    }
+
+    // Set content
+    // https://quilljs.com/docs/api/#setcontents
+    this.quill_editor.setContents(
+      this.props.links[this.props.activeLink].comment
     );
   };
 
-  quill_toggle = () => {
+  quill_toggle = e => {
+    // Init Quill
+    this.init_quill();
+
     // Starting point is the unique id of the Quill DIV instance
     let editor = document.querySelector("#editor_" + this.props.activeLink);
 
@@ -125,6 +162,9 @@ class U_Tabbed_Links extends Component {
 
     // Have the link_card DIV grow with the content when the editor is opened
     card_div.style.height = this.quill_opened ? "auto" : "400px";
+
+    // BUG!!! Force focus...
+    this.focus_Quill(e);
   };
 
   quill_getContent = () => {
@@ -202,16 +242,16 @@ class U_Tabbed_Links extends Component {
         if (quill_obj[i + 1].attributes.header) {
           // And that attribute is a header
           //
-          // So we<ll process the next line NOW.
+          // So we'll process the next line NOW.
           // Skip the next map iteration
           skipNext = true;
 
           // Which header?
           if (quill_obj[i + 1].attributes.header === 1) {
-            return <h1>{line.insert}</h1>;
+            return <h1 key={key({ thisLine: line.insert })}>{line.insert}</h1>;
           }
           if (quill_obj[i + 1].attributes.header === 2) {
-            return <h2>{line.insert}</h2>;
+            return <h2 key={key({ thisLine: line.insert })}>{line.insert}</h2>;
           }
         }
       }
@@ -252,47 +292,30 @@ class U_Tabbed_Links extends Component {
 
       if (line.attributes) {
         if (line.attributes.bold) {
-          return <b>{multiLines}</b>;
+          return <b key={key({ thisLine: multiLines })}>{multiLines}</b>;
         }
         if (line.attributes.italic) {
-          return <i>{multiLines}</i>;
+          return <i key={key({ thisLine: multiLines })}>{multiLines}</i>;
         }
         if (line.attributes.underline) {
-          return <u>{multiLines}</u>;
+          return <u key={key({ thisLine: multiLines })}>{multiLines}</u>;
         }
       }
 
       // Case where there was no \n AND no styling.
-      return multiLines;
+      return <span key={key({ thisLine: multiLines })}>{multiLines}</span>;
     });
   };
 
-  componentDidMount = () => {
-    // Quill container
-    let QuillContainer = document.querySelector(
-      "#editor_" + this.props.activeLink
-    );
+  // BUG!!! Force focus on Quill... Not perfect.
+  focus_Quill = e => {
+    log.ok("focus_Quill");
+    e.stopPropagation();
+    let quill_edit_zone = e.target
+      .closest(".link_card")
+      .querySelector(".ql-editor");
 
-    // Check if NOT already instantiated
-    if (Quill.find(QuillContainer) !== this.quill_editor) {
-      // Instantiate Quill
-      this.quill_editor = new Quill(QuillContainer, {
-        modules: {
-          toolbar: [
-            [{ header: [1, 2, false] }],
-            ["bold", "italic", "underline"]
-          ]
-        },
-        theme: "snow"
-      });
-      log.ok("Quill initialised...");
-    }
-
-    // Set content
-    // https://quilljs.com/docs/api/#setcontents
-    this.quill_editor.setContents(
-      this.props.links[this.props.activeLink].comment
-    );
+    quill_edit_zone.focus();
   };
 
   // =============================================================================================================== Component render
@@ -301,6 +324,36 @@ class U_Tabbed_Links extends Component {
 
     let link = this.props.links[this.props.activeLink];
     let star = <Ratings.Widget widgetDimension="20px" widgetSpacing="2px" />;
+
+    let link_rename_input_or_not = () => {
+      if (this.state.renameFieldDisplayed) {
+        setTimeout(() => {
+          document
+            .querySelector("#real_link_rename_" + this.props.activeLink)
+            .focus();
+        }, 1);
+        return (
+          <input
+            type="text"
+            id={"real_link_rename_" + this.props.activeLink}
+            value={this.state.link_rename}
+            onKeyUp={this.link_rename_keyup}
+            onChange={this.link_rename_change}
+            onBlur={this.link_rename_blur}
+          />
+        );
+      } else {
+        return (
+          <div
+            id={"real_link_" + this.props.activeLink}
+            className="link_name"
+            title={link.name}
+          >
+            {link.name}
+          </div>
+        );
+      }
+    };
 
     // ========================================
     // Quill editor formatting
@@ -316,61 +369,54 @@ class U_Tabbed_Links extends Component {
         >
           <span className="dragIcon" title="Drag me!"></span>
           <div className="link_title">
-            <div
-              id={"real_link_" + this.props.activeLink}
-              className="link_name"
-              title={link.name}
-            >
-              {link.name}
-            </div>
-            <input
-              type="hidden"
-              id={"real_link_rename_" + this.props.activeLink}
-              value={this.state.link_rename}
-              onChange={this.link_rename_change}
-              onBlur={this.link_rename_blur}
-            />
+            {link_rename_input_or_not()}
             <FontAwesomeIcon
               icon="edit"
               className="linkCardIcon editName"
               title="Edit name"
-              onClick={this.link_rename}
+              onClick={this.link_rename_show}
             />
           </div>
-          <div className="link_img">
-            <a target="_blank" href={link.href}>
-              <img src="/image_missing.png" />
-            </a>
-          </div>
+          <div className="no_drag">
+            <div className="link_img">
+              <a target="_blank" href={link.href}>
+                <img src="/image_missing.png" />
+              </a>
+            </div>
 
-          <div className="ratingDiv">
-            <Ratings
-              rating={link.rating}
-              widgetRatedColors="blue"
-              changeRating={this.changeRating}
-            >
-              {star}
-              {star}
-              {star}
-              {star}
-              {star}
-            </Ratings>
+            <div className="ratingDiv">
+              <Ratings
+                rating={link.rating}
+                widgetRatedColors="blue"
+                changeRating={this.changeRating}
+              >
+                {star}
+                {star}
+                {star}
+                {star}
+                {star}
+              </Ratings>
 
-            <FontAwesomeIcon
-              icon="edit"
-              className="linkCardIcon editComment"
-              title="Edit comment"
-              onClick={this.quill_toggle} //quill_getContent}
-            />
-          </div>
+              <FontAwesomeIcon
+                icon="edit"
+                className="linkCardIcon editComment"
+                title="Edit comment"
+                onClick={this.quill_toggle}
+              />
+            </div>
 
-          <div className="Link_comment_Div">{linkComment}</div>
+            <div className="Link_comment_Div">{linkComment}</div>
 
-          <div className="quill_Div">
-            <div id={"editor_" + this.props.activeLink}></div>
-            <button className="fctBtn" onClick={this.quill_getContent}>
-              Save
-            </button>
+            <div className="quill_Div">
+              <div
+                id={"editor_" + this.props.activeLink}
+                onMouseDown={this.focus_Quill}
+                //onPointerDown={this.focus_Quill}
+              ></div>
+              <button className="fctBtn" onClick={this.quill_getContent}>
+                Save
+              </button>
+            </div>
           </div>
         </div>
       </>
@@ -382,7 +428,6 @@ class U_Tabbed_Links extends Component {
 let stp = state => {
   return {
     // Specific component props from the state here
-    //activeLink: state.activeLink,
     links: state.links
   };
 };
