@@ -23,6 +23,8 @@ import {
 
 import Unsaved from "../component/Unsaved.jsx";
 import Tabbed_Categories from "../component/Tabbed_categories.jsx";
+import Context from "../component-base/Context.jsx";
+
 // =============================================================================================================== Component class
 class U_Page extends Component {
   constructor(props) {
@@ -41,9 +43,6 @@ class U_Page extends Component {
         // ======================================================================= Return
         return (
           <>
-            {/* <div className="categoryTree">
-              <Categories />
-            </div> */}
             <div className="categoryDisplay">
               <Unsaved />
             </div>
@@ -55,6 +54,7 @@ class U_Page extends Component {
           <>
             <div className="tabs_container">
               <Tabbed_Categories />
+              <Context />
             </div>
           </>
         ); // ==================================================================== End return

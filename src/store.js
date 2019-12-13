@@ -56,6 +56,7 @@ let reducer = (state, action) => {
         newState.categories = action.content.user.categories
         newState.links = action.content.user.links
         newState.bank_id = action.content.user.userBank_id
+        newState.history = action.content.user.history
     }
 
     if (action.type === "logout") {

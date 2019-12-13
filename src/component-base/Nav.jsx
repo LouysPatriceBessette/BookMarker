@@ -44,6 +44,8 @@ class U_Nav extends Component {
     });
   };
 
+  // A way to have those 4 functions in a separate .js or .jsx file ???
+  // see Nav-functions.jsx (failing...)
   logout = async () => {
     log.ok("Logging out.\n\n");
     let response = await qf("/logout", "post");

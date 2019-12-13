@@ -500,6 +500,77 @@ span.dragIcon::after {
     display: inline;
 }
 
+/* ============================================================================= Context Component */
+.context {
+    // width: 120px;
+    background: @main_background;
+    box-shadow: 0 0 10px @websiteName_color;
+    border-radius: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    z-index: 9999;
+}
+
+.context-option-noClick {
+    font-weight: bold;
+    padding: 10px 40px 10px 20px;
+    // pointer-events: none;
+    cursor: default;
+}
+
+.activeLinkName {
+    font-size: 1.4em;
+    font-style: italic;
+    color: @websiteName_color;
+}
+
+.context-options,
+.sub-context-options {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.context-option,
+.sub-context-option {
+    font-weight: bold;
+    padding: 10px 40px 10px 20px;
+    cursor: pointer;
+}
+
+.context-option:hover,
+.sub-context-option:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.changeCount {
+    font-size: 1.4em;
+    color: @websiteName_color;
+}
+
+.linkInfo {
+    color: @websiteName_color;
+    font-weight: normal;
+    font-style: italic;
+}
+
+/* Temporaire */
+.notDoneYet {
+    color: grey;
+}
+
+.context-option.notDoneYet:hover {
+    background: @main_background;
+    cursor: none;
+    pointer-events: none;
+}
+
+/*------*/
+
+
+
+
 /* ============================================================================= Unsaved Component */
 .fctBtn {
     border: 0;

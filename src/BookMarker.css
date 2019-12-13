@@ -368,6 +368,61 @@ span.dragIcon::after {
 .error.shown {
   display: inline;
 }
+/* ============================================================================= Context Component */
+.context {
+  background: #f2fdfc;
+  box-shadow: 0 0 10px #020a6d;
+  border-radius: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  z-index: 9999;
+}
+.context-option-noClick {
+  font-weight: bold;
+  padding: 10px 40px 10px 20px;
+  cursor: default;
+}
+.activeLinkName {
+  font-size: 1.4em;
+  font-style: italic;
+  color: #020a6d;
+}
+.context-options,
+.sub-context-options {
+  list-style: none;
+  padding: 10px 0;
+}
+.context-option,
+.sub-context-option {
+  font-weight: bold;
+  padding: 10px 40px 10px 20px;
+  cursor: pointer;
+}
+.context-option:hover,
+.sub-context-option:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+.changeCount {
+  font-size: 1.4em;
+  color: #020a6d;
+}
+.linkInfo {
+  color: #020a6d;
+  font-weight: normal;
+  font-style: italic;
+}
+/* Temporaire */
+.notDoneYet {
+  color: grey;
+}
+.context-option.notDoneYet:hover {
+  background: #f2fdfc;
+  cursor: none;
+  pointer-events: none;
+}
+/*------*/
 /* ============================================================================= Unsaved Component */
 .fctBtn {
   border: 0;

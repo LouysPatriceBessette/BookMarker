@@ -554,6 +554,7 @@ let start_server = dbo => {
                         userBank_id: collected.bank_id,
                         categories: collected.categories,
                         links: collected.links,
+                        history: collected.history
                     }
                 });
             }
@@ -602,6 +603,7 @@ let start_server = dbo => {
                 // Collect some infos
                 collected["categories"] = set_startup_link_response.ops[0].categories
                 collected["links"] = set_startup_link_response.ops[0].links
+                collected["history"] = set_startup_link_response.ops[0].history
 
                 return db_user({
                     do: "set",
@@ -673,6 +675,7 @@ let start_server = dbo => {
                         userBank_id: collected.bank_id,
                         categories: db_link_response.categories,
                         links: db_link_response.links,
+                        history: db_link_response.history,
                         errorMsg: "No error."
                     }
                 })
@@ -757,6 +760,7 @@ let start_server = dbo => {
                         userBank_id: collected.bank_id,
                         categories: get_links_result.categories,
                         links: get_links_result.links,
+                        history: get_links_result.history,
                     }
                 });
             } else {
