@@ -37,57 +37,6 @@ class U_Tabbed_Links extends Component {
 
   // =============================================================================================================== Component functions
 
-  link_rename_show = e => {
-    let link = this.props.links[this.props.activeLink];
-    log.var("Actual link name", link.name);
-
-    // Set the input value on input show ant toggle the flag
-    if (this.state.renameFieldDisplayed) {
-      this.setState({
-        link_rename: link.name,
-        renameFieldDisplayed: !this.state.renameFieldDisplayed
-      });
-    }
-
-    // Just toggle the flag
-    else {
-      this.setState({ renameFieldDisplayed: !this.state.renameFieldDisplayed });
-    }
-  };
-
-  link_rename_keyup = e => {
-    log.var("e.key", e.key);
-    // on [ENTER]
-    if (e.key === "Enter") {
-      e.target.blur();
-    }
-  };
-
-  link_rename_change = e => {
-    log.var("e.target.value", e.target.value);
-
-    // set to state...
-    this.setState({ link_rename: e.target.value });
-  };
-
-  link_rename_blur = e => {
-    log.var("New link name", e.target.value);
-
-    let previousName = this.props.links[this.props.activeLink].name;
-
-    if (previousName !== this.state.link_rename) {
-      // Fix the link name in links
-      this.props.dispatch({
-        type: "link name change",
-        newName: this.state.link_rename,
-        activelink: this.props.activeLink
-      });
-    }
-
-    // Set state
-    this.setState({ renameFieldDisplayed: !this.state.renameFieldDisplayed });
-  };
-
   changeRating = newRating => {
     // Save the rating in store
     this.props.dispatch({
@@ -95,102 +44,6 @@ class U_Tabbed_Links extends Component {
       activeLink: this.props.activeLink,
       rating: newRating
     });
-  };
-
-  init_quill = () => {
-    // Quill container
-    let QuillContainer = document.querySelector(
-      "#editor_" + this.props.activeLink
-    );
-
-    // Check if NOT already instantiated
-    if (Quill.find(QuillContainer) !== this.quill_editor) {
-      // Instantiate Quill
-      this.quill_editor = new Quill(QuillContainer, {
-        modules: {
-          toolbar: [
-            [{ header: [1, 2, false] }],
-            ["bold", "italic", "underline"]
-          ]
-        },
-        theme: "snow"
-      });
-      log.ok("Quill initialised...");
-    }
-
-    // Set content
-    // https://quilljs.com/docs/api/#setcontents
-    this.quill_editor.setContents(
-      this.props.links[this.props.activeLink].comment
-    );
-  };
-
-  quill_toggle = e => {
-    // Init Quill
-    this.init_quill();
-
-    // Starting point is the unique id of the Quill DIV instance
-    let editor = document.querySelector("#editor_" + this.props.activeLink);
-
-    // Its wrapping DIV (to be display toggled)
-    let Quill_wrapper = editor.closest(".quill_Div");
-
-    // The link card
-    let card_div = editor.closest(".link_card");
-
-    // The "normal" comment display DIV (to be display toggled)
-    let Link_comment = card_div.querySelector(".Link_comment_Div");
-
-    // if the display properties are not yet set...
-    Quill_wrapper.style.display =
-      Quill_wrapper.style.display === "" ? "none" : Quill_wrapper.style.display;
-
-    Link_comment.style.display =
-      Link_comment.style.display === "" ? "block" : Link_comment.style.display;
-
-    // Toggle the divs
-    log.var("Quill display", Quill_wrapper.style.display);
-    Quill_wrapper.style.display =
-      Quill_wrapper.style.display === "none" ? "block" : "none";
-
-    log.var("Comment display", Link_comment.style.display);
-    Link_comment.style.display =
-      Link_comment.style.display === "none" ? "block" : "none";
-
-    // Toggle the opened / close state
-    this.quill_opened = !this.quill_opened;
-
-    // Have the link_card DIV grow with the content when the editor is opened
-    card_div.style.height = this.quill_opened ? "auto" : "400px";
-
-    // BUG!!! Force focus...
-    this.focus_Quill(e);
-  };
-
-  quill_getContent = () => {
-    // returns an object
-    let Quill_result = this.quill_editor.getContents();
-    log.var("Quill content", Quill_result);
-
-    // formatting is
-    // {"ops":[{"insert":"Rave memories from 1999/2000...\n2nd line\n"},{"attributes":{"bold":true},"insert":"bold text"},{"insert":"\n"}]}
-
-    // So what I need to save is the array named "ops"
-    // https://quilljs.com/docs/api/#setcontents
-
-    // Dispatch!
-    this.props.dispatch({
-      type: "link comment change",
-      activelink: this.props.activeLink,
-      quill_comment: Quill_result.ops
-    });
-
-    //
-    // So this Quill_getContent is my SAVE button... And quill_format_object_to_html is the render one.
-    //
-
-    // Quill togle! (OFF!)
-    this.quill_toggle();
   };
 
   quill_format_object_to_html = quill_obj => {
@@ -307,17 +160,6 @@ class U_Tabbed_Links extends Component {
     });
   };
 
-  // BUG!!! Force focus on Quill... Not perfect.
-  focus_Quill = e => {
-    log.ok("focus_Quill");
-    e.stopPropagation();
-    let quill_edit_zone = e.target
-      .closest(".link_card")
-      .querySelector(".ql-editor");
-
-    quill_edit_zone.focus();
-  };
-
   // =============================================================================================================== Component render
   render = () => {
     log.render("Tabbed_links");
@@ -368,55 +210,35 @@ class U_Tabbed_Links extends Component {
           data-id={this.props.activeLink}
         >
           <span className="dragIcon" title="Drag me!"></span>
-          <div className="link_title">
-            {link_rename_input_or_not()}
-            <FontAwesomeIcon
-              icon="edit"
-              className="linkCardIcon editName"
-              title="Edit name"
-              onClick={this.link_rename_show}
-            />
+          <div className="link_title">{link_rename_input_or_not()}</div>
+          <div className="link_img">
+            <a target="_blank" href={link.href}>
+              <img src={link.image} />
+            </a>
           </div>
-          <div className="no_drag">
-            <div className="link_img">
-              <a target="_blank" href={link.href}>
-                <img src="/image_missing.png" />
-              </a>
-            </div>
-
-            <div className="ratingDiv">
-              <Ratings
-                rating={link.rating}
-                widgetRatedColors="blue"
-                changeRating={this.changeRating}
-              >
-                {star}
-                {star}
-                {star}
-                {star}
-                {star}
-              </Ratings>
-
-              <FontAwesomeIcon
-                icon="edit"
-                className="linkCardIcon editComment"
-                title="Edit comment"
-                onClick={this.quill_toggle}
-              />
-            </div>
-
-            <div className="Link_comment_Div">{linkComment}</div>
-
-            <div className="quill_Div">
-              <div
-                id={"editor_" + this.props.activeLink}
-                onMouseDown={this.focus_Quill}
-                //onPointerDown={this.focus_Quill}
-              ></div>
-              <button className="fctBtn" onClick={this.quill_getContent}>
-                Save
-              </button>
-            </div>
+          <div className="ratingDiv">
+            <Ratings
+              rating={link.rating}
+              widgetRatedColors="blue"
+              changeRating={this.changeRating}
+            >
+              {star}
+              {star}
+              {star}
+              {star}
+              {star}
+            </Ratings>
+          </div>
+          <div className="Link_comment_Div">{linkComment}</div>
+          <div className="quill_Div">
+            <div
+              id={"editor_" + this.props.activeLink}
+              onMouseDown={this.focus_Quill}
+              //onPointerDown={this.focus_Quill}
+            ></div>
+            <button className="fctBtn" onClick={this.quill_getContent}>
+              Save
+            </button>
           </div>
         </div>
       </>

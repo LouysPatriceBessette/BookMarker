@@ -244,6 +244,7 @@ nav h1 {
 .link_img {
   width: 100%;
   text-align: center;
+  position: relative;
 }
 .link_img img {
   height: 200px;
@@ -266,8 +267,30 @@ nav h1 {
   position: absolute;
   right: 0.15em;
   bottom: 0.4em;
-  color: #a7b3cf;
+  color: red;
   cursor: pointer;
+}
+.editImage_underlay {
+  position: absolute;
+  top: calc(50% - 1.5em);
+  bottom: calc(50% - 0.5em);
+  left: calc(50% - 2.5em);
+  right: calc(50% - 2.5em);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.8);
+}
+.editImage_alone {
+  right: calc(50% - 0.75em);
+  bottom: calc(50% - 0.5em);
+}
+.editImage_both {
+  right: calc(50% + 0.3em);
+  bottom: calc(50% - 0.5em);
+}
+.editImage_ok {
+  right: calc(50% - 1.6em);
+  bottom: calc(50% - 0.6em);
+  color: green;
 }
 .ratingDiv {
   position: relative;
@@ -347,7 +370,7 @@ span.dragIcon::after {
   margin: 0 !important;
 }
 .modal {
-  max-width: 275px;
+  max-width: 375px;
   margin: 10% auto;
   padding: 0 1em 1em 1em;
   display: flex;
@@ -423,6 +446,29 @@ span.dragIcon::after {
   pointer-events: none;
 }
 /*------*/
+/* ============================================================================= link_card_edit Component */
+.linkEdit_Display {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.link_card_edit {
+  border: 1px solid #020a6d;
+  border-radius: 6px;
+  padding: 8px;
+  margin: 4px;
+  width: 300px;
+  height: 400px;
+  position: relative;
+}
+.link_card_edit h1 {
+  margin: 0;
+}
+.floating_out {
+  position: absolute;
+  bottom: -4em;
+  right: 0;
+}
 /* ============================================================================= Unsaved Component */
 .fctBtn {
   border: 0;

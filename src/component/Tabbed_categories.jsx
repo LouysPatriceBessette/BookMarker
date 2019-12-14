@@ -88,7 +88,7 @@ class U_Tabbed_Categories extends Component {
       let activeCat = parseInt(
         document.querySelector(".RRT__tab--selected").id.split("-")[1]
       );
-      log.var("activeCat", activeCat);
+
       this.props.dispatch({ type: "tab change", activeCat: activeCat }); // Needed for the "Add a link to..." icon in Nav.jsx
     }, 1);
   };
@@ -98,7 +98,6 @@ class U_Tabbed_Categories extends Component {
     if (this.props.activeCat !== -1) {
       return this.props.activeCat;
     } else {
-      log.var("get_order()[0]", this.get_order()[0]);
       let CatToPass = this.get_order()[0];
       return CatToPass;
     }

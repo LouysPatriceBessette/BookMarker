@@ -28,6 +28,11 @@ let defaultStore = {
     unsavedChanges: false,
     unsavedChanges_detail: [],
     unsavedShown: false,
+
+    linkEdit: false,
+    image_underlay: true,
+    image_edited: false,
+    image_accepted: false
 }
 
 let reducer = (state, action) => {
@@ -157,6 +162,9 @@ let reducer = (state, action) => {
             time: new Date().getTime()
         })
 
+        // Add the default image to the new link...
+        action.link["image"] = "/image_missing.png"
+
         // Make the change
         let linkIndex = newState.links.length
         console.log("linkIndex", linkIndex)
@@ -170,7 +178,53 @@ let reducer = (state, action) => {
         newState.sl_error = false
     }
 
-    // =========================================================== Link edit Comment
+    // =========================================================== Link edit display ( triggers a change to save )
+
+    if (action.type === "link edit display") {
+        newState.linkEdit = true
+        newState.activeLink = action.linkId
+    }
+
+    if (action.type === "link edit image updated") {
+
+        // Turn the image edited flag on
+        newState.image_edited = true
+
+        // Close modal
+        newState.overlay = false
+        newState.sl_error = false
+
+        // Remove image underlay
+        newState.image_underlay = false
+    }
+
+    if (action.type === "Accept an image") {
+
+        // Flag.
+        newState.unsavedChanges = true
+
+        // Store the unsaved change details
+        newState.unsavedChanges_detail.push({
+
+            target: "Link",
+            index: newState.activeLink,
+            property: "image",
+            time: new Date().getTime()
+        })
+
+        newState.image_accepted = true
+        newState.links[action.activeLink].image = action.base64_img
+    }
+
+    if (action.type === "quit link edit") {
+        // Reset store
+        newState.linkEdit = false
+        newState.image_underlay = true
+        newState.image_edited = false
+        newState.image_accepted = false
+    }
+
+    // =========================================================== Link edit Comment ( triggers a change to save )
     if (action.type === "link comment change") {
 
         // Flag.

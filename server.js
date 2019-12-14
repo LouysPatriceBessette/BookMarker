@@ -1063,6 +1063,7 @@ let defaultBank = {
     links: [{
             name: "Stackoverflow",
             href: "https://stackoverflow.com/",
+            image: "/image_missing.png",
             comment: [{
                 "insert": "The best programer ressource!"
             }],
@@ -1071,6 +1072,7 @@ let defaultBank = {
         {
             name: "LinkedIn",
             href: "https://www.linkedin.com/feed/",
+            image: "/image_missing.png",
             comment: [{
                 "insert": "Grow your network"
             }],
@@ -1079,6 +1081,7 @@ let defaultBank = {
         {
             name: "Facebook - Messages",
             href: "https://www.facebook.com/messages/",
+            image: "/image_missing.png",
             comment: [{
                 "insert": "Time eater"
             }],
@@ -1087,6 +1090,7 @@ let defaultBank = {
         {
             name: "Trello",
             href: "https://trello.com/b/ttGHQhyo/concordia-final-project",
+            image: "/image_missing.png",
             comment: [{
                 "insert": "Project management"
             }],
@@ -1095,6 +1099,7 @@ let defaultBank = {
         {
             name: "Trance classics - Vinyl mix",
             href: "https://www.youtube.com/watch?v=mbmQbKNJv3E",
+            image: "/image_missing.png",
             comment: [{
                 "insert": "Rave memories from 1999/2000..."
             }],
@@ -1117,6 +1122,7 @@ let emptyBank = {
     links: [{
         name: "This is a demo link",
         href: "https://stackoverflow.com/",
+        image: "/image_missing.png",
         comment: [{
             "insert": "The best programer ressource!"
         }],

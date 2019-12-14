@@ -72,8 +72,6 @@ class U_Form_add_link extends Component {
 
       // add the current info
       nowState[info] = info_value;
-      log.var("nowState", JSON.stringify(nowState));
-      log.var("activeCat", this.props.activeCat);
 
       // clear the state
       this.setState(defaultState);

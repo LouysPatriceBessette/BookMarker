@@ -64,8 +64,6 @@ class U_Context extends Component {
     if (link_card) {
       // Save link_card element
       this.contextMenu_params.link_card = link_card;
-
-      log.var("Link card!!", link_card.dataset.id);
       this.contextMenu_params.activeLink = parseInt(link_card.dataset.id);
 
       // set the active link name in context menu span
@@ -205,11 +203,18 @@ class U_Context extends Component {
   };
 
   unsavedChanges_display = () => {
-    log.ok("Display the unsaved changes list.");
     this.props.dispatch({ type: "display unsaved changes" });
   };
 
-  // ================================================== Menu item click functions - History
+  // ================================================== Menu item click functions
+
+  edit_link = () => {
+    //log.ok("edit_link");
+    this.props.dispatch({
+      type: "link edit display",
+      linkId: this.contextMenu_params.activeLink
+    });
+  };
 
   // =============================================================================================================== Component render
   render = () => {
@@ -242,7 +247,9 @@ class U_Context extends Component {
                 <li className="context-option-noClick link_history notDoneYet">
                   View change history
                 </li>
-                <li className="context-option-noClick notDoneYet">Edit</li>
+                <li className="context-option" onClick={this.edit_link}>
+                  Edit
+                </li>
               </ul>
             </li>
             <li

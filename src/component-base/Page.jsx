@@ -24,6 +24,7 @@ import {
 import Unsaved from "../component/Unsaved.jsx";
 import Tabbed_Categories from "../component/Tabbed_categories.jsx";
 import Context from "../component-base/Context.jsx";
+import Edit_Link from "../component/Edit_Link.jsx";
 
 // =============================================================================================================== Component class
 class U_Page extends Component {
@@ -37,29 +38,42 @@ class U_Page extends Component {
   render = () => {
     log.render("Page");
 
-    // Categories listing
+    // User is logged
     if (this.props.logged) {
-      if (this.props.unsavedShown) {
-        // ======================================================================= Return
-        return (
-          <>
-            <div className="categoryDisplay">
-              <Unsaved />
-            </div>
-          </>
-        ); // ==================================================================== End return
-      } else {
-        // ======================================================================= Return
-        return (
-          <>
-            <div className="tabs_container">
-              <Tabbed_Categories />
-              <Context />
-            </div>
-          </>
-        ); // ==================================================================== End return
+      // Categories / Unsaved / Link_edit views
+      switch (true) {
+        case this.props.unsavedShown:
+          return (
+            <>
+              <div className="categoryDisplay">
+                <Unsaved />
+              </div>
+            </>
+          );
+          break;
+        case this.props.linkEdit:
+          return (
+            <>
+              <div className="linkEdit_Display">
+                <Edit_Link />
+              </div>
+            </>
+          );
+          break;
+        default:
+          return (
+            <>
+              <div className="tabs_container">
+                <Tabbed_Categories />
+                <Context />
+              </div>
+            </>
+          );
       }
-    } else {
+    }
+
+    // User is NOT logged
+    else {
       let pageClass = this.props.overlay ? "blurred" : "";
 
       // ======================================================================= Return
@@ -131,7 +145,8 @@ let stp = state => {
     overlay: state.overlay,
 
     // to display unsaved changes list
-    unsavedShown: state.unsavedShown
+    unsavedShown: state.unsavedShown,
+    linkEdit: state.linkEdit
   };
 };
 

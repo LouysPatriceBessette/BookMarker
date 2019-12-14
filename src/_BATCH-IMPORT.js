@@ -36,6 +36,8 @@ import {
     FontAwesomeIcon
 } from "@fortawesome/react-fontawesome";
 
+// Image crop
+import ReactCrop from 'react-image-crop';
 
 // ================================================= CUSTOM JS
 
@@ -74,6 +76,7 @@ export {
     Quill,
     Sortable,
     FontAwesomeIcon,
+    ReactCrop,
     log,
     getRealType,
     map_O_spread,

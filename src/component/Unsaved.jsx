@@ -112,8 +112,13 @@ class U_Unsaved extends Component {
           </>
         );
       }
-
-      // category_affected
+      if (change.property === "image") {
+        valueDisplay = (
+          <>
+            <b>{this.props.links[change.index].name}</b>
+          </>
+        );
+      }
 
       return (
         <li key={key({ time: change.time })}>

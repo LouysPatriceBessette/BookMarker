@@ -35,10 +35,20 @@ import {
   faEdit /* Pas sur de l'aimer... */,
   faCloud,
   faFolder,
-  faLink
+  faLink,
+  faCheck
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(fab, faUserCircle, faSearch, faEdit, faCloud, faFolder, faLink);
+library.add(
+  fab,
+  faUserCircle,
+  faSearch,
+  faEdit,
+  faCloud,
+  faFolder,
+  faLink,
+  faCheck
+);
 
 // =============================================================================================================== Component class
 

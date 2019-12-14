@@ -77,7 +77,6 @@ class U_Nav extends Component {
   };
 
   unsavedChanges_display = () => {
-    log.ok("Display the unsaved changes list.");
     this.props.dispatch({ type: "display unsaved changes" });
   };
 
@@ -86,7 +85,6 @@ class U_Nav extends Component {
     log.render("Nav");
 
     // If user is NOT logged in
-    log.var("logged?", this.props.logged);
     if (typeof this.props.logged !== "boolean") {
       log.error("Nav props.logged is a problem in Nav.jsx");
     }
