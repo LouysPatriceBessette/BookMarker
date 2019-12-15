@@ -34,7 +34,11 @@ let defaultStore = {
     image_edited: false,
     image_accepted: false,
 
-    search_data: null
+    search_data: {
+        relevancy: [],
+        search_string_result: [],
+        link_indexes: []
+    }
 }
 
 let reducer = (state, action) => {

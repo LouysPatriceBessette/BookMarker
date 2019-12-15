@@ -62,7 +62,7 @@ class U_Page extends Component {
             </>
           );
           break;
-        case this.props.search_data !== null:
+        case this.props.search_data.relevancy.length > 0:
           return (
             <>
               <div className="search_Display">

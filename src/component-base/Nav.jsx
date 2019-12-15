@@ -29,6 +29,22 @@ class U_Nav extends Component {
   constructor(props) {
     super(props);
 
+    /*
+        let relevancy = [];
+        let original_link_index = [];
+
+        let search_word_hit
+    */
+
+    // Variables used to capture keyword hits on change
+    this.result_search_hit = [];
+    // RELEVANCY CHECK
+    // 2 = both checks (title and comment)
+    // 1 = one of the two
+    this.result_relevancy = [];
+    // Original indexes array of array...
+    this.result_original_link_indexes = [];
+
     this.state = {
       search_input: "",
       search_result_obj: null
@@ -86,31 +102,41 @@ class U_Nav extends Component {
   };
 
   search = e => {
-    let searchInput = e.target.value;
+    // Clear the console because it is hallucinating...
+    console.clear();
 
-    if (searchInput === "") {
-      log.error("No word to search!");
-      return;
-    }
+    let searchInput = e.target.value.trim();
 
     // Key words splitted
     let keywords = searchInput.split(" ");
 
-    // Result array == Array of array of link items
-    let search_string_hit = [];
+    // clean the "global" variables if there is nothing in the searcch field
+    log.var("keywords.length", keywords.length);
+    log.var("keywords", keywords);
 
-    // RELEVANCY CHECK
-    // 2 = both checks (title and comment)
-    // 1 = one of the two
-    let result_relevancy = [];
+    if (keywords.length === 1 && keywords[0] === "") {
+      log.ok("Cleaned...");
+      this.result_search_hit = [];
+      this.result_relevancy = [];
+      this.result_original_link_indexes = [];
+    } else {
+      this.result_search_hit = this.result_search_hit.slice(0, keywords.length);
+      this.result_relevancy = this.result_relevancy.slice(0, keywords.length);
+      this.result_original_link_indexes = this.result_original_link_indexes.slice(
+        0,
+        keywords.length
+      );
+    }
+
+    // then make sure the unrelevant hits are removed
 
     // For all keyword, check all links for name and comment
     //
     // link.name ==== string
     // link.comment ==== array of objects... gotta look for property insert of each objects (may not exist??)
     //
-    console.clear();
-    keywords.forEach(word => {
+
+    keywords.forEach((word, word_index) => {
       if (word !== "") {
         // Case insensitive search
         word = word.toLowerCase();
@@ -119,9 +145,10 @@ class U_Nav extends Component {
         log.var("word", word);
         log.ok("");
 
-        let relevancy = []; // inner
+        let relevancy = [];
+        let original_link_index = [];
 
-        let search_word_hit = this.props.links.filter(link => {
+        let search_word_hit = this.props.links.filter((link, link_index) => {
           // filter boolean
           let returned_boolean = false;
 
@@ -164,23 +191,28 @@ class U_Nav extends Component {
               relevancy.push(2);
             }
             log.ok("");
+
+            // catch the original index of the link in the links array
+            original_link_index.push(link_index);
           }
 
           return returned_boolean;
         }); // END filter links
 
-        search_string_hit.push(search_word_hit);
-        result_relevancy.push(relevancy);
+        // Fill the arrays on "global scope" (scope out of the forEach word) Haaa... We're restting that on keyup...
+        this.result_search_hit[word_index] = search_word_hit;
+        this.result_relevancy[word_index] = relevancy;
+        this.result_original_link_indexes[word_index] = original_link_index;
       }
-    });
+    }); // END forEach word
 
     // Holds the filtered links
     log.var(
-      "++++++++++++++++++++++++++ search_string_hit",
-      search_string_hit.length
+      "++++++++++++++++++++++++++ this.result_search_hit",
+      this.result_search_hit.length
     );
 
-    search_string_hit.forEach(word_hit => {
+    this.result_search_hit.forEach(word_hit => {
       word_hit.forEach(link => {
         log.var("catched link name", link.name);
       });
@@ -188,10 +220,10 @@ class U_Nav extends Component {
 
     log.var(
       "++++++++++++++++++++++++++ Relevancy check",
-      result_relevancy.length
+      this.result_relevancy.length
     );
 
-    result_relevancy.forEach(rel => {
+    this.result_relevancy.forEach(rel => {
       rel.forEach(note => {
         log.var("note", note);
       });
@@ -199,44 +231,64 @@ class U_Nav extends Component {
 
     // REORDER BY RELEVANCY
     let ordered_relevancy = [];
-    let ordered_search_string_hit = [];
+    let ordered_search_hit = [];
+    let ordered_link_indexes = [];
 
-    // Get the relevant score of 2
-    result_relevancy[0].forEach((rel, i) => {
-      if (rel === 2) {
-        ordered_relevancy.push(rel);
-        ordered_search_string_hit.push(search_string_hit[0][i]);
-      }
-    });
+    if (this.result_relevancy.length > 0) {
+      // Get the relevant score of 2
+      this.result_relevancy.forEach((wordHit, wi) => {
+        wordHit.forEach((rel, i) => {
+          if (rel === 2) {
+            ordered_relevancy.push(rel);
+            ordered_search_hit.push(this.result_search_hit[wi][i]);
+            ordered_link_indexes.push(this.result_original_link_indexes[wi][i]);
+          }
+        });
+      });
 
-    // Get the relevant score of 1
-    result_relevancy[0].forEach((rel, i) => {
-      if (rel === 1) {
-        ordered_relevancy.push(rel);
-        ordered_search_string_hit.push(search_string_hit[0][i]);
-      }
-    });
+      // Get the relevant score of 1
+      this.result_relevancy.forEach((wordHit, wi) => {
+        wordHit.forEach((rel, i) => {
+          if (rel === 1) {
+            ordered_relevancy.push(rel);
+            ordered_search_hit.push(this.result_search_hit[wi][i]);
+            ordered_link_indexes.push(this.result_original_link_indexes[wi][i]);
+          }
+        });
+      });
+    }
+
+    log.var(
+      "this.result_original_link_indexes",
+      this.result_original_link_indexes
+    );
 
     // Set state
     this.setState({
+      // Used to keep the search input up to date
       search_input: e.target.value,
+
+      // "Global" variables
+
+      // That object is dispacthed to the store.
+      // Sending EVERY result details... But in fact, only the link_indexes is used by search_result component.
       search_result_obj: {
-        result_relevancy: ordered_relevancy, //result_relevancy,
-        search_string_hit: ordered_search_string_hit //search_string_hit
+        relevancy: ordered_relevancy, // relevancy note: 1 or 2... ,
+        search_hit: ordered_search_hit, // search_hit
+        link_indexes: ordered_link_indexes // Original link indexes
       }
     });
-  };
+  }; // END search function (on change event)
 
   search_keyup = e => {
-    if (e.key === "Enter") {
-      log.ok("ENTER");
-
-      this.props.dispatch({
-        type: "search submit",
-        data: this.state.search_result_obj
-      });
-    }
+    // Dispatch to the store to enable/disable the search_result component
+    this.props.dispatch({
+      type: "search submit",
+      data: this.state.search_result_obj
+    });
+    //}
   };
+
   // =============================================================================================================== Component render
   render = () => {
     log.render("Nav");
@@ -300,7 +352,8 @@ class U_Nav extends Component {
       return (
         <>
           <nav>
-            <div className="order_selects">
+            {/* COOL UI filter that is just unused for now... */}
+            {/* <div className="order_selects">
               Results are{" "}
               <select>
                 <option>alphabetical</option>
@@ -313,7 +366,7 @@ class U_Nav extends Component {
                 <option>ascending</option>
                 <option defaultValue>descending</option>
               </select>
-            </div>
+            </div> */}
             <div title={this.props.username}>
               <FontAwesomeIcon
                 icon="user-circle"

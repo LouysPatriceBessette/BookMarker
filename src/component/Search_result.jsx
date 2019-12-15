@@ -20,6 +20,7 @@ import {
 } from "../_BATCH-IMPORT.js";
 
 // =============================================================================================================== Other component imports
+import Tabbed_Links from "./Tabbed_links.jsx";
 
 // =============================================================================================================== Component class
 class U_Search_result extends Component {
@@ -35,12 +36,24 @@ class U_Search_result extends Component {
       log.render("Search_result");
 
       // quick test
-      let names = this.props.search_data.search_string_hit.map(link => {
-        return <h1>{link.name}</h1>;
+      let link_cards = this.props.search_data.link_indexes.map(cc => {
+        return <Tabbed_Links key={key({ thisCard: cc })} activeLink={cc} />;
       });
 
+      let header_plural =
+        this.props.search_data.link_indexes.length > 1 ? "s" : "";
+
       // ======================================================================= Return
-      return <>{names}</>; // ==================================================================== End return
+      return (
+        <>
+          <div className="search_header">
+            <h1>
+              {this.props.search_data.link_indexes.length} result{header_plural}
+            </h1>
+          </div>
+          <div className="search_results">{link_cards}</div>
+        </>
+      ); // ==================================================================== End return
     }
 
     // Not in search...

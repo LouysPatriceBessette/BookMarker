@@ -530,6 +530,23 @@ canvas {
 .fctBtn:hover {
   background-color: #748fcc;
 }
+/* ============================================================================= Search_result component */
+.search_Display {
+  width: 100%;
+}
+.search_header {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px dashed lightgrey;
+}
+.search_header h1 {
+  margin: 0.2em;
+}
+.search_results {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1em;
+}
 /* ============================================================================= Page component */
 .page {
   margin-top: 3.1em;
