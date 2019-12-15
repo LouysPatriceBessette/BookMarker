@@ -107,8 +107,85 @@ class U_Nav extends Component {
 
     let searchInput = e.target.value.trim();
 
+    let group = "";
+    let searchInput_begin = "";
+    let searchInput_end = "";
+
+    // Word grouping option!!
+    if (searchInput.indexOf('"') !== -1) {
+      log.ok("GROUPING!");
+
+      // Check if there is two "" else return... Wait for the second one.
+      let searchInput_characters = searchInput.split("");
+      let quotes_position = [];
+      searchInput_characters.forEach((character, characterIndex) => {
+        if (character === '"') {
+          log.var("catch", characterIndex);
+          quotes_position.push(characterIndex);
+        }
+      });
+
+      log.var("quotes_position", quotes_position);
+
+      if (quotes_position.length === 2) {
+        log.ok("We have a group!");
+
+        // Modify searchInput!
+        group = searchInput_characters
+          .slice(quotes_position[0] + 1, quotes_position[1])
+          .join("");
+        log.var("group", group);
+
+        // CHANGE the keywords array (defined later!!)
+        searchInput_begin = searchInput_characters
+          .slice(0, quotes_position[0])
+          .join("")
+          .trim();
+        searchInput_end = searchInput_characters
+          .slice(quotes_position[1] + 1)
+          .join("")
+          .trim();
+      } else {
+        // Don't process the keywords befor the second quotes is there
+        this.setState({
+          // Used to keep the search input up to date
+          search_input: e.target.value,
+
+          // UPDATE search_result_obj with empty... lol
+          search_result_obj: {
+            relevancy: [], // relevancy note: 1 or 2... ,
+            search_hit: [], // search_hit
+            link_indexes: [] // Original link indexes
+          }
+        });
+
+        return;
+      }
+    }
+
     // Key words splitted
-    let keywords = searchInput.split(" ");
+    let keywords = [];
+
+    // Keyword using the "group search"
+    if (group !== "") {
+      log.error("keywords using the group");
+      log.var("group again", group);
+      if (searchInput_begin !== "") {
+        keywords = keywords.concat(searchInput_begin.split(" "));
+      }
+      keywords = keywords.concat([group]);
+      if (searchInput_end !== "") {
+        keywords = keywords.concat(searchInput_end.split(" "));
+      }
+
+      log.var("keywords=====", keywords);
+    }
+
+    // "normal word splitting
+    else {
+      log.error("normal keywords");
+      keywords = searchInput.split(" ");
+    }
 
     // clean the "global" variables if there is nothing in the searcch field
     log.var("keywords.length", keywords.length);
@@ -234,14 +311,24 @@ class U_Nav extends Component {
     let ordered_search_hit = [];
     let ordered_link_indexes = [];
 
+    let caught_indexes = {};
+
     if (this.result_relevancy.length > 0) {
       // Get the relevant score of 2
       this.result_relevancy.forEach((wordHit, wi) => {
         wordHit.forEach((rel, i) => {
           if (rel === 2) {
-            ordered_relevancy.push(rel);
-            ordered_search_hit.push(this.result_search_hit[wi][i]);
-            ordered_link_indexes.push(this.result_original_link_indexes[wi][i]);
+            // Prevent catching the same link index more than once
+            if (!caught_indexes[this.result_original_link_indexes[wi][i]]) {
+              ordered_relevancy.push(rel);
+              ordered_search_hit.push(this.result_search_hit[wi][i]);
+              ordered_link_indexes.push(
+                this.result_original_link_indexes[wi][i]
+              );
+
+              // link index caught!
+              caught_indexes[this.result_original_link_indexes[wi][i]] = true;
+            }
           }
         });
       });
@@ -250,18 +337,23 @@ class U_Nav extends Component {
       this.result_relevancy.forEach((wordHit, wi) => {
         wordHit.forEach((rel, i) => {
           if (rel === 1) {
-            ordered_relevancy.push(rel);
-            ordered_search_hit.push(this.result_search_hit[wi][i]);
-            ordered_link_indexes.push(this.result_original_link_indexes[wi][i]);
+            // Prevent catching the same link index more than once
+            if (!caught_indexes[this.result_original_link_indexes[wi][i]]) {
+              ordered_relevancy.push(rel);
+              ordered_search_hit.push(this.result_search_hit[wi][i]);
+              ordered_link_indexes.push(
+                this.result_original_link_indexes[wi][i]
+              );
+
+              // link index caught!
+              caught_indexes[this.result_original_link_indexes[wi][i]] = true;
+            }
           }
         });
       });
     }
 
-    log.var(
-      "this.result_original_link_indexes",
-      this.result_original_link_indexes
-    );
+    log.var("ordered_link_indexes", ordered_link_indexes);
 
     // Set state
     this.setState({
