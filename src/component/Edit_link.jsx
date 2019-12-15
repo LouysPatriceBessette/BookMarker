@@ -22,7 +22,7 @@ import {
 
 // =============================================================================================================== Other component imports
 
-import Form_image_upload from "../component-base/Form_image_upload.jsx";
+import Form_image_select from "../component-base/Form_image_select.jsx";
 
 // =============================================================================================================== Component class
 class U_Edit_Link extends Component {
@@ -62,23 +62,18 @@ class U_Edit_Link extends Component {
   };
 
   link_rename_keyup = e => {
-    //log.var("e.key", e.key);
-    // on [ENTER]
+    // Blur on [ENTER]
     if (e.key === "Enter") {
       e.target.blur();
     }
   };
 
   link_rename_change = e => {
-    //log.var("e.target.value", e.target.value);
-
     // set to state...
     this.setState({ link_rename: e.target.value });
   };
 
   link_rename_blur = e => {
-    //log.var("New link name", e.target.value);
-
     let previousName = this.props.links[this.props.activeLink].name;
 
     if (previousName !== this.state.link_rename) {
@@ -170,7 +165,7 @@ class U_Edit_Link extends Component {
     card_div.style.height = this.quill_opened ? "auto" : "400px";
 
     // BUG!!! Force focus...
-    this.focus_Quill(e);
+    //this.focus_Quill(e);
   };
 
   quill_getContent = () => {
@@ -325,23 +320,17 @@ class U_Edit_Link extends Component {
   };
 
   editImage = () => {
-    //log.ok("editImage");
-
     this.props.dispatch({
       type: "modal",
       content: {
-        title: "Upload an image",
-        component: <Form_image_upload />
+        title: "Select an image",
+        component: <Form_image_select />
       }
     });
   };
 
   acceptImage = () => {
-    //log.ok("acceptImage");
     let acceptedImg = document.querySelector(".link_img img").src;
-    //log.var("image local file", acceptedImg); // WOW! Base64 image! Just like that!!! Fucking cool!
-
-    // Fuchin' set it as-is in the links.
 
     this.props.dispatch({
       type: "Accept an image",
@@ -352,8 +341,6 @@ class U_Edit_Link extends Component {
   };
 
   editImage_quit = () => {
-    //log.ok("QUIT edit link");
-
     this.props.dispatch({
       type: "quit link edit"
     });
@@ -510,7 +497,7 @@ class U_Edit_Link extends Component {
           <div className="quill_Div">
             <div
               id={"editor_" + this.props.activeLink}
-              onMouseDown={this.focus_Quill}
+              //onMouseDown={this.focus_Quill}
               //onPointerDown={this.focus_Quill}
             ></div>
             <button className="fctBtn" onClick={this.quill_getContent}>
