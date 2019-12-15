@@ -29,19 +29,14 @@ class U_Nav extends Component {
   constructor(props) {
     super(props);
 
-    /*
-        let relevancy = [];
-        let original_link_index = [];
-
-        let search_word_hit
-    */
-
     // Variables used to capture keyword hits on change
     this.result_search_hit = [];
+
     // RELEVANCY CHECK
     // 2 = both checks (title and comment)
     // 1 = one of the two
     this.result_relevancy = [];
+
     // Original indexes array of array...
     this.result_original_link_indexes = [];
 
@@ -381,6 +376,30 @@ class U_Nav extends Component {
     //}
   };
 
+  thumbView_checked = () => {
+    if (this.props.fullCards) {
+      return {
+        full: true,
+        thumb: false
+      };
+    } else {
+      return {
+        full: false,
+        thumb: true
+      };
+    }
+  };
+
+  thumbView_change = e => {
+    log.ok("thumbView change");
+    log.var("e.target.value", e.target.value);
+
+    let fullCards = e.target.value === "full";
+
+    //document.Cookies
+    this.props.dispatch({ type: "thumbView change", fullCards: fullCards });
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     log.render("Nav");
@@ -444,21 +463,30 @@ class U_Nav extends Component {
       return (
         <>
           <nav>
-            {/* COOL UI filter that is just unused for now... */}
-            {/* <div className="order_selects">
-              Results are{" "}
-              <select>
-                <option>alphabetical</option>
-
-                <option defaultValue>chronological</option>
-                <option>rating</option>
-              </select>
-              and
-              <select>
-                <option>ascending</option>
-                <option defaultValue>descending</option>
-              </select>
-            </div> */}
+            <div className="thumbView_select">
+              <div>
+                <input
+                  type="radio"
+                  name="thumbView"
+                  value="full"
+                  id="full"
+                  defaultChecked={this.thumbView_checked().full}
+                  onClick={this.thumbView_change}
+                />
+                <label htmlFor="full">Full cards</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  name="thumbView"
+                  value="thumb"
+                  id="thumb"
+                  defaultChecked={this.thumbView_checked().thumb}
+                  onClick={this.thumbView_change}
+                />
+                <label htmlFor="thumb">Thumbs</label>
+              </div>
+            </div>
             <div title={this.props.username}>
               <FontAwesomeIcon
                 icon="user-circle"
@@ -525,7 +553,10 @@ let stp = state => {
     unsavedChanges: state.unsavedChanges,
 
     // For the search function
-    links: state.links
+    links: state.links,
+
+    // For the thumb/full view
+    fullCards: state.fullCards
   };
 };
 

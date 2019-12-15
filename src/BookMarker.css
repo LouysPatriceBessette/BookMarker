@@ -190,14 +190,11 @@ nav h1 {
 .navIcon.linkAdd:hover {
   color: #5082e7;
 }
-.order_selects {
+/* removed... */
+.thumbView_select {
   position: absolute;
-  bottom: -2em;
-  right: 0.5em;
-}
-.order_selects select {
-  border: 0;
-  outline: 0;
+  bottom: -3.5em;
+  right: 1em;
 }
 /* ============================================================================= FORMS */
 .logBtn {
@@ -225,7 +222,7 @@ nav h1 {
 /* ============================================================================= Tabbed_Categories Component */
 .tabs_container {
   width: 100%;
-  margin: 2em 0 0 0 !important;
+  margin: 3.2em 0 0 0 !important;
 }
 .RRT__panel {
   width: 100%;
@@ -272,6 +269,21 @@ nav h1 {
   width: 300px;
   height: 400px;
   position: relative;
+}
+.link_card img {
+  border-radius: 16px;
+}
+.link_card.thumbnail {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 12px;
+  width: auto;
+  height: auto;
+  position: relative;
+}
+.link_card.thumbnail img {
+  border-radius: 16px;
 }
 .link_name {
   font-weight: bold;
@@ -489,8 +501,20 @@ span.dragIcon::after {
 /* ============================================================================= link_card_edit Component */
 .linkEdit_Display {
   width: 100%;
+}
+.linkEdit_header {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px dashed lightgrey;
+}
+.linkEdit_header h1 {
+  margin: 0.2em;
+}
+.linkEdit_main {
+  width: 100%;
   display: flex;
   justify-content: center;
+  padding: 1em;
 }
 .link_card_edit {
   border: 1px solid #020a6d;

@@ -282,15 +282,22 @@ nav h1 {
     color: @navIcon_link_hover //#5082e7;
 }
 
-.order_selects {
-    position: absolute;
-    bottom: -2em;
-    right: 0.5em;
-}
+/* removed... */
+// .order_selects {
+//     position: absolute;
+//     bottom: -2em;
+//     right: 0.5em;
+// }
 
-.order_selects select {
-    border: 0;
-    outline: 0;
+// .order_selects select {
+//     border: 0;
+//     outline: 0;
+// }
+
+.thumbView_select {
+    position: absolute;
+    bottom: -3.5em;
+    right: 1em;
 }
 
 
@@ -326,7 +333,7 @@ nav h1 {
 
 .tabs_container {
     width: 100%;
-    margin: 2em 0 0 0 !important;
+    margin: 3.2em 0 0 0 !important;
 }
 
 .RRT__panel {
@@ -383,6 +390,25 @@ nav h1 {
     width: 300px;
     height: 400px;
     position: relative;
+}
+
+.link_card img {
+    border-radius: 16px;
+}
+
+.link_card.thumbnail {
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    margin: 12px;
+    width: auto;
+    height: auto;
+    position: relative;
+    // overflow: hidden;
+}
+
+.link_card.thumbnail img {
+    border-radius: 16px;
 }
 
 .link_name {
@@ -649,8 +675,23 @@ span.dragIcon::after {
 
 .linkEdit_Display {
     width: 100%;
+}
+
+.linkEdit_header {
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px dashed lightgrey;
+}
+
+.linkEdit_header h1 {
+    margin: 0.2em;
+}
+
+.linkEdit_main {
+    width: 100%;
     display: flex;
     justify-content: center;
+    padding: 1em;
 }
 
 .link_card_edit {
@@ -700,7 +741,6 @@ canvas {
 
 /* ============================================================================= Search_result component */
 .search_Display {
-
     width: 100%;
 }
 

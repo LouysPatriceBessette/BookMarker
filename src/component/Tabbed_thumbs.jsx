@@ -22,7 +22,7 @@ import {
 // =============================================================================================================== Other component imports
 
 // =============================================================================================================== Component class
-class U_Tabbed_Links extends Component {
+class U_Tabbed_Thumbs extends Component {
   constructor(props) {
     super(props);
 
@@ -36,15 +36,6 @@ class U_Tabbed_Links extends Component {
   }
 
   // =============================================================================================================== Component functions
-
-  changeRating = newRating => {
-    // Save the rating in store
-    this.props.dispatch({
-      type: "change rating",
-      activeLink: this.props.activeLink,
-      rating: newRating
-    });
-  };
 
   quill_format_object_to_html = quill_obj => {
     // TEST comment object.
@@ -162,7 +153,7 @@ class U_Tabbed_Links extends Component {
 
   // =============================================================================================================== Component render
   render = () => {
-    log.render("Tabbed_links");
+    log.render("Tabbed_Thumbs");
 
     let link = this.props.links[this.props.activeLink];
     let star = <Ratings.Widget widgetDimension="20px" widgetSpacing="2px" />;
@@ -175,39 +166,15 @@ class U_Tabbed_Links extends Component {
     return (
       <>
         <div
-          className="link_card"
+          className="link_card thumbnail"
           key={key({ linkID: this.props.activeLink })}
           data-id={this.props.activeLink}
         >
-          <span className="dragIcon" title="Drag me!"></span>
-          <div className="link_title">
-            <div
-              id={"real_link_" + this.props.activeLink}
-              className="link_name"
-              title={link.name}
-            >
-              {link.name}
-            </div>
-          </div>
           <div className="link_img">
             <a target="_blank" href={link.href}>
-              <img src={link.image} />
+              <img src={link.image} title={link.name} />
             </a>
           </div>
-          <div className="ratingDiv">
-            <Ratings
-              rating={link.rating}
-              widgetRatedColors="blue"
-              changeRating={this.changeRating}
-            >
-              {star}
-              {star}
-              {star}
-              {star}
-              {star}
-            </Ratings>
-          </div>
-          <div className="Link_comment_Div">{linkComment}</div>
         </div>
       </>
     ); // ==================================================================== End return
@@ -223,5 +190,5 @@ let stp = state => {
 };
 
 // =============================================================================================================== Component connection to the store
-let Tabbed_Links = connect(stp)(U_Tabbed_Links);
-export default Tabbed_Links;
+let Tabbed_Thumbs = connect(stp)(U_Tabbed_Thumbs);
+export default Tabbed_Thumbs;

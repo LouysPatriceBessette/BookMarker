@@ -455,58 +455,66 @@ class U_Edit_Link extends Component {
     // ======================================================================= Return
     return (
       <>
-        <div
-          className="link_card_edit"
-          key={key({ linkID: this.props.activeLink })}
-          data-id={this.props.activeLink}
-        >
-          <span className="dragIcon" title="Drag me!"></span>
-          <div className="link_title">
-            {link_rename_input_or_not()}
-            <FontAwesomeIcon
-              icon="edit"
-              className="linkCardIcon editName"
-              title="Edit name"
-              onClick={this.link_rename_show}
-            />
-          </div>
-          <div className="link_img">
-            <div className={underlay()}>{image_edit_icons()}</div>
-            <img src={link.image} />
-          </div>
-          <div className="ratingDiv">
-            <Ratings
-              rating={link.rating}
-              widgetRatedColors="lightgrey" // Disabled color
-              // changeRating={this.changeRating} // DISABLED.... mmm... Re-enable?
+        <div className="linkEdit_header">
+          <h1>Edit link</h1>
+        </div>
+        <div className="linkEdit_main">
+          <div
+            className="link_card_edit"
+            key={key({ linkID: this.props.activeLink })}
+            data-id={this.props.activeLink}
+          >
+            <span className="dragIcon" title="Drag me!"></span>
+            <div className="link_title">
+              {link_rename_input_or_not()}
+              <FontAwesomeIcon
+                icon="edit"
+                className="linkCardIcon editName"
+                title="Edit name"
+                onClick={this.link_rename_show}
+              />
+            </div>
+            <div className="link_img">
+              <div className={underlay()}>{image_edit_icons()}</div>
+              <img src={link.image} />
+            </div>
+            <div className="ratingDiv">
+              <Ratings
+                rating={link.rating}
+                widgetRatedColors="lightgrey" // Disabled color
+                // changeRating={this.changeRating} // DISABLED.... mmm... Re-enable?
+              >
+                {star}
+                {star}
+                {star}
+                {star}
+                {star}
+              </Ratings>
+              <FontAwesomeIcon
+                icon="edit"
+                className="linkCardIcon editComment"
+                title="Edit comment"
+                onClick={this.quill_toggle}
+              />
+            </div>
+            <div className="Link_comment_Div">{linkComment}</div>
+            <div className="quill_Div">
+              <div
+                id={"editor_" + this.props.activeLink}
+                //onMouseDown={this.focus_Quill}
+                //onPointerDown={this.focus_Quill}
+              ></div>
+              <button className="fctBtn" onClick={this.quill_getContent}>
+                Save
+              </button>
+            </div>
+            <button
+              className="fctBtn floating_out"
+              onClick={this.editImage_quit}
             >
-              {star}
-              {star}
-              {star}
-              {star}
-              {star}
-            </Ratings>
-            <FontAwesomeIcon
-              icon="edit"
-              className="linkCardIcon editComment"
-              title="Edit comment"
-              onClick={this.quill_toggle}
-            />
-          </div>
-          <div className="Link_comment_Div">{linkComment}</div>
-          <div className="quill_Div">
-            <div
-              id={"editor_" + this.props.activeLink}
-              //onMouseDown={this.focus_Quill}
-              //onPointerDown={this.focus_Quill}
-            ></div>
-            <button className="fctBtn" onClick={this.quill_getContent}>
-              Save
+              Finished editing
             </button>
           </div>
-          <button className="fctBtn floating_out" onClick={this.editImage_quit}>
-            Finished editing
-          </button>
         </div>
       </>
     ); // ==================================================================== End return

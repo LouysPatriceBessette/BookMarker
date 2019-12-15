@@ -25,6 +25,7 @@ import Tabs from "react-responsive-tabs";
 import "react-responsive-tabs/styles.css";
 
 import Tabbed_Links from "./Tabbed_links.jsx";
+import Tabbed_Thumbs from "./Tabbed_Thumbs.jsx";
 
 // =============================================================================================================== Component class
 class U_Tabbed_Categories extends Component {
@@ -175,11 +176,25 @@ class U_Tabbed_Categories extends Component {
               }}
             >
               {this.links_sortable_order[index].map(cc => {
-                return (
-                  <>
-                    <Tabbed_Links key={key({ thisCard: cc })} activeLink={cc} />
-                  </>
-                );
+                if (this.props.fullCards) {
+                  return (
+                    <>
+                      <Tabbed_Links
+                        key={key({ thisCard: cc })}
+                        activeLink={cc}
+                      />
+                    </>
+                  );
+                } else {
+                  return (
+                    <>
+                      <Tabbed_Thumbs
+                        key={key({ thisCard: cc })}
+                        activeLink={cc}
+                      />
+                    </>
+                  );
+                }
               })}
             </Sortable>
           );
@@ -209,7 +224,10 @@ let stp = state => {
   return {
     categories: state.categories,
     links: state.links,
-    activeCat: state.activeCat
+    activeCat: state.activeCat,
+
+    // For the thumb/full view
+    fullCards: state.fullCards
   };
 };
 

@@ -20,6 +20,20 @@ import {
 } from "./_BATCH-IMPORT.js"
 
 // =============================================================================================================== Default store
+
+// Function to return the view thumnails or full cards view (boolean)
+let view_cookie = () => {
+    let cookieValue_string = Cookies.get("fullCards")
+
+    if (cookieValue_string === undefined) {
+        console.log("in view_cookie, UNDEFINED")
+        return true
+    } else {
+        console.log("in view_cookie, cookie value is", cookieValue_string)
+        return cookieValue_string === "true"
+    }
+}
+
 let defaultStore = {
 
     // Application variables NOT LOGGED
@@ -38,7 +52,9 @@ let defaultStore = {
         relevancy: [],
         search_string_result: [],
         link_indexes: []
-    }
+    },
+
+    fullCards: view_cookie()
 }
 
 let reducer = (state, action) => {
@@ -366,6 +382,15 @@ let reducer = (state, action) => {
     if (action.type === "search submit") {
         // search_result_obj
         newState.search_data = action.data
+    }
+
+    // =========================================================== THUMBNAIL VIEW
+
+    if (action.type === "thumbView change") {
+
+        newState.fullCards = action.fullCards
+        Cookies.set('fullCards', action.fullCards)
+
     }
 
     // =========================================================== SHARE A FOLDER
