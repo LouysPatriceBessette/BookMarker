@@ -28,6 +28,11 @@ import Form_add_link from "./Form_add_link.jsx";
 class U_Nav extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      search_input: "",
+      search_result_obj: null
+    };
   }
 
   // =============================================================================================================== Component functions
@@ -80,6 +85,158 @@ class U_Nav extends Component {
     this.props.dispatch({ type: "display unsaved changes" });
   };
 
+  search = e => {
+    let searchInput = e.target.value;
+
+    if (searchInput === "") {
+      log.error("No word to search!");
+      return;
+    }
+
+    // Key words splitted
+    let keywords = searchInput.split(" ");
+
+    // Result array == Array of array of link items
+    let search_string_hit = [];
+
+    // RELEVANCY CHECK
+    // 2 = both checks (title and comment)
+    // 1 = one of the two
+    let result_relevancy = [];
+
+    // For all keyword, check all links for name and comment
+    //
+    // link.name ==== string
+    // link.comment ==== array of objects... gotta look for property insert of each objects (may not exist??)
+    //
+    console.clear();
+    keywords.forEach(word => {
+      if (word !== "") {
+        // Case insensitive search
+        word = word.toLowerCase();
+
+        log.ok("");
+        log.var("word", word);
+        log.ok("");
+
+        let relevancy = []; // inner
+
+        let search_word_hit = this.props.links.filter(link => {
+          // filter boolean
+          let returned_boolean = false;
+
+          let catchedOnTitle = false;
+          let catchedOnComment = false;
+
+          // ====================================== Check link names
+          // Case insensitive search
+          let linkNameToLower = link.name.toLowerCase();
+          //log.var("linkNameToLower", linkNameToLower);
+
+          // If the word is found in the link name
+          if (linkNameToLower.indexOf(word) !== -1) {
+            returned_boolean = true;
+            catchedOnTitle = true;
+          }
+
+          // ====================================== Check link comments
+
+          link.comment.forEach(line => {
+            // Case insensitive search
+            let lineInsertToLower = line.insert.toLowerCase();
+            //log.var("lineInsertToLower", lineInsertToLower);
+            if (lineInsertToLower.indexOf(word) !== -1) {
+              returned_boolean = true;
+              catchedOnComment = true;
+            }
+          });
+
+          if (returned_boolean) {
+            log.var("====================== Catched link", link.name);
+            log.var("catchedOnTitle", catchedOnTitle);
+            log.var("catchedOnComment", catchedOnComment);
+            // relevancy
+            if (catchedOnTitle && !catchedOnComment) {
+              relevancy.push(1);
+            } else if (!catchedOnTitle && catchedOnComment) {
+              relevancy.push(1);
+            } else if (catchedOnTitle && catchedOnComment) {
+              relevancy.push(2);
+            }
+            log.ok("");
+          }
+
+          return returned_boolean;
+        }); // END filter links
+
+        search_string_hit.push(search_word_hit);
+        result_relevancy.push(relevancy);
+      }
+    });
+
+    // Holds the filtered links
+    log.var(
+      "++++++++++++++++++++++++++ search_string_hit",
+      search_string_hit.length
+    );
+
+    search_string_hit.forEach(word_hit => {
+      word_hit.forEach(link => {
+        log.var("catched link name", link.name);
+      });
+    });
+
+    log.var(
+      "++++++++++++++++++++++++++ Relevancy check",
+      result_relevancy.length
+    );
+
+    result_relevancy.forEach(rel => {
+      rel.forEach(note => {
+        log.var("note", note);
+      });
+    });
+
+    // REORDER BY RELEVANCY
+    let ordered_relevancy = [];
+    let ordered_search_string_hit = [];
+
+    // Get the relevant score of 2
+    result_relevancy[0].forEach((rel, i) => {
+      if (rel === 2) {
+        ordered_relevancy.push(rel);
+        ordered_search_string_hit.push(search_string_hit[0][i]);
+      }
+    });
+
+    // Get the relevant score of 1
+    result_relevancy[0].forEach((rel, i) => {
+      if (rel === 1) {
+        ordered_relevancy.push(rel);
+        ordered_search_string_hit.push(search_string_hit[0][i]);
+      }
+    });
+
+    // Set state
+    this.setState({
+      search_input: e.target.value,
+      search_result_obj: {
+        result_relevancy: ordered_relevancy, //result_relevancy,
+        search_string_hit: ordered_search_string_hit //search_string_hit
+      }
+    });
+  };
+
+  search_keyup = e => {
+    if (e.key === "Enter") {
+      log.ok("ENTER");
+
+      this.props.dispatch({
+        type: "search submit",
+        data: this.state.search_result_obj
+      });
+    }
+  };
   // =============================================================================================================== Component render
   render = () => {
     log.render("Nav");
@@ -186,6 +343,9 @@ class U_Nav extends Component {
                 type="text"
                 className="searchInput"
                 placeholder="Search your bookmarks..."
+                onChange={this.search}
+                onKeyUp={this.search_keyup}
+                value={this.state.search_input}
               />
               <FontAwesomeIcon
                 icon="search"
@@ -217,7 +377,10 @@ let stp = state => {
     categories: state.categories,
     activeCat: state.activeCat,
     activeLink: state.activeLink,
-    unsavedChanges: state.unsavedChanges
+    unsavedChanges: state.unsavedChanges,
+
+    // For the search function
+    links: state.links
   };
 };
 

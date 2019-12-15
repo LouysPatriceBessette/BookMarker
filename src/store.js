@@ -32,7 +32,9 @@ let defaultStore = {
     linkEdit: false,
     image_underlay: true,
     image_edited: false,
-    image_accepted: false
+    image_accepted: false,
+
+    search_data: null
 }
 
 let reducer = (state, action) => {
@@ -353,6 +355,13 @@ let reducer = (state, action) => {
         newState.unsavedShown = false
         newState.unsavedChanges_detail = []
         newState.unsavedChanges = false
+    }
+
+    // =========================================================== SEARCH
+
+    if (action.type === "search submit") {
+        // search_result_obj
+        newState.search_data = action.data
     }
 
     // =========================================================== SHARE A FOLDER

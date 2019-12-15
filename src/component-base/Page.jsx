@@ -25,6 +25,7 @@ import Unsaved from "../component/Unsaved.jsx";
 import Tabbed_Categories from "../component/Tabbed_categories.jsx";
 import Context from "../component-base/Context.jsx";
 import Edit_Link from "../component/Edit_Link.jsx";
+import Search_result from "../component/Search_result.jsx";
 import Home from "../component-publicView/Home.jsx";
 
 // =============================================================================================================== Component class
@@ -57,6 +58,15 @@ class U_Page extends Component {
             <>
               <div className="linkEdit_Display">
                 <Edit_Link />
+              </div>
+            </>
+          );
+          break;
+        case this.props.search_data !== null:
+          return (
+            <>
+              <div className="search_Display">
+                <Search_result />
               </div>
             </>
           );
@@ -96,7 +106,10 @@ let stp = state => {
 
     // to display unsaved changes list
     unsavedShown: state.unsavedShown,
-    linkEdit: state.linkEdit
+    linkEdit: state.linkEdit,
+
+    // Search results
+    search_data: state.search_data
   };
 };
 
