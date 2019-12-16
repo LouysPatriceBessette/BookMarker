@@ -36,7 +36,8 @@ import {
   faCloud,
   faFolder,
   faLink,
-  faCheck
+  faCheck,
+  faTimes
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -47,7 +48,8 @@ library.add(
   faCloud,
   faFolder,
   faLink,
-  faCheck
+  faCheck,
+  faTimes
 );
 
 // =============================================================================================================== Component class

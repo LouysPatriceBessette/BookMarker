@@ -32,14 +32,11 @@ class U_Home extends Component {
   // =============================================================================================================== Component functions
 
   check = () => {
-    return (
-      <FontAwesomeIcon
-        icon="check"
-        className="homeIcon"
-        title="Accept image"
-        onClick={this.acceptImage}
-      />
-    );
+    return <FontAwesomeIcon icon="check" className="homeIcon check" />;
+  };
+
+  times = () => {
+    return <FontAwesomeIcon icon="times" className="homeIcon times" />;
   };
 
   signupNow = () => {
@@ -57,7 +54,18 @@ class U_Home extends Component {
   render = () => {
     log.render("Home");
 
-    // Render logic
+    window.addEventListener("keyup", e => {
+      if (e.ctrlKey && e.key == "m") {
+        setTimeout(() => {
+          document.querySelectorAll(".homeIcon").forEach((check, i) => {
+            let delay = 800;
+            setTimeout(() => {
+              check.style.opacity = 1;
+            }, delay * i);
+          });
+        }, 1000);
+      }
+    });
 
     // ======================================================================= Return
     return (
@@ -76,7 +84,7 @@ class U_Home extends Component {
             <li>{this.check()}Drag n' drop ordering</li>
             <li>{this.check()}Tabbed categories</li>
             <li>{this.check()}Keyword search</li>
-            <li>{this.check()}Change history and click count</li>
+            <li>{this.times()}Change history and click count</li>
             <li>{this.check()}More secure than a browser bookmark bar!</li>
           </ul>
         </div>

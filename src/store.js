@@ -231,6 +231,8 @@ let reducer = (state, action) => {
             target: "Link",
             index: newState.activeLink,
             property: "image",
+            oldValue: newState.image,
+            newValue: action.base64_img,
             time: new Date().getTime()
         })
 

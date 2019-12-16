@@ -36,9 +36,46 @@ class U_Page extends Component {
 
   // =============================================================================================================== Component functions
 
+  generiqueDeFin = () => {
+    window.addEventListener("keyup", e => {
+      if (e.ctrlKey && e.key == "q") {
+        //alert("QUIT");
+        console.clear();
+        console.log("\n\n\n\n\n\n\n\n\n\n\n");
+        console.log("This final university project was achieved on");
+        console.log("             December 15, 2019");
+        console.log("");
+        console.log(
+          "       %cDecodeMtl Concordia Bootcamp 'CB-I-2'",
+          "font-weight:bold; color:red;"
+        );
+        console.log("               Montréal, Québec\n\n");
+        console.log("=================================================");
+        console.log("");
+        console.log("   It will be online somewhere in January 2020");
+        console.log("");
+        console.log(
+          "      Note down that URL: %cbookmarker.club",
+          "font-weight:bold;"
+        );
+        console.log("");
+        console.log("=================================================");
+        console.log(
+          "                     - %cLouys Patrice Bessette\n                        aka: Bes7weB\n\n\n\n\n\n",
+          "font-weight:bold; color:blue;"
+        );
+        console.log(
+          "                                      Copyright 2019~2020"
+        );
+      }
+    });
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     log.render("Page");
+
+    this.generiqueDeFin();
 
     // User is logged
     if (this.props.logged) {

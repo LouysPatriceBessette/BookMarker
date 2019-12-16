@@ -27,6 +27,8 @@ import "react-responsive-tabs/styles.css";
 import Tabbed_Links from "./Tabbed_links.jsx";
 import Tabbed_Thumbs from "./Tabbed_Thumbs.jsx";
 
+import Bot from "./Bot.jsx";
+
 // =============================================================================================================== Component class
 class U_Tabbed_Categories extends Component {
   constructor(props) {
@@ -214,6 +216,7 @@ class U_Tabbed_Categories extends Component {
           onChange={this.getActiveCat}
           selectedTabKey={this.passActiveCat_toTabs()}
         />
+        <Bot />
       </>
     ); // ==================================================================== End return
   }; // End render

@@ -335,7 +335,6 @@ class U_Edit_Link extends Component {
     this.props.dispatch({
       type: "Accept an image",
       activeLink: this.props.activeLink,
-      activeCat: this.props.activeCat,
       base64_img: acceptedImg
     });
   };
