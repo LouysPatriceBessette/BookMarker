@@ -122,7 +122,7 @@ class U_Unsaved extends Component {
 
       return (
         <li key={key({ time: change.time })}>
-          {date_time(change.time).iso} | {ChangedElement} {valueDisplay}
+          {date_time(change.time).full_ISO} | {ChangedElement} {valueDisplay}
         </li>
       );
     });

@@ -83,7 +83,7 @@ class U_Context extends Component {
           history_log.property === "ALL"
         );
       });
-      let Link_date = date_time(linkCreationDate.date).iso;
+      let Link_date = date_time(linkCreationDate.date).full_ISO;
       this.contextMenu_params.element.querySelector(
         ".link_creation_date"
       ).innerText = Link_date;

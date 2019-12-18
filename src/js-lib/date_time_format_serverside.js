@@ -8,10 +8,10 @@
 
 
 // ================================ FOR CLIENT-SIDE EXPORT
-let date_time = unixTime => {
+// let date_time = unixTime => {
 
-    // ================================ FOR SERVER-SIDE REQUIRE
-    //module.exports = unixTime => {
+// ================================ FOR SERVER-SIDE REQUIRE
+module.exports = unixTime => {
 
     // ======================================================================== INPUT
     if (unixTime === undefined || isNaN(parseInt(unixTime))) {
@@ -102,4 +102,4 @@ let date_time = unixTime => {
 }
 
 // ================================ FOR CLIENT-SIDE EXPORT
-export default date_time
+// export default date_time
