@@ -25,6 +25,17 @@ import {
 class U_Form_image_select extends Component {
   constructor(props) {
     super(props);
+
+    this.imageMove = false;
+    this.canvas = null;
+    this.ctx = null;
+    this.imageBase64 = null;
+    this.imgElement = null;
+    this.imageReady = false;
+    this.width = 200;
+    this.height = 200;
+    this.imagePositionInCanvas = { top: 0, left: 0 };
+    this.clickStartPostion = { top: 0, left: 0 };
   }
 
   // =============================================================================================================== Component functions
@@ -49,8 +60,9 @@ class U_Form_image_select extends Component {
 
     let newImage = document.getElementById("LinkImagePreview").toDataURL();
 
+    // Get the image size in Kb
     let imageSize = this.calculateImageSize(newImage);
-    log.var("imageSize in Kb",imageSize)
+    log.var("imageSize in Kb", imageSize);
 
     setTimeout(() => {
       document.querySelector(".link_img img").src = newImage;
@@ -95,18 +107,22 @@ class U_Form_image_select extends Component {
 
   SetImageInCanvas = (data, imageBlob) => {
     if (data) {
-      let canvas = document.getElementById("LinkImagePreview");
-      let ctx = canvas.getContext("2d");
-      let img = new Image();
+      // Get the image in Base64
+      this.canvas = document.getElementById("LinkImagePreview");
+      this.ctx = this.canvas.getContext("2d");
+      this.imgElement = new Image();
 
       // Async image load
-      img.onload = function() {
+      this.imgElement.onload = () => {
+        this.imageReady = true;
+        log.ok("Image is ready");
+
         // Update dimensions of the canvas with the dimensions of the image
-        canvas.width = this.width;
-        canvas.height = this.height;
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
 
         // Draw
-        ctx.drawImage(img, 0, 0);
+        this.ctx.drawImage(this.imgElement, 0, 0);
       };
 
       // if it's an image blog (from clipboard paste)
@@ -115,13 +131,16 @@ class U_Form_image_select extends Component {
         let URLObj = window.URL || window.webkitURL;
 
         // Set the image in the canvas
-        img.src = URLObj.createObjectURL(data);
+        this.imgElement.src = URLObj.createObjectURL(data);
       }
 
       // if it's a file from computer
       else {
-        img.src = data;
+        this.imgElement.src = data;
       }
+
+      // Keep the whole image before canvas crops it
+      this.imageBase64 = this.imgElement.src;
     }
   };
 
@@ -140,6 +159,64 @@ class U_Form_image_select extends Component {
     reader.readAsDataURL(document.querySelector("#new_image").files[0]);
   };
 
+  enableMoveImageInCanvas = e => {
+    log.var("e type", e.type);
+    let clickPreventer = document.querySelector(".clickPreventer");
+
+    // Mouse Down... The dragging begins
+    if (e.type === "mousedown") {
+      this.imageMove = true;
+      log.ok("MouseDown");
+
+      // Display a big div over the whole page to prevent click events
+      clickPreventer.classList.toggle("noclick", true);
+
+      // Get the mouse position minus the actual position of the image in canvas
+      // To calculate new positioning on mouse move
+      this.clickStartPostion = {
+        top: e.pageY - this.imagePositionInCanvas.top,
+        left: e.pageX - this.imagePositionInCanvas.left
+      };
+    }
+
+    // Mouse Up... The dragging ends
+    if (e.type === "mouseup") {
+      this.imageMove = false;
+      log.ok("Mouseup");
+      clickPreventer.classList.toggle("noclick", false);
+    }
+  };
+
+  // Adapted from this SO answer: https://stackoverflow.com/a/442474/2159528
+  getOffset = el => {
+    var _x = 0;
+    var _y = 0;
+    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+      _x += el.offsetLeft - el.scrollLeft;
+      _y += el.offsetTop - el.scrollTop;
+      el = el.offsetParent;
+    }
+    return { top: _y, left: _x };
+  };
+
+  moveImageInCanvas = e => {
+    // Mouse move event
+    // Only if the mouse is down and the image has loaded
+    if (this.imageMove && this.imageReady) {
+      let x = e.pageX - this.clickStartPostion.left;
+      let y = e.pageY - this.clickStartPostion.top;
+
+      // Save image position
+      this.imagePositionInCanvas = { top: y, left: x };
+
+      // Draw
+      requestAnimationFrame(() => {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.drawImage(this.imgElement, x, y);
+      });
+    }
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     log.render("Form_image_selection");
@@ -153,12 +230,20 @@ class U_Form_image_select extends Component {
       false
     );
 
+    window.addEventListener("mousemove", this.moveImageInCanvas);
+    // window.addEventListener("mouseup", this.enableMoveImageInCanvas);
+
     // ======================================================================= Return
     return (
       <>
         <h1>{this.props.modal.title}</h1>
         <form className="imageSelection">
-          <canvas id="LinkImagePreview" />
+          <canvas
+            id="LinkImagePreview"
+            onMouseDown={this.enableMoveImageInCanvas}
+            // onMouseUp={this.enableMoveImageInCanvas}
+            // onMouseMove={this.moveImageInCanvas}
+          />
           <h3>Select a file from your computer:</h3>
 
           <div>
@@ -172,6 +257,10 @@ class U_Form_image_select extends Component {
             </button>
           </div>
         </form>
+        <div
+          class="clickPreventer"
+          onMouseUp={this.enableMoveImageInCanvas}
+        ></div>
       </>
     ); // ==================================================================== End return
   }; // End render

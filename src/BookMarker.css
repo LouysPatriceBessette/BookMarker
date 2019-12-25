@@ -24,6 +24,7 @@
 /* ============================================================================= GLOBAL */
 * {
   box-sizing: border-box;
+  user-select: none;
 }
 body {
   background-color: #f2fdfc;
@@ -547,6 +548,18 @@ canvas {
   border: 1px solid white;
   width: 200px;
   height: 200px;
+}
+/* DIV to prevent the click event while moving the image in the canvas */
+.clickPreventer {
+  cursor: grab;
+}
+div.noclick {
+  z-index: 999999;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 /* ============================================================================= Unsaved Component */
 .fctBtn {
