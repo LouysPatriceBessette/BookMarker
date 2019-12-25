@@ -83,7 +83,21 @@ class U_Context extends Component {
           history_log.property === "ALL"
         );
       });
-      let Link_date = date_time(linkCreationDate.date).full_ISO;
+
+      if (linkCreationDate.length !== 1) {
+        // The date was not found in the state history (so the link is still unsaved)
+        linkCreationDate = this.props.unsavedChanges_detail.filter(
+          history_log => {
+            return (
+              history_log.target === "Link" &&
+              history_log.index === this.contextMenu_params.activeLink &&
+              history_log.property === "ALL"
+            );
+          }
+        );
+      }
+
+      let Link_date = date_time(linkCreationDate[0].time).full_Local;
       this.contextMenu_params.element.querySelector(
         ".link_creation_date"
       ).innerText = Link_date;

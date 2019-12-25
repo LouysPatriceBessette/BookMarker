@@ -19,7 +19,7 @@ let date_time = unixTime => {
     }
 
     // Formatting to basic local
-    let local = new Date(unixTime).toLocaleString("fr-ca", {
+    let local = new Date(unixTime).toLocaleString("en-us", {
         hour12: false
     })
 
@@ -49,6 +49,9 @@ let date_time = unixTime => {
     // The time only
     let timeOnly = local.split(",")[1].trim()
 
+    // The Local display
+    let full_Local = dateOnly + " " + timeOnly
+
     // The ISO display
     let iso = dateOnly + "T" + timeOnly + GMT_timezone
 
@@ -58,11 +61,11 @@ let date_time = unixTime => {
     // Filename prefix formatted as I like: YYYY-MM-DD_HHhMMmSSs_
     let filenamePrefix = dateOnly + "_" + time_Arr[0] + "h" + time_Arr[1] + "m" + time_Arr[2] + "s_"
 
-    // // Uncomment to look at the ouput options...
+    // Uncomment to look at the ouput options...
     // console.log()
     // console.log()
 
-    // console.log("full_Local:", local)
+    // console.log("full_Local:", full_Local)
     // console.log()
 
     // console.log("full_ISO:", iso)
@@ -83,7 +86,7 @@ let date_time = unixTime => {
 
     return {
         // Full date AND time
-        full_Local: local,
+        full_Local: full_Local,
         full_ISO: iso,
 
         // Date only (ISO and US)

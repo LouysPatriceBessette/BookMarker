@@ -61,7 +61,10 @@ class U_Unsaved extends Component {
     log.render("Unsaved");
 
     // array of objects
-    let all_unsaved = this.props.unsavedChanges_detail.reverse();
+    let all_unsaved = map_O_spread(this.props.unsavedChanges_detail);
+
+    // Reversed display
+    all_unsaved.reverse();
 
     // lify the object
     let list = all_unsaved.map(change => {

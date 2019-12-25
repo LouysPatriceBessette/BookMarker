@@ -29,10 +29,29 @@ class U_Form_image_select extends Component {
 
   // =============================================================================================================== Component functions
 
+  // Size calculation function found : https://edupala.com/calculate-base64-image-size/
+  calculateImageSize(base64String) {
+    let padding, inBytes, base64StringLength;
+    if (base64String.endsWith("==")) padding = 2;
+    else if (base64String.endsWith("=")) padding = 1;
+    else padding = 0;
+
+    base64StringLength = base64String.length;
+    //console.log(base64StringLength);
+    inBytes = (base64StringLength / 4) * 3 - padding;
+    //console.log(inBytes);
+    this.kbytes = inBytes / 1000;
+    return this.kbytes;
+  }
+
   selectImage_ok = e => {
     e.preventDefault();
 
     let newImage = document.getElementById("LinkImagePreview").toDataURL();
+
+    let imageSize = this.calculateImageSize(newImage);
+    log.var("imageSize in Kb",imageSize)
+
     setTimeout(() => {
       document.querySelector(".link_img img").src = newImage;
     }, 50);
