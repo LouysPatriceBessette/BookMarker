@@ -390,19 +390,16 @@ span.dragIcon::after {
   background-position: 0 100%;
   background-repeat: repeat-x;
 }
-/* When dragging */
-.sortable-ghost {
-  transition: background-image 0.2s, borderr 0.2s, box-shadow 0.2s;
+/* Box-Shadow when dragging */
+.sortable-ghost.shadowMove,
+.sortable-ghost img.shadowMove {
+  transition: box-shadow 0.2s;
+  box-shadow: 4px 4px 6px #020a6d;
 }
 .sortable-ghost span.dragIcon,
 .sortable-ghost span.dragIcon::before,
 .sortable-ghost span.dragIcon::after {
   background-image: radial-gradient(#020a6d 40%, transparent 40%);
-}
-/* When dragging */
-.sortable-ghost {
-  border: 1px solid #020a6d;
-  box-shadow: 4px 4px 6px #020a6d;
 }
 span.dragIcon::before,
 span.dragIcon::after {
@@ -548,6 +545,7 @@ canvas {
   border: 1px solid white;
   width: 200px;
   height: 200px;
+  cursor: grab;
 }
 /* DIV to prevent the click event while moving the image in the canvas */
 .clickPreventer {
@@ -560,6 +558,24 @@ div.noclick {
   bottom: 0;
   left: 0;
   right: 0;
+}
+div.imageBorderHint_Container {
+  z-index: 999990;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: none;
+}
+img.imageBorderHint {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 0px;
+  height: 0px;
+  border: 4px double white;
+  opacity: 0.3;
 }
 /* ============================================================================= Unsaved Component */
 .fctBtn {

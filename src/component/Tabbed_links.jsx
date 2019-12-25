@@ -175,7 +175,7 @@ class U_Tabbed_Links extends Component {
     return (
       <>
         <div
-          className="link_card"
+          className="link_card shadowMove"
           key={key({ linkID: this.props.activeLink })}
           data-id={this.props.activeLink}
         >

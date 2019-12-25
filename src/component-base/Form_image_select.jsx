@@ -28,6 +28,7 @@ class U_Form_image_select extends Component {
 
     this.imageMove = false;
     this.canvas = null;
+    this.canvasPostion = { top: 0, left: 0 };
     this.ctx = null;
     this.imageBase64 = null;
     this.imgElement = null;
@@ -36,6 +37,8 @@ class U_Form_image_select extends Component {
     this.height = 200;
     this.imagePositionInCanvas = { top: 0, left: 0 };
     this.clickStartPostion = { top: 0, left: 0 };
+    this.imageBorderHint_Container = null;
+    this.imageBorderHint = null;
   }
 
   // =============================================================================================================== Component functions
@@ -107,9 +110,18 @@ class U_Form_image_select extends Component {
 
   SetImageInCanvas = (data, imageBlob) => {
     if (data) {
-      // Get the image in Base64
+      // Get the canvas position
       this.canvas = document.getElementById("LinkImagePreview");
+      this.canvasPostion = this.getOffset(this.canvas);
       this.ctx = this.canvas.getContext("2d");
+
+      // Get the image border hint element
+      this.imageBorderHint_Container = document.querySelector(
+        ".imageBorderHint_Container"
+      );
+      this.imageBorderHint = document.querySelector(".imageBorderHint");
+
+      // Get the image in Base64
       this.imgElement = new Image();
 
       // Async image load
@@ -117,9 +129,15 @@ class U_Form_image_select extends Component {
         this.imageReady = true;
         log.ok("Image is ready");
 
-        // Update dimensions of the canvas with the dimensions of the image
+        // Make sure about the canvas dimensions
         this.canvas.width = this.width;
         this.canvas.height = this.height;
+
+        // Store the image dimentions
+        this.imageDimentions = {
+          width: this.imgElement.width,
+          height: this.imgElement.height
+        };
 
         // Draw
         this.ctx.drawImage(this.imgElement, 0, 0);
@@ -141,6 +159,9 @@ class U_Form_image_select extends Component {
 
       // Keep the whole image before canvas crops it
       this.imageBase64 = this.imgElement.src;
+
+      // Fill the image border hint with the image
+      this.imageBorderHint.src = this.imageBase64;
     }
   };
 
@@ -184,6 +205,11 @@ class U_Form_image_select extends Component {
       this.imageMove = false;
       log.ok("Mouseup");
       clickPreventer.classList.toggle("noclick", false);
+
+      // Hide the image border hint
+      this.imageBorderHint_Container.style.display = "none";
+      this.imageBorderHint.style.width = 0 + "px";
+      this.imageBorderHint.style.height = 0 + "px";
     }
   };
 
@@ -203,13 +229,24 @@ class U_Form_image_select extends Component {
     // Mouse move event
     // Only if the mouse is down and the image has loaded
     if (this.imageMove && this.imageReady) {
+      // Show the image border hint
+      this.imageBorderHint_Container.style.display = "block";
+      this.imageBorderHint.style.width = this.imageDimentions.width + "px";
+      this.imageBorderHint.style.height = this.imageDimentions.height + "px";
+
       let x = e.pageX - this.clickStartPostion.left;
       let y = e.pageY - this.clickStartPostion.top;
 
       // Save image position
       this.imagePositionInCanvas = { top: y, left: x };
 
-      // Draw
+      // Move the image border hint
+      this.imageBorderHint.style.top =
+        this.imagePositionInCanvas.top + this.canvasPostion.top + "px";
+      this.imageBorderHint.style.left =
+        this.imagePositionInCanvas.left + this.canvasPostion.left + "px";
+
+      // Draw - Adapted from SO answer: https://stackoverflow.com/a/30815443/2159528
       requestAnimationFrame(() => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.drawImage(this.imgElement, x, y);
@@ -258,9 +295,12 @@ class U_Form_image_select extends Component {
           </div>
         </form>
         <div
-          class="clickPreventer"
+          className="clickPreventer"
           onMouseUp={this.enableMoveImageInCanvas}
         ></div>
+        <div className="imageBorderHint_Container">
+          <img className="imageBorderHint" />
+        </div>
       </>
     ); // ==================================================================== End return
   }; // End render

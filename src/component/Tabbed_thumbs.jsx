@@ -172,7 +172,7 @@ class U_Tabbed_Thumbs extends Component {
         >
           <div className="link_img">
             <a target="_blank" href={link.href}>
-              <img src={link.image} title={link.name} />
+              <img src={link.image} title={link.name} className="shadowMove" />
             </a>
           </div>
         </div>
