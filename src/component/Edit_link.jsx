@@ -473,7 +473,7 @@ class U_Edit_Link extends Component {
               <Ratings
                 rating={link.rating}
                 widgetRatedColors="lightgrey" // Disabled color
-                // changeRating={this.changeRating} // DISABLED.... mmm... Re-enable?
+                changeRating={this.changeRating} // DISABLED.... mmm... Re-enable?
               >
                 {star}
                 {star}

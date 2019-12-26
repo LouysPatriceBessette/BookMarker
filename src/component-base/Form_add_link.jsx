@@ -36,122 +36,80 @@ class U_Form_add_link extends Component {
   constructor(props) {
     super(props);
 
-    this.state = defaultState;
-    this.quill_editor = {};
+    this.errorMsg = null;
+
+    this.state = {
+      href: ""
+    };
   }
 
   // =============================================================================================================== Component functions
 
-  quill_getContent = () => {
-    // returns an object
-    let Quill_result = this.quill_editor.getContents();
-    log.var("Quill content", Quill_result);
-    return Quill_result.ops;
+  hrefChange = e => {
+    this.setState({ href: e.target.value });
+
+    // Get the error message element
+    if (this.errorMsg === null) {
+      this.errorMsg = document.querySelector(".error").classList;
+    }
+
+    // Remove the error message on change
+    this.errorMsg.toggle("shown", false);
   };
 
   continue = async e => {
     e.preventDefault();
 
-    // What is that form information?
-    let input = e.target.closest("form").querySelector("input");
-
-    let info = input.dataset.input;
-    let info_value = input.value;
-
-    // If we dont have an input... So it should be the Quill editor.
-    if (!info) {
-      info = "comment";
-      info_value = this.quill_getContent();
-    }
-
-    log.error("in continue...");
-    console.log(info, info_value);
-
-    // If it's the last step...
-    if (info === "comment") {
-      log.ok("Last step... The comment.");
-      // Copy the actual state
-      let nowState = map_O_spread(this.state);
-
-      // add the current info
-      nowState[info] = info_value;
-
-      // clear the state
-      this.setState(defaultState);
-
-      // Save the link and close the modal
-      this.props.dispatch({
-        type: "link add",
-        link: nowState,
-        cat: this.props.activeCat
-      });
-    }
-    // If not the last step, setState
-    else {
+    // If the field at least contains http, fetch the server
+    if (this.state.href.indexOf("http") !== -1) {
       // if the URL, send a request to validate the existance of the website
-      if (info === "href") {
-        let formdata = new FormData();
-        formdata.append("url", info_value);
-        let response = await qf("/valid-url", "POST", formdata);
-        if (response.success) {
-          log.ok("VALID URL!!!");
-        } else {
-          log.error("INVALID URL.");
-          return;
-        }
-      }
+      let formdata = new FormData();
+      formdata.append("url", document.querySelector("[name='href']").value);
+      let response = await qf("/valid-url", "POST", formdata);
+      if (response.success) {
+        log.ok("VALID URL!!!");
+        this.errorMsg.toggle("shown", false);
 
-      // Save the info in store
-      let newState = {};
-      newState[info] = info_value;
-      this.setState(newState);
-    }
-  };
-
-  // Star rating handler
-  setRating = newRating => {
-    this.setState({
-      rating: newRating
-    });
-  };
-
-  componentDidUpdate = () => {
-    // Quill container
-    let QuillContainer = document.querySelector("#editor");
-
-    if (QuillContainer) {
-      // Check if NOT already instantiated
-      if (Quill.find(QuillContainer) !== this.quill_editor) {
-        // Instantiate Quill
-        this.quill_editor = new Quill(QuillContainer, {
-          modules: {
-            toolbar: [
-              [{ header: [1, 2, false] }],
-              ["bold", "italic", "underline"]
-            ]
+        // Trigger the link edit view for the rest
+        this.props.dispatch({
+          type: "link add",
+          link: {
+            name: "Give a name",
+            href: this.url_to_add,
+            comment: [
+              {
+                insert: "Add a comment!"
+              }
+            ],
+            rating: 0
           },
-          theme: "snow"
+          cat:
+            this.props.activeCat === -1 || this.props.activeCat === undefined
+              ? 0
+              : this.props.activeCat
         });
-        log.ok("Quill initialised...");
+      } else {
+        log.error("INVALID URL.");
+        this.errorMsg.toggle("shown", true);
+        return;
       }
+    }
+
+    // Obviously invalid
+    else {
+      this.errorMsg.toggle("shown", true);
     }
   };
 
   // =============================================================================================================== Component render
   render = () => {
-    log.render("Form_add_folder");
+    log.render("Form_add_link");
 
-    let errorClassName = "error";
-    if (this.props.sl_error) {
-      errorClassName += " shown";
-    }
-
-    let star = <Ratings.Widget widgetDimension="20px" widgetSpacing="2px" />;
-
-    let form = "";
-    switch (true) {
-      case this.state.href === "" || this.state.href.indexOf("http") === -1:
-        form = (
+    // ======================================================================= Return
+    return (
+      <>
+        <h1>{this.props.modal.title}</h1>
+        <form>
           <div>
             Link URL:{" "}
             <input
@@ -159,71 +117,12 @@ class U_Form_add_link extends Component {
               data-input="href"
               name="href"
               placeholder="http://"
+              onChange={this.hrefChange}
+              value={this.state.href}
             />
           </div>
-        );
-        break;
-
-      case this.state.name === "":
-        form = (
           <div>
-            Link name:{" "}
-            <input
-              type="text"
-              data-input="name"
-              name="name"
-              placeholder="A name for your link..."
-            />
-          </div>
-        );
-
-        // Strange bug fix
-        setTimeout(() => {
-          document.querySelector("[name='name']").value = "";
-        }, 50);
-        break;
-
-      case this.state.comment === "":
-        form = (
-          <>
-            <div>
-              <Ratings
-                rating={this.state.rating}
-                widgetRatedColors="blue"
-                changeRating={this.setRating}
-              >
-                {star}
-                {star}
-                {star}
-                {star}
-                {star}
-              </Ratings>
-            </div>
-            <div>
-              Link comment:
-              {/* <input
-                type="text"
-                data-input="comment"
-                name="comment"
-                placeholder="A comment?"
-              /> */}
-              <div id="quill_Div" className="Quill_in_modal">
-                <div id="editor"></div>
-              </div>
-            </div>
-          </>
-        );
-        break;
-    }
-
-    // ======================================================================= Return
-    return (
-      <>
-        <h1>{this.props.modal.title}</h1>
-        <form>
-          {form}
-          <div>
-            <p className={errorClassName}>{this.props.modal.title} failed...</p>
+            <p className="error">The url looks invalid.</p>
             <p>
               <button className="logBtn" onClick={this.continue}>
                 Submit
@@ -245,7 +144,8 @@ let stp = state => {
 
     // Category index
     categories: state.categories,
-    activeCat: state.activeCat
+    activeCat: state.activeCat,
+    links: state.links
   };
 };
 

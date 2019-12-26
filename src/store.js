@@ -178,6 +178,10 @@ let reducer = (state, action) => {
     // =========================================================== New link ( triggers a change to save )
     if (action.type === "link add") {
 
+        newState.linkEdit = true
+        newState.activeLink = newState.links.length
+        newState.activeCat = action.cat
+
         // Flag.
         newState.unsavedChanges = true
 
@@ -187,8 +191,8 @@ let reducer = (state, action) => {
             target: "Link",
             index: newState.links.length,
             property: "ALL",
-            oldValue: "",
-            newValue: action.link.name,
+            // oldValue: "",
+            // newValue: action.link.name,
             time: new Date().getTime()
         })
 
