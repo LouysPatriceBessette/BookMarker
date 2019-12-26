@@ -27,10 +27,10 @@ let view_cookie = () => {
 
     if (cookieValue_string === undefined) {
         console.log("in view_cookie, UNDEFINED")
-        return true
+        return "full"
     } else {
         console.log("in view_cookie, cookie value is", cookieValue_string)
-        return cookieValue_string === "true"
+        return cookieValue_string
     }
 }
 
@@ -441,7 +441,6 @@ let reducer = (state, action) => {
 
         newState.fullCards = action.fullCards
         Cookies.set('fullCards', action.fullCards)
-
     }
 
     // =========================================================== SHARE A FOLDER

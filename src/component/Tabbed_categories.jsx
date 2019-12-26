@@ -28,7 +28,8 @@ import Tabs from "react-responsive-tabs";
 import "react-responsive-tabs/styles.css";
 
 import Tabbed_Links from "./Tabbed_links.jsx";
-import Tabbed_Thumbs from "./Tabbed_Thumbs.jsx";
+import Tabbed_Thumbs from "./Tabbed_thumbs.jsx";
+import Tabbed_Thumbs_tiny from "./Tabbed_thumbs_tiny.jsx";
 
 import Bot from "./Bot.jsx";
 
@@ -218,18 +219,28 @@ class U_Tabbed_Categories extends Component {
       );
     }
     return this.links_sortable_order[index].map(cc => {
-      if (this.props.fullCards) {
-        return (
-          <>
-            <Tabbed_Links key={key({ thisCard: cc })} activeLink={cc} />
-          </>
-        );
-      } else {
-        return (
-          <>
-            <Tabbed_Thumbs key={key({ thisCard: cc })} activeLink={cc} />
-          </>
-        );
+      switch (true) {
+        case this.props.fullCards === "full":
+          return (
+            <>
+              <Tabbed_Links key={key({ thisCard: cc })} activeLink={cc} />
+            </>
+          );
+          break;
+        case this.props.fullCards === "thumb":
+          return (
+            <>
+              <Tabbed_Thumbs key={key({ thisCard: cc })} activeLink={cc} />
+            </>
+          );
+          break;
+        case this.props.fullCards === "tiny":
+          return (
+            <>
+              <Tabbed_Thumbs_tiny key={key({ thisCard: cc })} activeLink={cc} />
+            </>
+          );
+          break;
       }
     });
   };

@@ -380,16 +380,34 @@ class U_Nav extends Component {
   };
 
   thumbView_checked = () => {
-    if (this.props.fullCards) {
-      return {
-        full: true,
-        thumb: false
-      };
-    } else {
-      return {
-        full: false,
-        thumb: true
-      };
+    switch (true) {
+      case this.props.fullCards === "full":
+        return {
+          full: true,
+          thumb: false,
+          tiny: false
+        };
+        break;
+      case this.props.fullCards === "thumbs":
+        return {
+          full: false,
+          thumb: true,
+          tiny: false
+        };
+        break;
+      case this.props.fullCards === "tiny":
+        return {
+          full: false,
+          thumb: false,
+          tiny: true
+        };
+        break;
+      default:
+        return {
+          full: true,
+          thumb: false,
+          tiny: false
+        };
     }
   };
 
@@ -397,7 +415,7 @@ class U_Nav extends Component {
     log.ok("thumbView change");
     log.var("e.target.value", e.target.value);
 
-    let fullCards = e.target.value === "full";
+    let fullCards = e.target.value;
 
     //document.Cookies
     this.props.dispatch({ type: "thumbView change", fullCards: fullCards });
@@ -467,7 +485,7 @@ class U_Nav extends Component {
         <>
           <nav>
             <div className="thumbView_select">
-              <div>
+              <div className="switch-field">
                 <input
                   type="radio"
                   name="thumbView"
@@ -477,8 +495,7 @@ class U_Nav extends Component {
                   onClick={this.thumbView_change}
                 />
                 <label htmlFor="full">Full cards</label>
-              </div>
-              <div>
+
                 <input
                   type="radio"
                   name="thumbView"
@@ -488,6 +505,16 @@ class U_Nav extends Component {
                   onClick={this.thumbView_change}
                 />
                 <label htmlFor="thumb">Thumbs</label>
+
+                <input
+                  type="radio"
+                  name="thumbView"
+                  value="tiny"
+                  id="tiny"
+                  defaultChecked={this.thumbView_checked().tiny}
+                  onClick={this.thumbView_change}
+                />
+                <label htmlFor="tiny">Tiny</label>
               </div>
             </div>
             <div title={this.props.username}>
