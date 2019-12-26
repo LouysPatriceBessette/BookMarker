@@ -2,6 +2,9 @@
 import {
   React,
   Component,
+  BrowserRouter,
+  Route,
+  Link,
   connect,
   createStore,
   key,
@@ -32,7 +35,55 @@ import Home from "../component-publicView/Home.jsx";
 class U_Page extends Component {
   constructor(props) {
     super(props);
+
+    this.url_to_add = null;
   }
+
+  set_new_empty_entry = () => {
+    if (this.url_to_add && !this.empty_entry_timeout_done) {
+      log.error("Setting an empty entry");
+      setTimeout(() => {
+        this.empty_entry_timeout_done = true;
+        log.var(
+          "TEST",
+          this.props.activeCat === -1 || this.props.activeCat === undefined
+            ? 0
+            : this.props.activeCat
+        );
+
+        this.props.dispatch({
+          type: "link add from wildcard",
+          link: {
+            name: "Give a name",
+            href: this.url_to_add,
+            comment: [
+              {
+                insert: "Add a comment!"
+              }
+            ],
+            rating: 0
+          },
+          cat:
+            this.props.activeCat === -1 || this.props.activeCat === undefined
+              ? 0
+              : this.props.activeCat
+        });
+      }, 1);
+    }
+  };
+
+  // ========================================== WILDCARD
+  renderAddLinkViaExtention = routerData => {
+    log.ok("Route loaded");
+
+    log.var("renderAddLinkViaExtention", routerData.match.params.url);
+    let wildcard = routerData.match.params.url;
+    let url = JSON.parse(decodeURI(wildcard).replace(/~~/g, "/")).url;
+    log.var("url", url);
+    this.url_to_add = url;
+    this.set_new_empty_entry();
+    return <></>;
+  };
 
   // =============================================================================================================== Component functions
 
@@ -104,6 +155,20 @@ class U_Page extends Component {
             <>
               <div className="search_Display">
                 <Search_result />
+              </div>
+            </>
+          );
+          break;
+        case location.pathname.split("/")[1] === "addLink":
+          console.log("Wildcard link add");
+          return (
+            <>
+              <div className="linkEdit_Display">
+                <Route
+                  exact={true}
+                  path="/addLink/:url"
+                  render={this.renderAddLinkViaExtention}
+                />
               </div>
             </>
           );

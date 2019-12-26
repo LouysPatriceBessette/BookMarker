@@ -1,5 +1,5 @@
-let express = require('express')
-let app = express()
+let express = require('express');
+let app = express();
 let multer = require('multer');
 
 // File size upgrage: https://github.com/expressjs/multer/issues/436
@@ -1065,11 +1065,11 @@ let start_server = dbo => {
 
     // =============================================================================================================================== ENDPOINTS ALL
 
-    // ============================================================================== React router (not used yet)
-    // app.all('/route/*', (req, res, next) => {
-    //     console.log("LINE# 1070 - app.all()")
-    //     res.sendFile(__dirname + '/build/index.html');
-    // })
+    // ============================================================================== React router 
+    app.get('/addLink/:url', (req, res) => {
+        console.log("LINE# 1070 - app.get('/addLink/:url')")
+        res.sendFile(__dirname + '/build/index.html');
+    })
 
     // ============================================================================== Server listen to requests...
     app.listen(4000, '0.0.0.0', () => {

@@ -5,6 +5,13 @@ import React, {
     Component
 } from "react";
 
+// Routes
+import {
+    BrowserRouter,
+    Route,
+    Link
+} from "react-router-dom";
+
 // REDUX
 import {
     connect
@@ -36,9 +43,6 @@ import {
     FontAwesomeIcon
 } from "@fortawesome/react-fontawesome";
 
-// Image crop
-import ReactCrop from 'react-image-crop';
-
 // ================================================= CUSTOM JS
 
 // Custom log
@@ -68,6 +72,9 @@ import rsg from './js-lib/random_string_gen.js'
 export {
     React,
     Component,
+    BrowserRouter,
+    Route,
+    Link,
     connect,
     createStore,
     key,
@@ -76,7 +83,6 @@ export {
     Quill,
     Sortable,
     FontAwesomeIcon,
-    ReactCrop,
     log,
     getRealType,
     map_O_spread,

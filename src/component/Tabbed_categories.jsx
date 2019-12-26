@@ -2,6 +2,9 @@
 import {
   React,
   Component,
+  BrowserRouter,
+  Route,
+  Link,
   connect,
   createStore,
   key,
@@ -36,6 +39,15 @@ class U_Tabbed_Categories extends Component {
 
     this.render_order = [];
     this.links_sortable_order = [];
+
+    this.tab_elements = [];
+    this.dragging = false;
+    this.draggingPosition = { top: 0, left: 0 };
+    this.tab_positions = [];
+
+    this.dragged_card = null;
+    this.dragged_card_id = null;
+    this.hoveredTab = null;
 
     this.state = {
       category_rename: ""
@@ -86,14 +98,45 @@ class U_Tabbed_Categories extends Component {
   };
 
   getActiveCat = () => {
-    // Get the LANDING tab ID (activeCat)
-    setTimeout(() => {
-      let activeCat = parseInt(
-        document.querySelector(".RRT__tab--selected").id.split("-")[1]
-      );
+    // Tab change in the middle of a drag
+    if (this.dragging) {
+      log.ok("Tab changed?");
 
-      this.props.dispatch({ type: "tab change", activeCat: activeCat }); // Needed for the "Add a link to..." icon in Nav.jsx
-    }, 1);
+      // Simulate the drop to avoid a Sortable error thrown
+      let dragend_event = new Event("dragend");
+      this.dragged_card.dispatchEvent(dragend_event);
+
+      // PAS BESOIN DE DISPATCH!
+
+      // this.props.dispatch({
+      //   type: "tab change while dragging",
+      //   //activeCat: activeCat,
+      //   //dragging: this.dragging,
+      //   //dragged_card: this.dragged_card,
+      //   //dragged_card_id: this.dragged_card_id
+      // });
+
+      // Il faudrait parcontre enregistrer le changement dans les unsaved changes...
+      // Et simuler un mouseup pour lacher la ghost image.
+
+      // Marche pas...
+      let mouseup_event = new Event("mouseup");
+      this.dragged_card.dispatchEvent(mouseup_event);
+
+      // RENDU ICI
+    }
+
+    // Normal tab mode with a user click
+    else {
+      // Get the LANDING tab ID (activeCat)
+      setTimeout(() => {
+        let activeCat = parseInt(
+          document.querySelector(".RRT__tab--selected").id.split("-")[1]
+        );
+
+        this.props.dispatch({ type: "tab change", activeCat: activeCat }); // Needed for the "Add a link to..." icon in Nav.jsx
+      }, 1);
+    }
   };
 
   // Usefull when returning from unsaved changes without saving.
@@ -106,6 +149,91 @@ class U_Tabbed_Categories extends Component {
     }
   };
 
+  onDragStart = e => {
+    log.ok("Dragging");
+    this.dragging = true;
+
+    this.dragged_card = e.target;
+    this.dragged_card_id = e.target.dataset.id;
+    log.var("Dragged card", this.dragged_card_id);
+  };
+
+  onDrag = e => {
+    log.ok("Dragging...");
+    this.draggingPosition = { top: e.pageY, left: e.pageX };
+
+    // Check if we are over a tab
+    this.tab_positions.forEach((tab, index) => {
+      if (
+        this.draggingPosition.left > tab.left &&
+        this.draggingPosition.left < tab.left + tab.width &&
+        this.draggingPosition.top > tab.top &&
+        this.draggingPosition.top < tab.top + tab.height
+      ) {
+        log.ok("TAB FOUND! #" + index);
+        this.hoveredTab = index;
+
+        // This make the component to completely re-render.
+        this.tabElements[index].click();
+
+        // The good thing is the semi-transparent card still is under the mouse.
+        // But a Sortable error is thrown:
+        // "Cannot read property"
+        // At function _off(el, event, fn){
+        //   el.removeEventListener(event, fn, captureMode)
+        // }
+        // el is null <--------------- Here is the problem Line# 1199
+        // event is "dragstart"
+        // fn is a function
+      }
+    });
+  };
+
+  // Adapted from this SO answer: https://stackoverflow.com/a/442474/2159528
+  getOffset = el => {
+    var _x = 0;
+    var _y = 0;
+    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+      _x += el.offsetLeft - el.scrollLeft;
+      _y += el.offsetTop - el.scrollTop;
+      el = el.offsetParent;
+    }
+    return { top: _y, left: _x };
+  };
+
+  onDragEnd = e => {
+    log.ok("Dragging Finished");
+    this.dragging = false;
+  };
+
+  // On tab change while dragging
+  returnElements = index => {
+    if (this.dragging) {
+      // Toggle the dragging flag to false
+      this.dragging = false;
+
+      // Add the dragged link first in the tab, so the user can see it.
+      this.links_sortable_order[index] = map_O_spread(
+        [this.dragged_card_id].concat(this.links_sortable_order[index])
+      );
+    }
+    return this.links_sortable_order[index].map(cc => {
+      if (this.props.fullCards) {
+        return (
+          <>
+            <Tabbed_Links key={key({ thisCard: cc })} activeLink={cc} />
+          </>
+        );
+      } else {
+        return (
+          <>
+            <Tabbed_Thumbs key={key({ thisCard: cc })} activeLink={cc} />
+          </>
+        );
+      }
+    });
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     log.render("Tabbed Categories");
@@ -114,6 +242,18 @@ class U_Tabbed_Categories extends Component {
     if (this.props.activeCat === -1) {
       this.getActiveCat();
     }
+
+    this.tabElements = document.querySelectorAll(".RRT__tab.tab");
+    this.tabElements.forEach(tab => {
+      let tab_object = this.getOffset(tab);
+      let compStyle = window.getComputedStyle(tab);
+
+      tab_object.width = parseFloat(compStyle.getPropertyValue("width"));
+      tab_object.height = parseFloat(compStyle.getPropertyValue("height"));
+
+      this.tab_positions.push(tab_object);
+    });
+    log.var("this.tab_positions", this.tab_positions);
 
     // ========================================================== CATEGORY ORDERING
     // Get the order from the categories
@@ -176,28 +316,11 @@ class U_Tabbed_Categories extends Component {
                   });
                 }, 1);
               }}
+              onDragStart={this.onDragStart}
+              onDrag={this.onDrag}
+              onDragEnd={this.onDragEnd}
             >
-              {this.links_sortable_order[index].map(cc => {
-                if (this.props.fullCards) {
-                  return (
-                    <>
-                      <Tabbed_Links
-                        key={key({ thisCard: cc })}
-                        activeLink={cc}
-                      />
-                    </>
-                  );
-                } else {
-                  return (
-                    <>
-                      <Tabbed_Thumbs
-                        key={key({ thisCard: cc })}
-                        activeLink={cc}
-                      />
-                    </>
-                  );
-                }
-              })}
+              {this.returnElements(index)}
             </Sortable>
           );
         }, // END getContent
@@ -231,6 +354,10 @@ let stp = state => {
 
     // For the thumb/full view
     fullCards: state.fullCards
+
+    // dragging: state.dragging,
+    // dragged_card: state.dragged_card,
+    // dragged_card_id: state.dragged_card_id
   };
 };
 

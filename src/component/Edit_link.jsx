@@ -2,6 +2,9 @@
 import {
   React,
   Component,
+  BrowserRouter,
+  Route,
+  Link,
   connect,
   createStore,
   key,
@@ -10,7 +13,6 @@ import {
   Quill,
   Sortable,
   FontAwesomeIcon,
-  ReactCrop,
   log,
   getRealType,
   map_O_spread,
@@ -42,6 +44,11 @@ class U_Edit_Link extends Component {
   }
 
   // =============================================================================================================== Component functions
+
+  clearPathname = () => {
+    // fix the url path
+    //location.pathname = "";
+  };
 
   link_rename_show = e => {
     let link = this.props.links[this.props.activeLink];
@@ -340,26 +347,11 @@ class U_Edit_Link extends Component {
   };
 
   editImage_quit = () => {
+    this.clearPathname();
     this.props.dispatch({
       type: "quit link edit"
     });
   };
-
-  /* =============================================== Image cropping DELAYED after project presentation
-  crop_it = crop => {
-    if (this.state.crop.height !== crop.height) {
-      this.setState({ crop });
-      log.var("crop", crop);
-    }
-  };
-
-  cropDemo = ({ src }) => {
-    const [crop, setCrop] = useState({ aspect: 16 / 9 });
-    return (
-      <ReactCrop src={src} crop={crop} onChange={newCrop => setCrop(newCrop)} />
-    );
-  };
-  */
 
   // =============================================================================================================== Component render
   render = () => {

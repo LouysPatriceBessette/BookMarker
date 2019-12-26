@@ -39,6 +39,7 @@ let defaultStore = {
     // Application variables NOT LOGGED
     logged: false,
     activeCat: -1,
+    activeLink: -1,
     unsavedChanges: false,
     unsavedChanges_detail: [],
     unsavedShown: false,
@@ -125,6 +126,13 @@ let reducer = (state, action) => {
         newState.activeCat = action.activeCat
     }
 
+    if ((action.type === "tab change while dragging")) {
+        //newState.activeCat = action.activeCat
+        newState.dragging = action.dragging
+        newState.dragged_card = action.dragged_card
+        newState.dragged_card_id = action.dragged_card_id
+    }
+
     // =========================================================== New folder ( triggers a change to save )
     if (action.type === "folder add") {
 
@@ -169,6 +177,43 @@ let reducer = (state, action) => {
 
     // =========================================================== New link ( triggers a change to save )
     if (action.type === "link add") {
+
+        // Flag.
+        newState.unsavedChanges = true
+
+        // Store the unsaved change details
+        newState.unsavedChanges_detail.push({
+
+            target: "Link",
+            index: newState.links.length,
+            property: "ALL",
+            oldValue: "",
+            newValue: action.link.name,
+            time: new Date().getTime()
+        })
+
+        // Add the default image to the new link...
+        action.link["image"] = "/image_missing.png"
+
+        // Make the change
+        let linkIndex = newState.links.length
+        console.log("linkIndex", linkIndex)
+        newState.links.push(action.link)
+
+        // Add the link index in the category
+        newState.categories[action.cat].content.push(linkIndex)
+
+        // Close the modal
+        newState.overlay = false
+        newState.sl_error = false
+    }
+
+    // =========================================================== New link ( triggers a change to save )
+    if (action.type === "link add from wildcard") {
+
+        newState.linkEdit = true
+        newState.activeLink = newState.links.length
+        newState.activeCat = action.cat
 
         // Flag.
         newState.unsavedChanges = true

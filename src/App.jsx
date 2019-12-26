@@ -2,6 +2,9 @@
 import {
   React,
   Component,
+  BrowserRouter,
+  Route,
+  Link,
   connect,
   createStore,
   key,
@@ -84,11 +87,13 @@ class U_App extends Component {
     // ======================================================================= Return
     return (
       <>
-        <Nav />
-        <div className="page">
-          <Page />
-          <Modal />
-        </div>
+        <BrowserRouter>
+          <Nav />
+          <div className="page">
+            <Page />
+            <Modal />
+          </div>
+        </BrowserRouter>
       </>
     ); // ==================================================================== End return
   };
