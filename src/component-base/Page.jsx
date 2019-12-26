@@ -76,9 +76,15 @@ class U_Page extends Component {
   renderAddLinkViaExtention = routerData => {
     log.ok("Route loaded");
 
-    log.var("renderAddLinkViaExtention", routerData.match.params.url);
+    //log.var("renderAddLinkViaExtention", routerData.match.params.url);
     let wildcard = routerData.match.params.url;
-    let url = JSON.parse(decodeURI(wildcard).replace(/~~/g, "/")).url;
+
+    let encoded_uri = JSON.parse(wildcard).url;
+    let replacement_undone = encoded_uri
+      .replace(/~~/g, "/")
+      .replace(/©©/g, "?");
+    let url = decodeURI(replacement_undone);
+
     log.var("url", url);
     this.url_to_add = url;
     this.set_new_empty_entry();

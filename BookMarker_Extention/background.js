@@ -48,9 +48,11 @@ chrome.runtime.onMessage.addListener(
           if(BookmarkerTab.length>0){
             chrome.tabs.update(BookmarkerTab[0].id, {selected: true});
           }else{
-            // Stringify a link object
-            let link_obj = {url:activeTab.url}
-            let link_encoded_Obj = encodeURI(JSON.stringify(link_obj).replace(/\//g,"~~"))
+            // Prepare a link object to be sent as a wildcard
+            let encoded_uri = encodeURI(activeTab.url).replace(/\//g,"~~").replace(/\?/g,"©©")
+            let link_obj = {url:encoded_uri}
+            let link_encoded_Obj = JSON.stringify(link_obj)
+            
             chrome.tabs.create({url: BookmarkerRoute + link_encoded_Obj});
           }
           
