@@ -585,9 +585,18 @@ span.dragIcon::after {
   margin: 0;
 }
 .floating_out {
-  position: absolute;
-  bottom: -4em;
-  right: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.fctBtn_green {
+  background-color: #0a9507;
+}
+.fctBtn_red {
+  background-color: #ba2d11;
+}
+.fctBtn_yellow {
+  background-color: #ddc70e;
 }
 form.imageSelection {
   text-align: center;
@@ -632,7 +641,7 @@ img.imageBorderHint {
 .fctBtn {
   border: 0;
   border-radius: 6px;
-  background-color: #a7b3cf;
+  color: white;
   padding: 0.6em;
   margin: 0.6em;
   box-shadow: 0 0 6px white;

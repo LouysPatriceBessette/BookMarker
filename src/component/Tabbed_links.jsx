@@ -174,6 +174,11 @@ class U_Tabbed_Links extends Component {
     // Quill editor formatting
     let linkComment = this.quill_format_object_to_html(link.comment);
 
+    // If link was DELETED
+    if (link.deleted) {
+      return <></>;
+    }
+
     // ======================================================================= Return
     return (
       <>

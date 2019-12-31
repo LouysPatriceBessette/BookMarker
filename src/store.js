@@ -297,6 +297,27 @@ let reducer = (state, action) => {
         newState.image_accepted = false
     }
 
+    if (action.type === "DELETE link") {
+
+        // Flag.
+        newState.unsavedChanges = true
+
+        // Store the unsaved change details
+        newState.unsavedChanges_detail.push({
+
+            target: "Link",
+            index: newState.activeLink,
+            property: "DELETED",
+            time: new Date().getTime()
+        })
+
+        newState.linkEdit = false
+        newState.image_underlay = true
+        // newState.image_edited = false
+        // newState.image_accepted = false
+        newState.links[newState.activeLink].deleted = true
+    }
+
     // =========================================================== Link edit Comment ( triggers a change to save )
     if (action.type === "link comment change") {
 

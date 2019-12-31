@@ -346,10 +346,16 @@ class U_Edit_Link extends Component {
     });
   };
 
-  editImage_quit = () => {
+  edits_quit = () => {
     this.clearPathname();
     this.props.dispatch({
       type: "quit link edit"
+    });
+  };
+
+  deleteLink = () => {
+    this.props.dispatch({
+      type: "DELETE link"
     });
   };
 
@@ -473,7 +479,7 @@ class U_Edit_Link extends Component {
               <Ratings
                 rating={link.rating}
                 widgetRatedColors="lightgrey" // Disabled color
-                changeRating={this.changeRating} // DISABLED.... mmm... Re-enable?
+                changeRating={this.changeRating}
               >
                 {star}
                 {star}
@@ -499,12 +505,14 @@ class U_Edit_Link extends Component {
                 Save
               </button>
             </div>
-            <button
-              className="fctBtn floating_out"
-              onClick={this.editImage_quit}
-            >
-              Finished editing
-            </button>
+            <div className="floating_out">
+              <button className="fctBtn fctBtn_red" onClick={this.deleteLink}>
+                DELETE
+              </button>
+              <button className="fctBtn fctBtn_green" onClick={this.edits_quit}>
+                Quit edit mode
+              </button>
+            </div>
           </div>
         </div>
       </>

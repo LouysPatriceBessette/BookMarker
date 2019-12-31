@@ -775,9 +775,21 @@ span.dragIcon::after {
 }
 
 .floating_out {
-    position: absolute;
-    bottom: -4em;
-    right: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.fctBtn_green {
+    background-color: @navIcon_login_logged_color;
+}
+
+.fctBtn_red {
+    background-color: @dark_red;
+}
+
+.fctBtn_yellow {
+    background-color: @navIcon_folder_color;
 }
 
 form.imageSelection {
@@ -829,7 +841,8 @@ img.imageBorderHint {
 .fctBtn {
     border: 0;
     border-radius: 6px;
-    background-color: @fctBtn_background;
+    // background-color: @fctBtn_background;
+    color: white;
     padding: 0.6em;
     margin: 0.6em;
     box-shadow: 0 0 6px @fctBtn_boxShadow;

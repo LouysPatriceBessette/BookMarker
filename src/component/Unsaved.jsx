@@ -47,16 +47,22 @@ class U_Unsaved extends Component {
     data.append("history", JSON.stringify(this.props.unsavedChanges_detail));
 
     let response = await qf("/save", "POST", data);
+
     if (response.success) {
       log.ok("Data saved");
-      this.props.dispatch({ type: "changes saved" });
+
+      this.props.dispatch({
+        type: "changes saved"
+      });
     } else {
       log.error("Data failed to save");
     }
   };
 
   quit = () => {
-    this.props.dispatch({ type: "quit unsaved changes" });
+    this.props.dispatch({
+      type: "quit unsaved changes"
+    });
   };
 
   // =============================================================================================================== Component render
@@ -81,14 +87,17 @@ class U_Unsaved extends Component {
       // - time ==> the Unix time of the change
 
       let ChangedElement = "";
+
       if (change.property === "ALL") {
         ChangedElement = <>New {change.target}</>;
       }
+
       if (change.property !== "ALL") {
         //ChangedElement = this.props.links[change.index].name;
         ChangedElement = (
           <>
-            <b>{change.property}</b> was changed on <b>{change.target}</b>
+            {" "}
+            <b> {change.property}</b> was changed on <b> {change.target}</b>{" "}
           </>
         );
       }
@@ -97,16 +106,19 @@ class U_Unsaved extends Component {
       let valueDisplay = (
         <>
           {" "}
-          : from <b>{change.oldValue}</b> to <b>{change.newValue}</b>
+          : from <b> {change.oldValue}</b> to <b> {change.newValue}</b>{" "}
         </>
       );
+
       if (change.property === "ALL") {
         valueDisplay = (
           <>
-            : <b>{change.newValue}</b>
+            {" "}
+            : <b> {change.newValue}</b>{" "}
           </>
         );
       }
+
       if (change.property === "comment" || change.property === "order") {
         valueDisplay = <></>;
       }
@@ -114,21 +126,47 @@ class U_Unsaved extends Component {
       if (change.property === "order" && change.target === "Links") {
         valueDisplay = (
           <>
-            for category <b>{change.categoryName}</b>
+            {" "}
+            for category <b> {change.categoryName}</b>{" "}
           </>
         );
       }
+
       if (change.property === "image") {
         valueDisplay = (
           <>
-            <b>{this.props.links[change.index].name}</b>
+            {" "}
+            <b> {this.props.links[change.index].name}</b>{" "}
+          </>
+        );
+      }
+
+      if (change.property === "DELETED") {
+        ChangedElement = (
+          <>
+            {" "}
+            <b> {change.property} : </b>{" "}
+          </>
+        );
+
+        valueDisplay = (
+          <>
+            {" "}
+            <b> {this.props.links[change.index].name}</b> from{" "}
+            {this.props.categories[this.props.activeCat].name}{" "}
           </>
         );
       }
 
       return (
-        <li key={key({ time: change.time })}>
-          {date_time(change.time).full_ISO} | {ChangedElement} {valueDisplay}
+        <li
+          key={key({
+            time: change.time
+          })}
+        >
+          {" "}
+          {date_time(change.time).full_Local} | {ChangedElement}
+          {valueDisplay}
         </li>
       );
     });
@@ -136,18 +174,22 @@ class U_Unsaved extends Component {
     // ======================================================================= Return
     return (
       <>
-        <h1>Unsaved changes list</h1>
-        <ol>{list}</ol>
-        <button className="fctBtn" onClick={this.save}>
-          Save now
-        </button>
-        <button className="fctBtn" onClick={this.quit}>
-          I have some more changes to do...
-        </button>
+        {" "}
+        <h1>Unsaved changes list</h1> <ol> {list}</ol>{" "}
+        <button className="fctBtn fctBtn_green" onClick={this.save}>
+          {" "}
+          Save now{" "}
+        </button>{" "}
+        <button className="fctBtn fctBtn_yellow" onClick={this.quit}>
+          {" "}
+          I have some more changes to do...{" "}
+        </button>{" "}
       </>
     ); // ==================================================================== End return
   }; // End render
-} // End class
+}
+
+// End class
 
 // =============================================================================================================== State to Props
 let stp = state => {
@@ -157,7 +199,8 @@ let stp = state => {
     unsavedChanges_detail: state.unsavedChanges_detail,
     bank_id: state.bank_id,
     categories: state.categories,
-    links: state.links
+    links: state.links,
+    activeCat: state.activeCat
   };
 };
 
