@@ -24,7 +24,7 @@ import {
 
 // =============================================================================================================== Other component imports
 import Tabbed_Links from "./Tabbed_links.jsx";
-import Tabbed_Thumbs from "./Tabbed_Thumbs.jsx";
+import Tabbed_Thumbs from "./Tabbed_thumbs.jsx";
 
 // =============================================================================================================== Component class
 class U_Search_result extends Component {

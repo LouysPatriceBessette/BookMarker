@@ -27,7 +27,7 @@ import {
 import Unsaved from "../component/Unsaved.jsx";
 import Tabbed_Categories from "../component/Tabbed_categories.jsx";
 import Context from "../component-base/Context.jsx";
-import Edit_Link from "../component/Edit_Link.jsx";
+import Edit_Link from "../component/Edit_link.jsx";
 import Search_result from "../component/Search_result.jsx";
 import Home from "../component-publicView/Home.jsx";
 
