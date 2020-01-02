@@ -33,6 +33,7 @@ class U_Context extends Component {
     super(props);
 
     this.contextMenu_params = {
+      eventHandlerSetted: false,
       element: null,
       style: {
         display: "none",
@@ -68,6 +69,13 @@ class U_Context extends Component {
       // Save link_card element
       this.contextMenu_params.link_card = link_card;
       this.contextMenu_params.activeLink = parseInt(link_card.dataset.id);
+
+      // Muliple window event listener bug when a new link is added - fix
+      log.var("74 - this.props.links.length", this.props.links.length);
+
+      if (this.props.links[this.contextMenu_params.activeLink] === undefined) {
+        return;
+      }
 
       // set the active link name in context menu span
       this.contextMenu_params.element.querySelector(
@@ -169,6 +177,9 @@ class U_Context extends Component {
   };
 
   set_contextMenu = () => {
+    // Muliple window event listener bug when a new link is added
+    log.var("175 - this.props.links.length", this.props.links.length);
+
     // Apply a custom context menu on
     this.contextMenu_params.element = document.querySelector(".context");
     window.addEventListener("contextmenu", this.contextMenu);
@@ -237,9 +248,7 @@ class U_Context extends Component {
   render = () => {
     log.render("Context");
 
-    setTimeout(() => {
-      this.set_contextMenu();
-    }, 1);
+    setTimeout(this.set_contextMenu, 1);
 
     // ======================================================================= Return
     return (

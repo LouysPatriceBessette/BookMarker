@@ -567,10 +567,13 @@ span.dragIcon::after {
   margin: 0.5em;
 }
 .linkEdit_main {
-  width: 100%;
+  width: 300px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   padding: 1em;
+  margin: 0 auto;
+  box-sizing: content-box;
 }
 .link_card_edit {
   border: 1px solid #020a6d;
@@ -597,6 +600,9 @@ span.dragIcon::after {
 }
 .fctBtn_yellow {
   background-color: #ddc70e;
+}
+.fctBtn_quillSave {
+  margin-left: 230px !important;
 }
 form.imageSelection {
   text-align: center;
@@ -648,7 +654,7 @@ img.imageBorderHint {
   font-weight: bold;
 }
 .fctBtn:hover {
-  background-color: #748fcc;
+  opacity: 0.8;
 }
 /* ============================================================================= Search_result component */
 .search_Display {

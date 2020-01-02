@@ -40,7 +40,6 @@
 @logBtn_hover: @light_blue;
 
 @fctBtn_background: @light_grey;
-@fctBtn_hover: @light_blue;
 @fctBtn_boxShadow: white;
 
 @fctBtn_warning_background: @dark_red;
@@ -754,10 +753,13 @@ span.dragIcon::after {
 }
 
 .linkEdit_main {
-    width: 100%;
+    width: 300px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     padding: 1em;
+    margin: 0 auto;
+    box-sizing: content-box;
 }
 
 .link_card_edit {
@@ -790,6 +792,10 @@ span.dragIcon::after {
 
 .fctBtn_yellow {
     background-color: @navIcon_folder_color;
+}
+
+.fctBtn_quillSave {
+    margin-left: 230px !important;
 }
 
 form.imageSelection {
@@ -850,7 +856,7 @@ img.imageBorderHint {
 }
 
 .fctBtn:hover {
-    background-color: @fctBtn_hover;
+    opacity: 0.8;
 }
 
 /* ============================================================================= Search_result component */

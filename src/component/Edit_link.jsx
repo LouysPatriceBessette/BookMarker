@@ -36,10 +36,7 @@ class U_Edit_Link extends Component {
 
     this.state = {
       link_rename: this.props.links[this.props.activeLink].name,
-      renameFieldDisplayed: false,
-      crop: {
-        aspect: 16 / 9
-      }
+      renameFieldDisplayed: false
     };
   }
 
@@ -501,18 +498,21 @@ class U_Edit_Link extends Component {
                 //onMouseDown={this.focus_Quill}
                 //onPointerDown={this.focus_Quill}
               ></div>
-              <button className="fctBtn" onClick={this.quill_getContent}>
+              <button
+                className="fctBtn fctBtn_quillSave fctBtn_green"
+                onClick={this.quill_getContent}
+              >
                 Save
               </button>
             </div>
-            <div className="floating_out">
-              <button className="fctBtn fctBtn_red" onClick={this.deleteLink}>
-                DELETE
-              </button>
-              <button className="fctBtn fctBtn_green" onClick={this.edits_quit}>
-                Quit edit mode
-              </button>
-            </div>
+          </div>
+          <div className="floating_out">
+            <button className="fctBtn fctBtn_red" onClick={this.deleteLink}>
+              DELETE
+            </button>
+            <button className="fctBtn fctBtn_yellow" onClick={this.edits_quit}>
+              Quit edit mode
+            </button>
           </div>
         </div>
       </>

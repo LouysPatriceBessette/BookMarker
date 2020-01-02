@@ -192,7 +192,7 @@ let reducer = (state, action) => {
             index: newState.links.length,
             property: "ALL",
             // oldValue: "",
-            // newValue: action.link.name,
+            newValue: action.link.name,
             time: new Date().getTime()
         })
 
