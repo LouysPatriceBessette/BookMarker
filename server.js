@@ -74,7 +74,11 @@ app.use('/', express.static('public')); // Needed for local assets
 //
 // ==============================================
 
+// To run on Bes7weB-laptop:
 let url = "mongodb+srv://Bes7weB:bmowi6R4jOiVe8LDzI2q@cluster0-8e3qb.gcp.mongodb.net/test?retryWrites=true&w=majority"
+
+// To run on JustHost:
+//let url = "mongodb://localhost:27017"
 
 MongoClient.connect(url, {
     useNewUrlParser: true,
