@@ -281,12 +281,13 @@ let reducer = (state, action) => {
             index: newState.activeLink,
             property: "image",
             //oldValue: newState.image,
-            newValue: action.base64_img,
+            newValue: action.imageID,
             time: new Date().getTime()
         })
 
         newState.image_accepted = true
         newState.links[action.activeLink].image = action.base64_img
+        newState.links[action.activeLink].imageID = action.imageID
     }
 
     if (action.type === "quit link edit") {

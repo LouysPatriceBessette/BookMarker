@@ -333,12 +333,32 @@ class U_Edit_Link extends Component {
     });
   };
 
-  acceptImage = () => {
+  acceptImage = async () => {
     let acceptedImg = document.querySelector(".link_img img").src;
+
+    // SAVE the image RIGHT NOW on server and get an ID back
+    let data = new FormData();
+    data.append("bank_id", this.props.bank_id);
+    data.append("base64", acceptedImg);
+    data.append("activeLink", this.props.activeLink);
+
+    let response = await qf("/save-image", "POST", data);
+
+    if (response.success) {
+      log.ok("Image saved", response.imageID);
+
+      // this.props.dispatch({
+      //   type: "changes saved",
+      //   imageID: response.imageID
+      // });
+    } else {
+      log.error("Image failed to save");
+    }
 
     this.props.dispatch({
       type: "Accept an image",
       activeLink: this.props.activeLink,
+      imageID: response.imageID,
       base64_img: acceptedImg
     });
   };
@@ -529,7 +549,8 @@ let stp = state => {
     activeLink: state.activeLink,
     image_underlay: state.image_underlay,
     image_edited: state.image_edited,
-    image_accepted: state.image_accepted
+    image_accepted: state.image_accepted,
+    bank_id: state.bank_id
   };
 };
 

@@ -42,7 +42,14 @@ class U_Unsaved extends Component {
     let data = new FormData();
     data.append("bank_id", this.props.bank_id);
     data.append("categories", JSON.stringify(this.props.categories));
-    data.append("links", JSON.stringify(this.props.links));
+
+    // Remove the images from the links
+    let linksCopy = map_O_spread(this.props.links);
+    let imagePurged = linksCopy.map(link => {
+      delete link.image;
+      return link;
+    });
+    data.append("links", JSON.stringify(imagePurged));
 
     data.append("history", JSON.stringify(this.props.unsavedChanges_detail));
 
