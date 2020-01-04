@@ -285,8 +285,7 @@ class U_Tabbed_Categories extends Component {
     let getTabs = () => {
       return ordered_categories.map((cat, index) => ({
         title:
-          // original_indexes[index] +
-          // " - " +
+          // Show how many links are in tab
           cat.name + " (" + cat.content.length + ")",
 
         getContent: () => {

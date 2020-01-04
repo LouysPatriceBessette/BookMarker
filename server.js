@@ -870,8 +870,13 @@ let start_server = dbo => {
                 console.log("LINE# 870 - User links retreived.")
                 console.log("\n============= Login success. =============\n\n")
 
+                // Remove the deleted link
+                let deletedPurged = db_link_response.links.filter(link => {
+                    return !link.deleted
+                })
+
                 // Match relevant images with links (filtering the deleted links btw)
-                let User_Links = matchImage(db_link_response)
+                let User_Links = matchImage(deletedPurged)
 
                 // Request response
                 res.cookie("sid", collected.sid);
@@ -955,13 +960,19 @@ let start_server = dbo => {
         // ========= Information collection while the dbo resquest are going.
         let collected = {}
 
-        let cookie_logged = get_links_result => {
-            if (get_links_result !== null) {
+        let cookie_logged = db_link_response => {
+            if (db_link_response !== null) {
                 console.log("LINE# 960 - User links found.")
                 console.log("\n============= Cookie login success. =============\n\n")
 
+                // Remove the deleted link
+                let deletedPurged = db_link_response.links.filter(link => {
+                    return !link.deleted
+                })
+                db_link_response.links = deletedPurged
+
                 // Match relevant images with links (filtering the deleted links btw)
-                let User_Links = matchImage(get_links_result)
+                let User_Links = matchImage(db_link_response)
 
                 res.json({
                     success: true,
@@ -969,9 +980,9 @@ let start_server = dbo => {
                     user: {
                         username: collected.username,
                         userBank_id: collected.bank_id,
-                        categories: get_links_result.categories,
+                        categories: db_link_response.categories,
                         links: User_Links,
-                        history: get_links_result.history,
+                        history: db_link_response.history,
                     }
                 });
             } else {

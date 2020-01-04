@@ -33,7 +33,9 @@ class U_Tabbed_Links extends Component {
     this.quill_opened = false;
 
     this.state = {
-      link_rename: this.props.links[this.props.activeLink].name,
+      link_rename: this.props.links[this.props.activeLink]
+        ? this.props.links[this.props.activeLink].name
+        : "",
       renameFieldDisplayed: false
     };
   }
