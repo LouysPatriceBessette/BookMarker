@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>LINE# updater</h1>
+    <input type="file" name="file" id="file">
+    <div id="result"></div>
+    <div style="font-size:1.4em; padding: 0.5em;">
+      <a download="updated.txt" id="downloadlink" style="display: none">Updated file</a>
+    </div>
+    
+    <script>
+
+    let resultEl = document.getElementById('result');
+    let updatedFileContent = "";
+    let fileBnt = document.getElementById('file');
+    let UpdatedFilLink = document.getElementById('downloadlink');
+    
+    fileBnt.onchange = function(){
+
+      let file = this.files[0];
+      let targetString = "LINE# ";
+      let targetStringLength = targetString.length;
+      let lineSeparator = "\r\n";
+
+      
+      // Stats
+      let CommentCounter = 0;
+      let CommentCounter_wrong = 0;
+      let CommentCounter_ok = 0;
+      let totalLines = 0;
+      let processTime = 0;
+
+      // The file reader to process the file line by line
+      let reader = new FileReader();
+      reader.onload = function(progressEvent){
+        // Entire file
+        //console.log(this.result);
+
+        // Time to process
+        let start = new Date().getTime()
+
+        // Split the file by lines
+        let lines = this.result.split(lineSeparator);
+        
+        // Loop lines
+        for(let line = 0; line < lines.length; line++){
+          
+          // Line numbers are not zero based in the file
+          let realLine = line+1
+          //console.log(realLine + ": " + lines[line]);
+          
+          // if the targetString string is found
+          let index = lines[line].indexOf(targetString)
+          if(index !== -1){
+            CommentCounter++;
+            let chunk = lines[line].split("").slice(index, index+10).join("")
+            
+            let writenLineNumber = parseInt(chunk.split("").slice(6).join(""))
+            
+            let wrong = writenLineNumber !== realLine // Boolean
+            
+            // If there is a catch
+            if(wrong){
+              CommentCounter_wrong++;
+              
+              // Show in page
+              resultEl.innerText += targetString + realLine + " was: " + chunk + " (" + (realLine - writenLineNumber > 0 ? "+": "-") + (realLine - writenLineNumber) + ")\n"
+              
+              // Modify
+              let lineStart = lines[line].slice(0, index + targetStringLength);
+              let wrongNumberLength = writenLineNumber.toString().length;
+              let after = index + targetStringLength + wrongNumberLength;
+              let lineEnd = lines[line].slice(after);
+              
+              updatedFileContent += lineStart + realLine + lineEnd + lineSeparator;
+            }
+            // The writen line number was ok
+            else{
+              CommentCounter_ok++;
+              updatedFileContent += lines[line] + lineSeparator;
+            }
+          }
+          
+          // The target string was not found
+          else{
+            updatedFileContent += lines[line] + lineSeparator;
+          }
+          
+          totalLines = line;
+          
+          // Time to process
+          let stop = new Date().getTime()
+          processTime = stop - start;
+        }
+        
+        // Stats
+        resultEl.innerText += "\n\nTotal: " + CommentCounter + 
+                              " over " + totalLines + " lines.\n" + 
+                              " Processed in " + processTime + " ms\n\n" +
+                              " Ok: " + CommentCounter_ok + "\n" +
+                              " Wrong: " +CommentCounter_wrong;
+                              
+        // Show the link
+        UpdatedFilLink.href = makeTextFile(updatedFileContent);
+        setTimeout(()=>{
+          UpdatedFilLink.style.display = 'block';
+        },400)
+      
+      };
+      reader.readAsText(file);
+    };
+    
+    // File creation function taken from https://stackoverflow.com/a/21016088/2159528
+    let textFile = null;
+    let makeTextFile = content => {
+      let data = new Blob([content], {type: 'text/plain'});
+
+      // If we are replacing a previously generated file we need to
+      // manually revoke the object URL to avoid memory leaks.
+      if (textFile !== null) {
+        window.URL.revokeObjectURL(textFile);
+      }
+
+      textFile = window.URL.createObjectURL(data);
+
+      return textFile;
+    };
+
+
+    // ===================================================
+    </script>
+  </body>
+</html>

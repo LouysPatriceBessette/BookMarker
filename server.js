@@ -901,13 +901,13 @@ let start_server = dbo => {
                 return null
             }
 
-            console.log("LINE# 892 - User links not retreived.")
+            console.log("LINE# 904 - User links not retreived.")
             return null
         }
 
         let get_links = async set_session_response => {
             if (set_session_response !== null) {
-                console.log("LINE# 904 - Session setted.")
+                console.log("LINE# 910 - Session setted.")
 
                 return db_link({
                     do: "get",
@@ -916,13 +916,13 @@ let start_server = dbo => {
                 })
             }
 
-            console.log = ("LINE# 907 - Session not setted.")
+            console.log = ("LINE# 919 - Session not setted.")
             return null
         }
 
         let set_session = async get_user_response => {
             if (get_user_response !== null) {
-                console.log("LINE# 913 - User valid.")
+                console.log("LINE# 925 - User valid.")
 
                 // Create a sid
                 let sid = generateSessionId();
@@ -941,7 +941,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 932 - User invalid.")
+            console.log("LINE# 944 - User invalid.")
             res.json({
                 success: false,
                 errorMsg: "User not found."
@@ -969,7 +969,7 @@ let start_server = dbo => {
 
         let cookie_logged = db_link_response => {
             if (db_link_response !== null) {
-                console.log("LINE# 960 - User links found.")
+                console.log("LINE# 972 - User links found.")
                 console.log("\n============= Cookie login success. =============\n\n")
 
                 // Add the linkArrayIndex
@@ -999,7 +999,7 @@ let start_server = dbo => {
                     }
                 });
             } else {
-                console.log("LINE# 978 - User links not found.")
+                console.log("LINE# 1002 - User links not found.")
                 res.json({
                     success: false,
                     errorMsg: "User links not found."
@@ -1012,7 +1012,7 @@ let start_server = dbo => {
         let get_links = async (get_user_response) => {
             // If user found
             if (get_user_response !== null) {
-                console.log("LINE# 991 - User found.")
+                console.log("LINE# 1015 - User found.")
 
                 collected["username"] = get_user_response.name
                 collected["bank_id"] = get_user_response.bank_id
@@ -1025,7 +1025,7 @@ let start_server = dbo => {
             }
 
             // User not found
-            console.log("LINE# 1004 - User not found.")
+            console.log("LINE# 1028 - User not found.")
             res.json({
                 success: false,
                 errorMsg: "User not found."
@@ -1037,7 +1037,7 @@ let start_server = dbo => {
         let get_user = async (session_response) => {
             // Session found?
             if (session_response !== null) {
-                console.log("LINE# 1016 - Session found.")
+                console.log("LINE# 1040 - Session found.")
                 return db_user({
                     do: "get",
                     user_id: session_response.user_id,
@@ -1046,7 +1046,7 @@ let start_server = dbo => {
             }
 
             // Session not found
-            console.log("LINE# 1025 - Session not found.")
+            console.log("LINE# 1049 - Session not found.")
             res.json({
                 success: false,
                 errorMsg: "Session not found."
@@ -1070,7 +1070,7 @@ let start_server = dbo => {
 
         let logged_out = kill_session_response => {
             if (kill_session_response !== null) {
-                console.log("LINE# 1049 - Session destroyed.")
+                console.log("LINE# 1073 - Session destroyed.")
                 console.log("\n============= Logout success. =============\n\n")
 
                 res.json({
@@ -1080,7 +1080,7 @@ let start_server = dbo => {
                 return null
             }
 
-            console.log("LINE# 1059 - Session not destroyed.")
+            console.log("LINE# 1083 - Session not destroyed.")
             res.json({
                 success: false,
                 errorMsg: "Failed to remove the session."
@@ -1089,7 +1089,7 @@ let start_server = dbo => {
 
         let kill_session = async session_response => {
             if (session_response !== null) {
-                console.log("LINE# 1068 - About to destroy the session...")
+                console.log("LINE# 1092 - About to destroy the session...")
 
                 return db_session({
                     do: "del",
@@ -1098,7 +1098,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 1077 - Session not found.")
+            console.log("LINE# 1101 - Session not found.")
             res.json({
                 success: false,
                 errorMsg: "Session not found."
@@ -1122,12 +1122,12 @@ let start_server = dbo => {
 
         let check_url = async session_response => {
             if (session_response !== null) {
-                console.log("LINE# 1101 - Session found, verifying the url.")
+                console.log("LINE# 1125 - Session found, verifying the url.")
 
                 request
                     .get(urlToCheck)
                     .on('error', function (err) {
-                        console.log("LINE# 1106 - ERROR on request - ", err)
+                        console.log("LINE# 1130 - ERROR on request - ", err)
                         res.json({
                             success: false,
                             errorMsg: "ERROR on request.",
@@ -1136,15 +1136,15 @@ let start_server = dbo => {
                         return null
                     })
                     .on('response', function (response) {
-                        //console.log("LINE# 1115 - response.statusCode", response.statusCode)
+                        //console.log("LINE# 1139 - response.statusCode", response.statusCode)
                         if (response.statusCode === 200) {
-                            console.log("LINE# 1117 - URL valid.\n\n")
+                            console.log("LINE# 1141 - URL valid.\n\n")
                             res.json({
                                 success: true,
                                 errorMsg: "URL valid."
                             })
                         } else {
-                            console.log("LINE# 1123 - URL invalid.\n\n")
+                            console.log("LINE# 1147 - URL invalid.\n\n")
                             res.json({
                                 success: false,
                                 errorMsg: "URL invalid."
@@ -1154,7 +1154,7 @@ let start_server = dbo => {
                 return null
             }
 
-            console.log("LINE# 1133 - Session not found.")
+            console.log("LINE# 1157 - Session not found.")
             res.json({
                 success: false,
                 errorMsg: "Session not found."
@@ -1180,7 +1180,7 @@ let start_server = dbo => {
 
         let data_update = async data_update_response => {
             if (data_update_response !== null) {
-                console.log("LINE# 1159 - Data saved.")
+                console.log("LINE# 1183 - Data saved.")
                 console.log("\n============= Save success. =============\n\n")
 
                 res.json({
@@ -1191,7 +1191,7 @@ let start_server = dbo => {
                 return
             }
 
-            console.log("LINE# 1170 - Data saving failed.")
+            console.log("LINE# 1194 - Data saving failed.")
             res.json({
                 success: false,
                 errorMsg: "Data saving failed."
@@ -1200,7 +1200,7 @@ let start_server = dbo => {
 
         let process_data = async process_data_response => {
             if (process_data_response !== null) {
-                console.log("LINE# 1179 - Links found.")
+                console.log("LINE# 1203 - Links found.")
 
                 // Define the ID for the new image to be saved.
                 let lastID = process_data_response.images.length
@@ -1222,7 +1222,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 1201 - Links not found.")
+            console.log("LINE# 1225 - Links not found.")
             res.json({
                 success: false,
                 errorMsg: "Links not found."
@@ -1231,7 +1231,7 @@ let start_server = dbo => {
 
         let get_data = async session_response => {
             if (session_response !== null) {
-                console.log("LINE# 1210 - Session found.")
+                console.log("LINE# 1234 - Session found.")
 
                 return db_link({
                     do: "get",
@@ -1240,7 +1240,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 1219 - Session not found.")
+            console.log("LINE# 1243 - Session not found.")
             res.json({
                 success: false,
                 errorMsg: "Session not found."
@@ -1262,7 +1262,7 @@ let start_server = dbo => {
 
         let data_update = async data_update_response => {
             if (data_update_response !== null) {
-                console.log("LINE# 1241 - Data saved.")
+                console.log("LINE# 1265 - Data saved.")
                 console.log("\n============= Save success. =============\n\n")
 
                 res.json({
@@ -1272,7 +1272,7 @@ let start_server = dbo => {
                 return
             }
 
-            console.log("LINE# 1251 - Data saving failed.")
+            console.log("LINE# 1275 - Data saving failed.")
             res.json({
                 success: false,
                 errorMsg: "Data saving failed."
@@ -1281,7 +1281,7 @@ let start_server = dbo => {
 
         let process_data = async process_data_response => {
             if (process_data_response !== null) {
-                console.log("LINE# 1260 - Links found.")
+                console.log("LINE# 1284 - Links found.")
 
                 // Update the history
                 let updated_history = process_data_response.history.concat(JSON.parse(req.body.history))
@@ -1296,7 +1296,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 1275 - Links not found.")
+            console.log("LINE# 1299 - Links not found.")
             res.json({
                 success: false,
                 errorMsg: "Links not found."
@@ -1305,7 +1305,7 @@ let start_server = dbo => {
 
         let get_data = async session_response => {
             if (session_response !== null) {
-                console.log("LINE# 1284 - Session found.")
+                console.log("LINE# 1308 - Session found.")
 
                 return db_link({
                     do: "get",
@@ -1314,7 +1314,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 1293 - Session not found.")
+            console.log("LINE# 1317 - Session not found.")
             res.json({
                 success: false,
                 errorMsg: "Session not found."
@@ -1333,13 +1333,13 @@ let start_server = dbo => {
 
     // ============================================================================== React router 
     app.get('/addLink/:url', (req, res) => {
-        console.log("LINE# 1312 - app.get('/addLink/:url')")
+        console.log("LINE# 1336 - app.get('/addLink/:url')")
         res.sendFile(__dirname + '/build/index.html');
     })
 
     // ============================================================================== Server listen to requests...
     app.listen(4000, '0.0.0.0', () => {
-        console.log("LINE# 1318 - Server running on port 4000")
+        console.log("LINE# 1342 - Server running on port 4000")
     })
 
 } // ========================================================================================================================================================== END start_server(dbo)
@@ -1382,4 +1382,4 @@ let emptyBank = {
     }]
 }
 
-// ============================================================================================================================================================ EOF
+// ============================================================================================================================================================
