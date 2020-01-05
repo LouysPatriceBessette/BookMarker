@@ -121,10 +121,38 @@ class U_Tabbed_Categories extends Component {
       // Et simuler un mouseup pour lacher la ghost image.
 
       // Marche pas...
-      let mouseup_event = new Event("mouseup");
-      this.dragged_card.dispatchEvent(mouseup_event);
+      // let mouseup_event = new Event("mouseup");
+      // this.dragged_card.dispatchEvent(mouseup_event);
 
       // RENDU ICI
+      // Dispatch the category order changes -- There is two!
+      // SOURCE tab
+
+      let previousOrder = map_O_spread(
+        this.links_sortable_order[this.props.activeCat]
+      );
+      // Remove the link from the content
+      let sortableOrderMinusDragged = map_O_spread(
+        this.links_sortable_order[this.props.activeCat]
+      );
+
+      sortableOrderMinusDragged = sortableOrderMinusDragged.filter(item => {
+        return item !== this.props.activeLink;
+      });
+
+      log.var("previousOrder", previousOrder);
+      log.var("sortableOrderMinusDragged", sortableOrderMinusDragged);
+
+      // If I dispatch... I get the unsaved... But I loos the card in the target tab. mmmmmmmmmmmm
+
+      // this.props.dispatch({
+      //   type: "links order change",
+      //   category_id: this.props.activeCat,
+      //   categoryName: this.props.categories[this.props.activeCat].name,
+      //   previousOrder: previousOrder, // HERE HERE HERE -- Getting an arry with only the dragged item id in it ??? It is the total opposite of what I whish
+      //   newOrder: sortableOrderMinusDragged
+      // });
+      // dfbgdf
     }
 
     // Normal tab mode with a user click
@@ -135,7 +163,12 @@ class U_Tabbed_Categories extends Component {
           document.querySelector(".RRT__tab--selected").id.split("-")[1]
         );
 
-        this.props.dispatch({ type: "tab change", activeCat: activeCat }); // Needed for the "Add a link to..." icon in Nav.jsx
+        this.props.dispatch({
+          type: "tab change",
+          activeCat: activeCat,
+          previouslyActiveCat: this.props.activeCat,
+          previouslyLinks_sortable_order: this.links_sortable_order
+        }); // Needed for the "Add a link to..." icon in Nav.jsx
       }, 1);
     }
   };
@@ -155,7 +188,7 @@ class U_Tabbed_Categories extends Component {
     this.dragging = true;
 
     this.dragged_card = e.target;
-    this.dragged_card_id = e.target.dataset.id;
+    this.dragged_card_id = parseInt(e.target.dataset.id);
     log.var("Dragged card", this.dragged_card_id);
   };
 
@@ -255,6 +288,8 @@ class U_Tabbed_Categories extends Component {
     }
 
     this.tabElements = document.querySelectorAll(".RRT__tab.tab");
+    // Re-set the tab positions array
+    this.tab_positions = [];
     this.tabElements.forEach(tab => {
       let tab_object = this.getOffset(tab);
       let compStyle = window.getComputedStyle(tab);
@@ -330,6 +365,7 @@ class U_Tabbed_Categories extends Component {
               onDrag={this.onDrag}
               onDragEnd={this.onDragEnd}
             >
+              {log.var("this.links_sortable_order", this.links_sortable_order)}
               {this.returnElements(index)}
             </Sortable>
           );

@@ -169,7 +169,12 @@ class U_Tabbed_Links extends Component {
   render = () => {
     log.render("Tabbed_links");
 
-    let link = this.props.links[this.props.activeLink];
+    // Find the link that matches the "real DB index"
+    let link = this.props.links.filter(link => {
+      return link.linkArrayIndex === this.props.activeLink;
+    })[0];
+
+    console.log("link", link);
     let star = <Ratings.Widget widgetDimension="20px" widgetSpacing="2px" />;
 
     // ========================================

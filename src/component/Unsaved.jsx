@@ -104,7 +104,7 @@ class U_Unsaved extends Component {
         ChangedElement = (
           <>
             {" "}
-            <b> {change.property}</b> was changed on <b> {change.target}</b>{" "}
+            <b> {change.property}</b> was changed on{" "}
           </>
         );
       }

@@ -870,13 +870,20 @@ let start_server = dbo => {
                 console.log("LINE# 870 - User links retreived.")
                 console.log("\n============= Login success. =============\n\n")
 
+                // Add the linkArrayIndex
+                db_link_response.links = db_link_response.links.map((link, index) => {
+                    link.linkArrayIndex = index
+                    return link
+                })
+
                 // Remove the deleted link
                 let deletedPurged = db_link_response.links.filter(link => {
                     return !link.deleted
                 })
+                db_link_response.links = deletedPurged
 
                 // Match relevant images with links (filtering the deleted links btw)
-                let User_Links = matchImage(deletedPurged)
+                let User_Links = matchImage(db_link_response)
 
                 // Request response
                 res.cookie("sid", collected.sid);
@@ -900,7 +907,7 @@ let start_server = dbo => {
 
         let get_links = async set_session_response => {
             if (set_session_response !== null) {
-                console.log("LINE# 745 - Session setted.")
+                console.log("LINE# 904 - Session setted.")
 
                 return db_link({
                     do: "get",
@@ -964,6 +971,12 @@ let start_server = dbo => {
             if (db_link_response !== null) {
                 console.log("LINE# 960 - User links found.")
                 console.log("\n============= Cookie login success. =============\n\n")
+
+                // Add the linkArrayIndex
+                db_link_response.links = db_link_response.links.map((link, index) => {
+                    link.linkArrayIndex = index
+                    return link
+                })
 
                 // Remove the deleted link
                 let deletedPurged = db_link_response.links.filter(link => {

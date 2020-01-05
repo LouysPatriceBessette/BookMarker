@@ -318,7 +318,7 @@ let reducer = (state, action) => {
         // newState.image_accepted = false
         newState.links[newState.activeLink].deleted = true
         newState.categories[newState.activeCat].content = newState.categories[newState.activeCat].content.filter(item => {
-            item !== newState.activeLink
+            return item !== newState.activeLink
         })
     }
 

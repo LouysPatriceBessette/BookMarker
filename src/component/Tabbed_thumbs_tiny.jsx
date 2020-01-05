@@ -31,11 +31,6 @@ class U_Tabbed_Thumbs_tiny extends Component {
 
     this.quill_editor = undefined;
     this.quill_opened = false;
-
-    this.state = {
-      link_rename: this.props.links[this.props.activeLink].name,
-      renameFieldDisplayed: false
-    };
   }
 
   // =============================================================================================================== Component functions
@@ -44,7 +39,10 @@ class U_Tabbed_Thumbs_tiny extends Component {
   render = () => {
     log.render("Tabbed_Thumbs");
 
-    let link = this.props.links[this.props.activeLink];
+    // Find the link that matches the "real DB index"
+    let link = this.props.links.filter(link => {
+      return link.linkArrayIndex === this.props.activeLink;
+    })[0];
 
     // If link was DELETED
     if (link.deleted) {
