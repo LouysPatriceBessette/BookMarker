@@ -41,7 +41,14 @@ class U_Tabbed_Thumbs extends Component {
     log.var("Counting this click.", linkID);
     body.append("linkID", linkID);
     body.append("bank_id", this.props.bank_id);
-    await qf("/clickCount", "post", body);
+    let response = await qf("/clickCount", "post", body);
+    if (response.success) {
+      this.props.dispatch({
+        type: "click count",
+        linkID: linkID,
+        newClickDate: response.newClickDate
+      });
+    }
   };
 
   // =============================================================================================================== Component render
