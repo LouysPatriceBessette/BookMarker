@@ -50,22 +50,42 @@ class U_Home extends Component {
     });
   };
 
+  checks_animation_init = () => {
+    setTimeout(() => {
+      let checks = document.querySelectorAll(".homeIcon");
+      //log.ok("init");
+
+      // Show checks one by one
+      let checks_animation = () => {
+        setTimeout(() => {
+          checks.forEach((check, i) => {
+            let delay = 800;
+            setTimeout(() => {
+              //log.ok("one check...");
+              check.style.opacity = 1;
+            }, delay * i);
+          });
+        }, 2000);
+      };
+
+      // Re-don animation at every 20 sec.
+      setInterval(() => {
+        // Hide checks
+        //log.ok("checks hide");
+        checks.forEach(check => {
+          check.style.opacity = 0;
+        });
+        checks_animation();
+      }, 12000);
+      checks_animation();
+    }, 1);
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     log.render("Home");
 
-    window.addEventListener("keyup", e => {
-      if (e.ctrlKey && e.key == "m") {
-        setTimeout(() => {
-          document.querySelectorAll(".homeIcon").forEach((check, i) => {
-            let delay = 800;
-            setTimeout(() => {
-              check.style.opacity = 1;
-            }, delay * i);
-          });
-        }, 1000);
-      }
-    });
+    this.checks_animation_init();
 
     // ======================================================================= Return
     return (
@@ -84,7 +104,7 @@ class U_Home extends Component {
             <li>{this.check()}Drag n' drop ordering</li>
             <li>{this.check()}Tabbed categories</li>
             <li>{this.check()}Keyword search</li>
-            <li>{this.times()}Change history and click count</li>
+            <li>{this.check()}Change history and click count</li>
             <li>{this.check()}More secure than a browser bookmark bar!</li>
           </ul>
         </div>
@@ -103,17 +123,6 @@ class U_Home extends Component {
             </b>
           </p>
           <p className="legal">* {rsg(6, [16, 20])}</p>
-          {/* <p>Also, if you accept the service, ask your lawers about: </p>
-          <p className="legal">** {rsg(26, [24, 30])}</p>
-          <p>
-            <b>
-              Don't worry too much... And hit "I agree" when
-              prompted.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <i>
-                <small>....oO ( lol ! )</small>
-              </i>
-            </b>
-          </p> */}
           <hr />
           <p>
             Another meaningful <b>Bes7weB</b> creation. &copy; 2019~2020

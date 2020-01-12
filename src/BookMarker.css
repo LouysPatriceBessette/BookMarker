@@ -543,6 +543,25 @@ span.dragIcon::after {
   color: #020a6d;
   font-weight: normal;
   font-style: italic;
+  padding: 0 40px 0 20px;
+}
+.click_history {
+  display: none;
+}
+.feak_anchor {
+  text-decoration: underline;
+  color: #748fcc;
+}
+.click_history_content {
+  background: #f2fdfc;
+  box-shadow: 0 0 10px #020a6d;
+  border-radius: 10px;
+  padding: 1em;
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 9.5em;
 }
 /* Temporaire */
 .notDoneYet {

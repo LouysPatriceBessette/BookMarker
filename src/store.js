@@ -468,6 +468,11 @@ let reducer = (state, action) => {
         Cookies.set('fullCards', action.fullCards)
     }
 
+    // =========================================================== CLICK COUNT
+    if (action.type === "click count") {
+        newState.links[action.linkID].clickCount.push(action.newClickDate)
+    }
+
     // =========================================================== SHARE A FOLDER
 
     // ...

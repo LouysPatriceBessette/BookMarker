@@ -434,9 +434,12 @@ let start_server = dbo => {
         //      for "set" : { do: "set", categories: [array of objects], links: [array of objects], history: [array of objects] }
         //      for "get" : { do: "get", bank_id: [dbo inserted id] }
         //      for "del" : { do: "del", bank_id: [dbo inserted id] }   NOT DONE YET
-        //      for "upd" : { do: "upd", bank_id: [dbo inserted id], categories: [array of objects], links: [array of objects], history: [array of objects] }
 
-        //console.log("LINE# 439 - Request to links is starting.")
+        //      UPDATES: "upd"
+        //      for User usaved changes: { do: "upd", bank_id: [dbo inserted id], categories: [array of objects], links: [array of objects], history: [array of objects] }
+        //      for Click count: { do: "upd", bank_id: [dbo inserted id], linkID: [integer], newClickDate: [Object] }
+
+        //console.log("LINE# 442 - Request to links is starting.")
 
         if (
             (
@@ -450,7 +453,7 @@ let start_server = dbo => {
         ) {
 
             // We have all params...
-            //console.log("LINE# 453 - Conditions met.")
+            //console.log("LINE# 456 - Conditions met.")
 
             switch (action.do) {
 
@@ -458,7 +461,7 @@ let start_server = dbo => {
                 case "set":
 
                     if (action.categories && action.links && action.history) {
-                        console.log("LINE# 461 - Attempting a link SET")
+                        console.log("LINE# 464 - Attempting a link SET")
                         return dbo.collection('links').insertOne({
                             categories: action.categories,
                             links: action.links,
@@ -466,7 +469,7 @@ let start_server = dbo => {
                             images: action.images
                         }, (err, db_result) => {
                             if (err) {
-                                console.log("LINE# 469 - user insert error", err);
+                                console.log("LINE# 472 - user insert error", err);
                                 res.json({
                                     success: false,
                                     errorMsg: "DBO error on SET links.",
@@ -475,7 +478,7 @@ let start_server = dbo => {
                                 return null
                             }
 
-                            //console.log("LINE# 478 - db_result", db_result)
+                            //console.log("LINE# 481 - db_result", db_result)
 
                             // go on with the provided callback
                             return action.callback(db_result)
@@ -483,7 +486,7 @@ let start_server = dbo => {
                     }
 
                     // if no bank_id and all data
-                    console.log("LINE# 486 - Missing data!")
+                    console.log("LINE# 489 - Missing data!")
                     return null
 
                     break;
@@ -492,12 +495,12 @@ let start_server = dbo => {
                 case "get":
 
                     if (action.bank_id) {
-                        console.log("LINE# 495 - Attempting a link GET")
+                        console.log("LINE# 498 - Attempting a link GET")
                         return dbo.collection('links').findOne({
                             _id: ObjectId(action.bank_id)
                         }, (err, db_result) => {
                             if (err) {
-                                console.log("LINE# 500 - user GET error", err);
+                                console.log("LINE# 503 - user GET error", err);
                                 res.json({
                                     success: false,
                                     errorMsg: "DBO error on GET links.",
@@ -506,7 +509,7 @@ let start_server = dbo => {
                                 return null
                             }
 
-                            //console.log("LINE# 509 - db_result", db_result)
+                            //console.log("LINE# 512 - db_result", db_result)
 
                             if (Export_Mongo) {
                                 // MONGO DATA SAVED to file!
@@ -519,7 +522,7 @@ let start_server = dbo => {
                     }
 
                     // if no bank_id
-                    console.log("LINE# 522 - No bank_id.")
+                    console.log("LINE# 525 - No bank_id.")
                     return null
 
                     break;
@@ -527,15 +530,16 @@ let start_server = dbo => {
                     // ==================================================================== DEL
                 case "del":
 
-                    console.log("LINE# 530 - Attempting nothing... DEL is not written yet.")
+                    console.log("LINE# 533 - Attempting nothing... DEL is not written yet.")
                     return null
                     break
 
                     // ==================================================================== UPD
                 case "upd":
 
+                    // When user ssaves the "unsaved changes"
                     if (action.bank_id && action.categories && action.links && action.history) {
-                        console.log("LINE# 538 - Attempting a link UPD")
+                        console.log("LINE# 542 - Attempting a link UPD - Saving changes")
 
                         return dbo.collection("links").updateOne({
                             _id: ObjectId(action.bank_id)
@@ -547,7 +551,7 @@ let start_server = dbo => {
                             }
                         }, (err, db_result) => {
                             if (err) {
-                                console.log("LINE# 550 - user GET error", err);
+                                console.log("LINE# 554 - user GET error", err);
                                 res.json({
                                     success: false,
                                     errorMsg: "DBO error on UPD links.",
@@ -556,7 +560,43 @@ let start_server = dbo => {
                                 return null
                             }
 
-                            //console.log("LINE# 559 - db_result", db_result)
+                            //console.log("LINE# 563 - db_result", db_result)
+
+                            // go on with the provided callback
+                            return action.callback(db_result)
+                        })
+                    }
+
+                    // When a click is counted
+                    if (action.bank_id && action.linkID && action.newClickDate) {
+                        console.log("LINE# 572 - Attempting a link UPD - Click count")
+
+                        let arrayIndex = parseInt(action.linkID)
+                        //console.log("arrayIndex", arrayIndex, typeof (arrayIndex))
+                        //console.log("newClickDate", action.newClickDate)
+
+                        return dbo.collection("links").updateOne({
+                            _id: ObjectId(action.bank_id)
+                        }, {
+                            $push: {
+                                "links.$[filteredLink].clickCount": action.newClickDate
+                            }
+                        }, {
+                            arrayFilters: [{
+                                "filteredLink.linkArrayIndex": arrayIndex
+                            }]
+                        }, (err, db_result) => {
+                            if (err) {
+                                console.log("LINE# 590 - user GET error", err);
+                                res.json({
+                                    success: false,
+                                    errorMsg: "DBO error on UPD links.",
+                                    err: err
+                                })
+                                return null
+                            }
+
+                            //console.log("LINE# 599 - db_result", db_result)
 
                             // go on with the provided callback
                             return action.callback(db_result)
@@ -564,20 +604,20 @@ let start_server = dbo => {
                     }
 
                     // if no bank_id and all data
-                    console.log("LINE# 567 - Missing data!")
+                    console.log("LINE# 607 - Missing data!")
                     return null
                     break
 
                     // ==================================================================== DEFAULT
                 default:
-                    console.log("LINE# 573 - Attempting nothing... You provided garbage in 'do'.")
+                    console.log("LINE# 613 - Attempting nothing... You provided garbage in 'do'.")
                     return null
             } // END switch
 
             // Failed on conditions
         } else {
             // ==================================================================== Missing or malformed params
-            console.log("LINE# 580 - Request to sessions failed on params condition.")
+            console.log("LINE# 620 - Request to sessions failed on params condition.")
             return null
         }
     } // END db_link()
@@ -589,7 +629,7 @@ let start_server = dbo => {
         //      for "set" : { do: "set", bank_id: [dbo inserted id], base64: "[text  node]", activeLink: INT, lastID: INT }
         //      for "get" : { do: "get", bank_id: [dbo inserted id] }
 
-        //console.log("LINE# 592 - Request to links is starting.")
+        //console.log("LINE# 632 - Request to links is starting.")
 
         if (
             (
@@ -603,7 +643,7 @@ let start_server = dbo => {
         ) {
 
             // We have all params...
-            //console.log("LINE# 606 - Conditions met.")
+            //console.log("LINE# 646 - Conditions met.")
 
             switch (action.do) {
 
@@ -611,7 +651,7 @@ let start_server = dbo => {
                 case "set":
 
                     if (action.bank_id && action.base64 && action.activeLink && action.lastID) {
-                        console.log("LINE# 614 - Attempting a link SET")
+                        console.log("LINE# 654 - Attempting a link SET")
                         return dbo.collection('links').updateOne({
                                 _id: ObjectId(action.bank_id)
                             }, {
@@ -632,7 +672,7 @@ let start_server = dbo => {
                             // }, 
                             (err, db_result) => {
                                 if (err) {
-                                    console.log("LINE# 635 - user insert error", err);
+                                    console.log("LINE# 675 - user insert error", err);
                                     res.json({
                                         success: false,
                                         errorMsg: "DBO error on SET links.",
@@ -641,7 +681,7 @@ let start_server = dbo => {
                                     return null
                                 }
 
-                                //console.log("LINE# 644 - db_result", db_result)
+                                //console.log("LINE# 684 - db_result", db_result)
 
                                 // go on with the provided callback
                                 return action.callback(db_result)
@@ -649,7 +689,7 @@ let start_server = dbo => {
                     }
 
                     // if no bank_id and all data
-                    console.log("LINE# 652 - Missing data!")
+                    console.log("LINE# 692 - Missing data!")
                     return null
 
                     break;
@@ -658,12 +698,12 @@ let start_server = dbo => {
                 case "get":
 
                     if (action.bank_id) {
-                        console.log("LINE# 661 - Attempting a link GET")
+                        console.log("LINE# 701 - Attempting a link GET")
                         return dbo.collection('links').findOne({
                             _id: ObjectId(action.bank_id)
                         }, (err, db_result) => {
                             if (err) {
-                                console.log("LINE# 666 - user GET error", err);
+                                console.log("LINE# 706 - user GET error", err);
                                 res.json({
                                     success: false,
                                     errorMsg: "DBO error on GET links.",
@@ -672,7 +712,7 @@ let start_server = dbo => {
                                 return null
                             }
 
-                            //console.log("LINE# 675 - db_result", db_result)
+                            //console.log("LINE# 715 - db_result", db_result)
 
                             if (Export_Mongo) {
                                 // MONGO DATA SAVED to file!
@@ -685,21 +725,21 @@ let start_server = dbo => {
                     }
 
                     // if no bank_id
-                    console.log("LINE# 688 - No bank_id.")
+                    console.log("LINE# 728 - No bank_id.")
                     return null
 
                     break;
 
                     // ==================================================================== DEFAULT
                 default:
-                    console.log("LINE# 695 - Attempting nothing... You provided garbage in 'do'.")
+                    console.log("LINE# 735 - Attempting nothing... You provided garbage in 'do'.")
                     return null
             } // END switch
 
             // Failed on conditions
         } else {
             // ==================================================================== Missing or malformed params
-            console.log("LINE# 702 - Request to sessions failed on params condition.")
+            console.log("LINE# 742 - Request to sessions failed on params condition.")
             return null
         }
     } // END db_image()
@@ -735,7 +775,7 @@ let start_server = dbo => {
 
         let signed_up = session_response => {
             if (session_response !== null) {
-                console.log("LINE# 738 - Cookie created.")
+                console.log("LINE# 778 - Cookie created.")
                 console.log("\n============= Signup success. =============\n\n")
 
                 // Create a sid
@@ -763,7 +803,7 @@ let start_server = dbo => {
 
             // No response from session set??? It would be surprising...
             else {
-                console.log("LINE# 766 - Cookie not created.")
+                console.log("LINE# 806 - Cookie not created.")
                 res.json({
                     success: false,
                     errorMsg: "Something when wrong with the session setting..."
@@ -774,7 +814,7 @@ let start_server = dbo => {
         // Set a session
         set_session = async (set_new_user_result) => {
             if (set_new_user_result !== null) {
-                console.log("LINE# 777 - New user created.")
+                console.log("LINE# 817 - New user created.")
                 console.log("\n==============================\n  Welcome on BookMarker.club!  \n==============================\n\n")
 
                 // Set a cookie
@@ -793,14 +833,14 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 796 - New user not created.")
+            console.log("LINE# 836 - New user not created.")
             return null
         }
 
         // Create the new user
         let set_new_user = async (set_startup_link_response) => {
             if (set_startup_link_response !== null) {
-                console.log("LINE# 803 - Startup links created.")
+                console.log("LINE# 843 - Startup links created.")
 
                 // Collect some infos
                 collected["categories"] = set_startup_link_response.ops[0].categories
@@ -817,14 +857,14 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 820 - Startup links not created.")
+            console.log("LINE# 860 - Startup links not created.")
             return null
         }
 
         // If user does not exist, create it's startup links
         let set_startup_link = async user_exist_response => {
             if (user_exist_response !== null) {
-                console.log("LINE# 827 - username already taken.");
+                console.log("LINE# 867 - username already taken.");
                 res.json({
                     success: false,
                     errorMsg: "Username already taken."
@@ -832,7 +872,7 @@ let start_server = dbo => {
                 return null;
             }
 
-            console.log("LINE# 835 - username available.");
+            console.log("LINE# 875 - username available.");
 
             return db_link({
                 do: "set",
@@ -867,7 +907,7 @@ let start_server = dbo => {
 
         let logged_in = db_link_response => {
             if (db_link_response !== null) {
-                console.log("LINE# 870 - User links retreived.")
+                console.log("LINE# 910 - User links retreived.")
                 console.log("\n============= Login success. =============\n\n")
 
                 // Add the linkArrayIndex
@@ -901,13 +941,13 @@ let start_server = dbo => {
                 return null
             }
 
-            console.log("LINE# 904 - User links not retreived.")
+            console.log("LINE# 944 - User links not retreived.")
             return null
         }
 
         let get_links = async set_session_response => {
             if (set_session_response !== null) {
-                console.log("LINE# 910 - Session setted.")
+                console.log("LINE# 950 - Session setted.")
 
                 return db_link({
                     do: "get",
@@ -916,13 +956,13 @@ let start_server = dbo => {
                 })
             }
 
-            console.log = ("LINE# 919 - Session not setted.")
+            console.log = ("LINE# 959 - Session not setted.")
             return null
         }
 
         let set_session = async get_user_response => {
             if (get_user_response !== null) {
-                console.log("LINE# 925 - User valid.")
+                console.log("LINE# 965 - User valid.")
 
                 // Create a sid
                 let sid = generateSessionId();
@@ -941,7 +981,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 944 - User invalid.")
+            console.log("LINE# 984 - User invalid.")
             res.json({
                 success: false,
                 errorMsg: "User not found."
@@ -969,7 +1009,7 @@ let start_server = dbo => {
 
         let cookie_logged = db_link_response => {
             if (db_link_response !== null) {
-                console.log("LINE# 972 - User links found.")
+                console.log("LINE# 1012 - User links found.")
                 console.log("\n============= Cookie login success. =============\n\n")
 
                 // Add the linkArrayIndex
@@ -999,7 +1039,7 @@ let start_server = dbo => {
                     }
                 });
             } else {
-                console.log("LINE# 1002 - User links not found.")
+                console.log("LINE# 1042 - User links not found.")
                 res.json({
                     success: false,
                     errorMsg: "User links not found."
@@ -1012,7 +1052,7 @@ let start_server = dbo => {
         let get_links = async (get_user_response) => {
             // If user found
             if (get_user_response !== null) {
-                console.log("LINE# 1015 - User found.")
+                console.log("LINE# 1055 - User found.")
 
                 collected["username"] = get_user_response.name
                 collected["bank_id"] = get_user_response.bank_id
@@ -1025,7 +1065,7 @@ let start_server = dbo => {
             }
 
             // User not found
-            console.log("LINE# 1028 - User not found.")
+            console.log("LINE# 1068 - User not found.")
             res.json({
                 success: false,
                 errorMsg: "User not found."
@@ -1037,7 +1077,7 @@ let start_server = dbo => {
         let get_user = async (session_response) => {
             // Session found?
             if (session_response !== null) {
-                console.log("LINE# 1040 - Session found.")
+                console.log("LINE# 1080 - Session found.")
                 return db_user({
                     do: "get",
                     user_id: session_response.user_id,
@@ -1046,7 +1086,7 @@ let start_server = dbo => {
             }
 
             // Session not found
-            console.log("LINE# 1049 - Session not found.")
+            console.log("LINE# 1089 - Session not found.")
             res.json({
                 success: false,
                 errorMsg: "Session not found."
@@ -1070,7 +1110,7 @@ let start_server = dbo => {
 
         let logged_out = kill_session_response => {
             if (kill_session_response !== null) {
-                console.log("LINE# 1073 - Session destroyed.")
+                console.log("LINE# 1113 - Session destroyed.")
                 console.log("\n============= Logout success. =============\n\n")
 
                 res.json({
@@ -1080,7 +1120,7 @@ let start_server = dbo => {
                 return null
             }
 
-            console.log("LINE# 1083 - Session not destroyed.")
+            console.log("LINE# 1123 - Session not destroyed.")
             res.json({
                 success: false,
                 errorMsg: "Failed to remove the session."
@@ -1089,7 +1129,7 @@ let start_server = dbo => {
 
         let kill_session = async session_response => {
             if (session_response !== null) {
-                console.log("LINE# 1092 - About to destroy the session...")
+                console.log("LINE# 1132 - About to destroy the session...")
 
                 return db_session({
                     do: "del",
@@ -1098,7 +1138,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 1101 - Session not found.")
+            console.log("LINE# 1141 - Session not found.")
             res.json({
                 success: false,
                 errorMsg: "Session not found."
@@ -1122,12 +1162,12 @@ let start_server = dbo => {
 
         let check_url = async session_response => {
             if (session_response !== null) {
-                console.log("LINE# 1125 - Session found, verifying the url.")
+                console.log("LINE# 1165 - Session found, verifying the url.")
 
                 request
                     .get(urlToCheck)
                     .on('error', function (err) {
-                        console.log("LINE# 1130 - ERROR on request - ", err)
+                        console.log("LINE# 1170 - ERROR on request - ", err)
                         res.json({
                             success: false,
                             errorMsg: "ERROR on request.",
@@ -1136,15 +1176,15 @@ let start_server = dbo => {
                         return null
                     })
                     .on('response', function (response) {
-                        //console.log("LINE# 1139 - response.statusCode", response.statusCode)
+                        //console.log("LINE# 1179 - response.statusCode", response.statusCode)
                         if (response.statusCode === 200) {
-                            console.log("LINE# 1141 - URL valid.\n\n")
+                            console.log("LINE# 1181 - URL valid.\n\n")
                             res.json({
                                 success: true,
                                 errorMsg: "URL valid."
                             })
                         } else {
-                            console.log("LINE# 1147 - URL invalid.\n\n")
+                            console.log("LINE# 1187 - URL invalid.\n\n")
                             res.json({
                                 success: false,
                                 errorMsg: "URL invalid."
@@ -1154,7 +1194,7 @@ let start_server = dbo => {
                 return null
             }
 
-            console.log("LINE# 1157 - Session not found.")
+            console.log("LINE# 1197 - Session not found.")
             res.json({
                 success: false,
                 errorMsg: "Session not found."
@@ -1180,7 +1220,7 @@ let start_server = dbo => {
 
         let data_update = async data_update_response => {
             if (data_update_response !== null) {
-                console.log("LINE# 1183 - Data saved.")
+                console.log("LINE# 1223 - Data saved.")
                 console.log("\n============= Save success. =============\n\n")
 
                 res.json({
@@ -1191,7 +1231,7 @@ let start_server = dbo => {
                 return
             }
 
-            console.log("LINE# 1194 - Data saving failed.")
+            console.log("LINE# 1234 - Data saving failed.")
             res.json({
                 success: false,
                 errorMsg: "Data saving failed."
@@ -1200,7 +1240,7 @@ let start_server = dbo => {
 
         let process_data = async process_data_response => {
             if (process_data_response !== null) {
-                console.log("LINE# 1203 - Links found.")
+                console.log("LINE# 1243 - Links found.")
 
                 // Define the ID for the new image to be saved.
                 let lastID = process_data_response.images.length
@@ -1222,7 +1262,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 1225 - Links not found.")
+            console.log("LINE# 1265 - Links not found.")
             res.json({
                 success: false,
                 errorMsg: "Links not found."
@@ -1231,7 +1271,7 @@ let start_server = dbo => {
 
         let get_data = async session_response => {
             if (session_response !== null) {
-                console.log("LINE# 1234 - Session found.")
+                console.log("LINE# 1274 - Session found.")
 
                 return db_link({
                     do: "get",
@@ -1240,7 +1280,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 1243 - Session not found.")
+            console.log("LINE# 1283 - Session not found.")
             res.json({
                 success: false,
                 errorMsg: "Session not found."
@@ -1262,7 +1302,7 @@ let start_server = dbo => {
 
         let data_update = async data_update_response => {
             if (data_update_response !== null) {
-                console.log("LINE# 1265 - Data saved.")
+                console.log("LINE# 1305 - Data saved.")
                 console.log("\n============= Save success. =============\n\n")
 
                 res.json({
@@ -1272,7 +1312,7 @@ let start_server = dbo => {
                 return
             }
 
-            console.log("LINE# 1275 - Data saving failed.")
+            console.log("LINE# 1315 - Data saving failed.")
             res.json({
                 success: false,
                 errorMsg: "Data saving failed."
@@ -1281,7 +1321,7 @@ let start_server = dbo => {
 
         let process_data = async process_data_response => {
             if (process_data_response !== null) {
-                console.log("LINE# 1284 - Links found.")
+                console.log("LINE# 1324 - Links found.")
 
                 // Update the history
                 let updated_history = process_data_response.history.concat(JSON.parse(req.body.history))
@@ -1296,7 +1336,7 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 1299 - Links not found.")
+            console.log("LINE# 1339 - Links not found.")
             res.json({
                 success: false,
                 errorMsg: "Links not found."
@@ -1305,7 +1345,8 @@ let start_server = dbo => {
 
         let get_data = async session_response => {
             if (session_response !== null) {
-                console.log("LINE# 1308 - Session found.")
+                console.log("LINE# 1348 - Session found.")
+                console.log("req.body.bank_id", req.body.bank_id)
 
                 return db_link({
                     do: "get",
@@ -1314,7 +1355,86 @@ let start_server = dbo => {
                 })
             }
 
-            console.log("LINE# 1317 - Session not found.")
+            console.log("LINE# 1358 - Session not found.")
+            res.json({
+                success: false,
+                errorMsg: "Session not found."
+            })
+        }
+
+        // Check the session
+        return db_session({
+            do: "get",
+            sid: req.cookies.sid,
+            callback: get_data
+        })
+    })
+
+    app.post('/clickCount', upload.none(), async (req, res) => {
+
+        console.log("\n======================================================= /click-count ")
+
+        let linkID = req.body.linkID
+        //console.log(req.body)
+        //console.log("LinkID", linkID)
+        let newClickDate = {
+            date: new Date().getTime()
+        }
+
+        let data_update = async data_update_response => {
+            //console.log(data_update_response.result)
+            if (data_update_response.result.nModified === 1) {
+                console.log("LINE# 1387 - Data saved.")
+
+                console.log("\n============= Click count success. =============\n\n")
+
+                res.json({
+                    success: true,
+                    errorMsg: "Click count done.",
+                    newClickDate: newClickDate
+                })
+                return
+            }
+
+            console.log("\nLINE# 1399 - Data saving failed.")
+            res.json({
+                success: false,
+                errorMsg: "Data saving failed."
+            })
+        }
+
+        let process_data = async process_data_response => {
+            if (process_data_response !== null) {
+                console.log("LINE# 1408 - Links found.")
+
+                return db_link({
+                    do: "upd",
+                    bank_id: req.body.bank_id,
+                    linkID: linkID,
+                    newClickDate: newClickDate,
+                    callback: data_update
+                })
+            }
+
+            console.log("LINE# 1419 - Links not found.")
+            res.json({
+                success: false,
+                errorMsg: "Links not found."
+            })
+        }
+
+        let get_data = async session_response => {
+            if (session_response !== null) {
+                console.log("LINE# 1428 - Session found.")
+
+                return db_link({
+                    do: "get",
+                    bank_id: req.body.bank_id,
+                    callback: process_data
+                })
+            }
+
+            console.log("LINE# 1437 - Session not found.")
             res.json({
                 success: false,
                 errorMsg: "Session not found."
@@ -1333,13 +1453,13 @@ let start_server = dbo => {
 
     // ============================================================================== React router 
     app.get('/addLink/:url', (req, res) => {
-        console.log("LINE# 1336 - app.get('/addLink/:url')")
+        console.log("LINE# 1456 - app.get('/addLink/:url')")
         res.sendFile(__dirname + '/build/index.html');
     })
 
     // ============================================================================== Server listen to requests...
     app.listen(4000, '0.0.0.0', () => {
-        console.log("LINE# 1342 - Server running on port 4000")
+        console.log("LINE# 1462 - Server running on port 4000")
     })
 
 } // ========================================================================================================================================================== END start_server(dbo)
@@ -1352,13 +1472,13 @@ let emptyBank = {
         content: [
             0
         ],
-        state: "closed",
         order: 0
     }],
     links: [{
         name: "Demo link",
         href: "https://stackoverflow.com/",
         imageID: 0,
+        linkArrayIndex: 0,
         comment: [{
             attributes: {
                 "bold": true,
@@ -1367,7 +1487,10 @@ let emptyBank = {
         }, {
             "insert": " is the best programer's ressource!"
         }],
-        rating: 5
+        rating: 5,
+        clickCount: [{
+            date: new Date().getTime()
+        }]
     }],
     history: [{
         target: "Link",

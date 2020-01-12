@@ -165,6 +165,22 @@ class U_Tabbed_Links extends Component {
     });
   };
 
+  clickCount = async e => {
+    let body = new FormData();
+    let linkID = parseInt(e.target.closest(".link_card").dataset.id);
+    log.var("Counting this click.", linkID);
+    body.append("linkID", linkID);
+    body.append("bank_id", this.props.bank_id);
+    let response = await qf("/clickCount", "post", body);
+    if (response.success) {
+      this.props.dispatch({
+        type: "click count",
+        linkID: linkID,
+        newClickDate: response.newClickDate
+      });
+    }
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     log.render("Tabbed_links");
@@ -204,7 +220,7 @@ class U_Tabbed_Links extends Component {
               {link.name}
             </div>
           </div>
-          <div className="link_img">
+          <div className="link_img" onClick={this.clickCount}>
             <a target="_blank" href={link.href}>
               <img src={link.image} />
             </a>
@@ -233,7 +249,8 @@ class U_Tabbed_Links extends Component {
 let stp = state => {
   return {
     // Specific component props from the state here
-    links: state.links
+    links: state.links,
+    bank_id: state.bank_id
   };
 };
 

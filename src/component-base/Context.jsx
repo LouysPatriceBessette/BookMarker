@@ -113,6 +113,41 @@ class U_Context extends Component {
         ".link_creation_date"
       ).innerText = Link_date;
 
+      // How many time clicked?
+      let Link_clicked_times = this.props.links[
+        this.contextMenu_params.activeLink
+      ].clickCount.length;
+      let Link_clicked_details = this.props.links[
+        this.contextMenu_params.activeLink
+      ].clickCount
+        .map(detail => {
+          log.var(detail.date);
+          return date_time(detail.date).full_Local;
+        })
+        .join("\n");
+      this.contextMenu_params.element.querySelector(
+        ".link_clicked_times"
+      ).innerText = Link_clicked_times;
+      if (Link_clicked_times > 1) {
+        this.contextMenu_params.element.querySelector(
+          ".clicked_plural"
+        ).innerText = "s";
+      }
+      // Click history
+      if (Link_clicked_times > 0) {
+        this.contextMenu_params.element.querySelector(
+          ".feak_anchor"
+        ).innerText = "Click history";
+        this.contextMenu_params.element.querySelector(
+          ".click_history"
+        ).style.display = "inline-block";
+        let content_div = this.contextMenu_params.element.querySelector(
+          ".click_history_content"
+        );
+        content_div.innerText = Link_clicked_details;
+        //content_div.style.display = "block";
+      }
+
       // Is there some other change history for that link?
       let changeAmount = this.props.history.filter(history_log => {
         return (
@@ -244,6 +279,23 @@ class U_Context extends Component {
     });
   };
 
+  click_history_show = e => {
+    let content_div = this.contextMenu_params.element.querySelector(
+      ".click_history_content"
+    );
+    content_div.style.top =
+      e.pageY - parseInt(this.contextMenu_params.style.top) + 40 + "px";
+    content_div.style.left =
+      e.pageX - parseInt(this.contextMenu_params.style.left) + 20 + "px";
+    content_div.style.display = "block";
+  };
+  click_history_hide = e => {
+    let content_div = this.contextMenu_params.element.querySelector(
+      ".click_history_content"
+    );
+    content_div.style.display = "none";
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     log.render("Context");
@@ -267,9 +319,20 @@ class U_Context extends Component {
                 <li className="context-option-noClick linkInfo">
                   Added on <span className="link_creation_date"></span>
                 </li>
-                {/* <li className="context-option-noClick linkInfo">
-                  Clicked [X] times
-                </li> */}
+                <li className="context-option-noClick linkInfo">
+                  Clicked <span className="link_clicked_times"></span> time
+                  <span className="clicked_plural"></span>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <span className="click_history">
+                    <a
+                      className="feak_anchor"
+                      onMouseEnter={this.click_history_show}
+                      onMouseLeave={this.click_history_hide}
+                    >
+                      Click history
+                    </a>
+                  </span>
+                </li>
                 <li className="context-option-noClick link_history notDoneYet">
                   View change history
                 </li>
@@ -290,6 +353,7 @@ class U_Context extends Component {
               Logout
             </li>
           </ul>
+          <div className="click_history_content"></div>
         </div>
       </>
     ); // ==================================================================== End return

@@ -35,6 +35,15 @@ class U_Tabbed_Thumbs_tiny extends Component {
 
   // =============================================================================================================== Component functions
 
+  clickCount = async e => {
+    let body = new FormData();
+    let linkID = parseInt(e.target.closest(".link_card").dataset.id);
+    log.var("Counting this click.", linkID);
+    body.append("linkID", linkID);
+    body.append("bank_id", this.props.bank_id);
+    await qf("/clickCount", "post", body);
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     log.render("Tabbed_Thumbs");
@@ -57,7 +66,7 @@ class U_Tabbed_Thumbs_tiny extends Component {
           key={key({ linkID: this.props.activeLink })}
           data-id={this.props.activeLink}
         >
-          <div className="link_img">
+          <div className="link_img" onClick={this.clickCount}>
             <a target="_blank" href={link.href}>
               <img
                 src={link.image}
@@ -76,7 +85,8 @@ class U_Tabbed_Thumbs_tiny extends Component {
 let stp = state => {
   return {
     // Specific component props from the state here
-    links: state.links
+    links: state.links,
+    bank_id: state.bank_id
   };
 };
 
