@@ -1488,9 +1488,7 @@ let emptyBank = {
             "insert": " is the best programer's ressource!"
         }],
         rating: 5,
-        clickCount: [{
-            date: new Date().getTime()
-        }]
+        clickCount: []
     }],
     history: [{
         target: "Link",

@@ -96,6 +96,7 @@ let reducer = (state, action) => {
 
     if (action.type === "sign-log-error") {
         newState.sl_error = true
+        newState.sl_error_hint = action.hint
     }
 
     // =========================================================== Link rating ( triggers a change to save )
@@ -471,6 +472,15 @@ let reducer = (state, action) => {
     // =========================================================== CLICK COUNT
     if (action.type === "click count") {
         newState.links[action.linkID].clickCount.reverse().push(action.newClickDate)
+    }
+
+    // =========================================================== SHOW / HIDE CHANGE LOG
+    if (action.type === "CHANGE LOG") {
+        newState.show_change_log = true;
+    }
+
+    if (action.type === "CHANGE LOG BACK") {
+        newState.show_change_log = false;
     }
 
     // =========================================================== SHARE A FOLDER

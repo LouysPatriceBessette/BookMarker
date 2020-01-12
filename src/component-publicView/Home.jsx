@@ -81,9 +81,33 @@ class U_Home extends Component {
     }, 1);
   };
 
+  changeLog = e => {
+    e.preventDefault();
+    log.ok("Show change log");
+    this.props.dispatch({ type: "CHANGE LOG" });
+  };
+
+  changelog_back = e => {
+    this.props.dispatch({ type: "CHANGE LOG BACK" });
+  };
+
   // =============================================================================================================== Component render
   render = () => {
     log.render("Home");
+
+    if (this.props.show_change_log) {
+      return (
+        <>
+          CHANGE LOG:
+          <ul>
+            <li>2020-01-12: Beta-test release.</li>
+          </ul>
+          <button className="fctBtn fctBtn_green" onClick={this.changelog_back}>
+            Back
+          </button>
+        </>
+      );
+    }
 
     this.checks_animation_init();
 
@@ -119,6 +143,23 @@ class U_Home extends Component {
         <div>
           <p>
             <b>
+              <u>Technical stuff:</u>
+            </b>
+          </p>
+          <p className="legal">
+            <b>
+              This web site was released in beta-testing mode on 2020-01-12.
+            </b>{" "}
+            <a onClick={this.changeLog} title="Click to read">
+              ---> Change Log
+            </a>
+          </p>
+          <p className="legal">
+            Some <b>free accounts</b> will be given to the very first signed up
+            users. More details to come...
+          </p>
+          <p>
+            <b>
               <u>Legal stuff:</u>
             </b>
           </p>
@@ -136,8 +177,7 @@ class U_Home extends Component {
 // =============================================================================================================== State to Props
 let stp = state => {
   return {
-    // Specific component props from the state here
-    //...
+    show_change_log: state.show_change_log
   };
 };
 
