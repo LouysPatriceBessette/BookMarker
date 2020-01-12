@@ -561,7 +561,7 @@ span.dragIcon::after {
   position: absolute;
   top: 0;
   left: 0;
-  width: 9.5em;
+  width: 11em;
 }
 /* Temporaire */
 .notDoneYet {

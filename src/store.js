@@ -470,7 +470,7 @@ let reducer = (state, action) => {
 
     // =========================================================== CLICK COUNT
     if (action.type === "click count") {
-        newState.links[action.linkID].clickCount.push(action.newClickDate)
+        newState.links[action.linkID].clickCount.reverse().push(action.newClickDate)
     }
 
     // =========================================================== SHARE A FOLDER

@@ -41,7 +41,10 @@ let date_time = unixTime => {
 
     // The date only - International Standard
     let dateOnly_Arr = local.split(",")[0].trim().split("/")
-    let dateOnly = dateOnly_Arr[2] + "-" + dateOnly_Arr[0] + "-" + dateOnly_Arr[1]
+    let year = dateOnly_Arr[2];
+    let month = (parseInt(dateOnly_Arr[0]) < 10 ? "0" : "") + dateOnly_Arr[0]
+    let day = (parseInt(dateOnly_Arr[1]) < 10 ? "0" : "") + dateOnly_Arr[1]
+    let dateOnly = year + "-" + month + "-" + day
 
     // The date only - US
     let dateOnly_us = local.split(",")[0].trim()

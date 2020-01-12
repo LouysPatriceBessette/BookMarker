@@ -120,6 +120,7 @@ class U_Context extends Component {
       let Link_clicked_details = this.props.links[
         this.contextMenu_params.activeLink
       ].clickCount
+        .reverse()
         .map(detail => {
           log.var(detail.date);
           return date_time(detail.date).full_Local;
