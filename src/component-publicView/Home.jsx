@@ -100,7 +100,7 @@ class U_Home extends Component {
         <>
           CHANGE LOG:
           <ul>
-            <li>2020-01-12: Beta-test release.</li>
+            <li>2020-01-13: Beta-test release.</li>
           </ul>
           <button className="fctBtn fctBtn_green" onClick={this.changelog_back}>
             Back
@@ -148,7 +148,7 @@ class U_Home extends Component {
           </p>
           <p className="legal">
             <b>
-              This web site was released in beta-testing mode on 2020-01-12.
+              This web site was released in beta-testing mode on 2020-01-13.
             </b>{" "}
             <a onClick={this.changeLog} title="Click to read">
               ---> Change Log
