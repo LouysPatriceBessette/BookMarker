@@ -59,7 +59,8 @@ class U_Unsaved extends Component {
       log.ok("Data saved");
 
       this.props.dispatch({
-        type: "changes saved"
+        type: "changes saved",
+        history: response.history
       });
     } else {
       log.error("Data failed to save");

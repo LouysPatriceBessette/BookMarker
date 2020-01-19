@@ -1312,6 +1312,9 @@ let start_server = dbo => {
 
         console.log("\n======================================================= /save ")
 
+        // ========= Information collection while the dbo resquest are going.
+        let collected = {}
+
         let data_update = async data_update_response => {
             if (data_update_response !== null) {
                 console.log("LINE# 1317 - Data saved.")
@@ -1319,6 +1322,7 @@ let start_server = dbo => {
 
                 res.json({
                     success: true,
+                    history: collected.history,
                     errorMsg: "Data saving is done."
                 })
                 return
@@ -1337,6 +1341,7 @@ let start_server = dbo => {
 
                 // Update the history
                 let updated_history = process_data_response.history.concat(JSON.parse(req.body.history))
+                collected["history"] = updated_history
 
                 return db_link({
                     do: "upd",
