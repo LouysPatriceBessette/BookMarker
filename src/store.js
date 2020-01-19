@@ -210,6 +210,9 @@ let reducer = (state, action) => {
         // Add the linkArrayIndex
         action.link["linkArrayIndex"] = linkIndex
 
+        // Add an empty clickCount array
+        action.link["clickCount"] = [{date: new date().getTime()}]
+
         // Make the change
         newState.links.push(action.link)
 
