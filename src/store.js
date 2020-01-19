@@ -84,7 +84,8 @@ let reducer = (state, action) => {
         newState.categories = action.content.user.categories
         newState.links = action.content.user.links
         newState.bank_id = action.content.user.userBank_id
-        newState.history = action.content.user.history
+        newState.history = action.content.user.history,
+            newState.realLinksLength = action.content.user.realLinksLength
     }
 
     if (action.type === "logout") {
@@ -200,9 +201,16 @@ let reducer = (state, action) => {
         // Add the default image to the new link...
         action.link["image"] = "/image_missing.png"
 
-        // Make the change
-        let linkIndex = newState.links.length
+        // Get the index
+        let linkIndex = newState.realLinksLength
         console.log("linkIndex", linkIndex)
+        // Ad increment it...
+        newState.realLinksLength = newState.realLinksLength + 1
+
+        // Add the linkArrayIndex
+        action.link["linkArrayIndex"] = linkIndex
+
+        // Make the change
         newState.links.push(action.link)
 
         // Add the link index in the category
