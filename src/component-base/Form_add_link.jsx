@@ -75,7 +75,7 @@ class U_Form_add_link extends Component {
           type: "link add",
           link: {
             name: "Give a name",
-            href: this.url_to_add,
+            href: this.state.href,
             comment: [
               {
                 insert: "Add a comment!"
